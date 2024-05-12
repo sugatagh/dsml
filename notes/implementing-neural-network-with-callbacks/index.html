@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    
+    <title>Implementing Neural Network with Callbacks | Sugata Ghosh, PhD</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1">
+    <meta name="description" content="A callback is an object that can perform certain actions at various stages of training. It is typically used to confirm or adjust specific behaviors and is called periodically throughout a procedure. Callbacks can be used in machine learning to specify what occurs before, during, or after a training epoch or a single batch. In this note, we implement EarlyStopping, LearningRateScheduler, and ModelCheckpoint callbacks in the training of a neural network.">
+    <meta name="generator" content="Hugo 0.121.2">
+    
+    
+    
+    
+      <meta name="robots" content="noindex, nofollow">
+    
+
+    
+<link rel="stylesheet" href="https://sugatagh.github.io/dsml/ananke/css/main.min.css" >
+
+
+
+    
+
+    
+      
+
+    
+
+    
+
+    
+      <link rel="canonical" href="https://sugatagh.github.io/dsml/notes/implementing-neural-network-with-callbacks/">
+    
+
+    <meta property="og:title" content="Implementing Neural Network with Callbacks" />
+<meta property="og:description" content="A callback is an object that can perform certain actions at various stages of training. It is typically used to confirm or adjust specific behaviors and is called periodically throughout a procedure. Callbacks can be used in machine learning to specify what occurs before, during, or after a training epoch or a single batch. In this note, we implement EarlyStopping, LearningRateScheduler, and ModelCheckpoint callbacks in the training of a neural network." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://sugatagh.github.io/dsml/notes/implementing-neural-network-with-callbacks/" /><meta property="article:section" content="notes" />
+<meta property="article:published_time" content="2024-04-06T00:00:00+05:30" />
+<meta property="article:modified_time" content="2024-04-06T00:00:00+05:30" />
+
+<meta itemprop="name" content="Implementing Neural Network with Callbacks">
+<meta itemprop="description" content="A callback is an object that can perform certain actions at various stages of training. It is typically used to confirm or adjust specific behaviors and is called periodically throughout a procedure. Callbacks can be used in machine learning to specify what occurs before, during, or after a training epoch or a single batch. In this note, we implement EarlyStopping, LearningRateScheduler, and ModelCheckpoint callbacks in the training of a neural network."><meta itemprop="datePublished" content="2024-04-06T00:00:00+05:30" />
+<meta itemprop="dateModified" content="2024-04-06T00:00:00+05:30" />
+<meta itemprop="wordCount" content="1291">
+<meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/><meta name="twitter:title" content="Implementing Neural Network with Callbacks"/>
+<meta name="twitter:description" content="A callback is an object that can perform certain actions at various stages of training. It is typically used to confirm or adjust specific behaviors and is called periodically throughout a procedure. Callbacks can be used in machine learning to specify what occurs before, during, or after a training epoch or a single batch. In this note, we implement EarlyStopping, LearningRateScheduler, and ModelCheckpoint callbacks in the training of a neural network."/>
+
+	<style>
+.has-mathjax {
+    visibility: hidden;
+}
+</style>
+
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+<script>
+window.MathJax = {
+  startup: {
+    pageReady: () => {
+      return MathJax.startup.defaultPageReady().then(() => {
+        for (let element of document.getElementsByClassName("has-mathjax")) {
+            element.style.visibility = "visible"
+        }
+      });
+    }
+  }
+};
+</script>
+  </head>
+
+  <body class="ma0 avenir bg-near-white">
+
+    
+   
+  
+
+  
+  <header class="cover bg-top" style="background-image: url('https://sugatagh.github.io/dsml/images/bg-notes/bg-tf-idf-10.jpg');">
+    <div class="bg-black-60">
+      <nav class="pv3 ph3 ph4-ns" role="navigation">
+  <div class="flex-l justify-between items-center center">
+    <a href="https://sugatagh.github.io/dsml/" class="f3 fw2 hover-white no-underline white-90 dib">
+      
+        Sugata Ghosh, PhD
+      
+    </a>
+    <div class="flex-l items-center">
+      
+
+      
+        <ul class="pl0 mr3">
+          
+          <li class="list f5 f4-ns fw4 dib pr3">
+            <a class="hover-white no-underline white-90" href="https://sugatagh.github.io/dsml/about/" title="About page">
+              About
+            </a>
+          </li>
+          
+          <li class="list f5 f4-ns fw4 dib pr3">
+            <a class="hover-white no-underline white-90" href="https://sugatagh.github.io/dsml/overview/" title="Overview page">
+              Overview
+            </a>
+          </li>
+          
+          <li class="list f5 f4-ns fw4 dib pr3">
+            <a class="hover-white no-underline white-90" href="https://sugatagh.github.io/dsml/certifications/" title="Certifications page">
+              Certifications
+            </a>
+          </li>
+          
+          <li class="list f5 f4-ns fw4 dib pr3">
+            <a class="hover-white no-underline white-90" href="https://sugatagh.github.io/dsml/projects/" title="Projects page">
+              Projects
+            </a>
+          </li>
+          
+          <li class="list f5 f4-ns fw4 dib pr3">
+            <a class="hover-white no-underline white-90" href="https://sugatagh.github.io/dsml/notes/" title="Notes page">
+              Notes
+            </a>
+          </li>
+          
+          <li class="list f5 f4-ns fw4 dib pr3">
+            <a class="hover-white no-underline white-90" href="https://sugatagh.github.io/dsml/cv/" title="CV page">
+              CV
+            </a>
+          </li>
+          
+          <li class="list f5 f4-ns fw4 dib pr3">
+            <a class="hover-white no-underline white-90" href="https://sugatagh.github.io/dsml/contact/" title="Contact page">
+              Contact
+            </a>
+          </li>
+          
+        </ul>
+      
+      
+<div class="ananke-socials">
+  
+    
+    <a href="https://www.linkedin.com/in/sugataghosh/" target="_blank" rel="noopener" class="linkedin ananke-social-link link-transition stackoverflow link dib z-999 pt3 pt0-l mr1" title="LinkedIn link" aria-label="follow on LinkedIn——Opens in a new window">
+      
+        <span class="icon"><svg style="enable-background:new 0 0 65 65;" version="1.1" viewBox="0 0 65 65"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <path d="M50.837,48.137V36.425c0-6.275-3.35-9.195-7.816-9.195  c-3.604,0-5.219,1.983-6.119,3.374V27.71h-6.79c0.09,1.917,0,20.427,0,20.427h6.79V36.729c0-0.609,0.044-1.219,0.224-1.655  c0.49-1.22,1.607-2.483,3.482-2.483c2.458,0,3.44,1.873,3.44,4.618v10.929H50.837z M22.959,24.922c2.367,0,3.842-1.57,3.842-3.531  c-0.044-2.003-1.475-3.528-3.797-3.528s-3.841,1.524-3.841,3.528c0,1.961,1.474,3.531,3.753,3.531H22.959z M34,64  C17.432,64,4,50.568,4,34C4,17.431,17.432,4,34,4s30,13.431,30,30C64,50.568,50.568,64,34,64z M26.354,48.137V27.71h-6.789v20.427  H26.354z" style="fill-rule:evenodd;clip-rule:evenodd;"/>
+</svg>
+</span>
+      
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;"/>
+</svg>
+</span></a>
+  
+    
+    <a href="https://twitter.com/sugatagh" target="_blank" rel="noopener" class="twitter ananke-social-link link-transition stackoverflow link dib z-999 pt3 pt0-l mr1" title="Twitter link" aria-label="follow on Twitter——Opens in a new window">
+      
+        <span class="icon"><svg style="enable-background:new 0 0 67 67;" version="1.1" viewBox="0 0 67 67"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M37.167,22.283c-2.619,0.953-4.274,3.411-4.086,6.101  l0.063,1.038l-1.048-0.127c-3.813-0.487-7.145-2.139-9.974-4.915l-1.383-1.377l-0.356,1.017c-0.754,2.267-0.272,4.661,1.299,6.271  c0.838,0.89,0.649,1.017-0.796,0.487c-0.503-0.169-0.943-0.296-0.985-0.233c-0.146,0.149,0.356,2.076,0.754,2.839  c0.545,1.06,1.655,2.097,2.871,2.712l1.027,0.487l-1.215,0.021c-1.173,0-1.215,0.021-1.089,0.467  c0.419,1.377,2.074,2.839,3.918,3.475l1.299,0.444l-1.131,0.678c-1.676,0.976-3.646,1.526-5.616,1.568  C19.775,43.256,19,43.341,19,43.405c0,0.211,2.557,1.397,4.044,1.864c4.463,1.377,9.765,0.783,13.746-1.568  c2.829-1.673,5.657-5,6.978-8.221c0.713-1.716,1.425-4.851,1.425-6.354c0-0.975,0.063-1.102,1.236-2.267  c0.692-0.678,1.341-1.419,1.467-1.631c0.21-0.403,0.188-0.403-0.88-0.043c-1.781,0.636-2.033,0.551-1.152-0.402  c0.649-0.678,1.425-1.907,1.425-2.267c0-0.063-0.314,0.042-0.671,0.233c-0.377,0.212-1.215,0.53-1.844,0.72l-1.131,0.361l-1.027-0.7  c-0.566-0.381-1.361-0.805-1.781-0.932C39.766,21.902,38.131,21.944,37.167,22.283z M33,64C16.432,64,3,50.569,3,34S16.432,4,33,4  s30,13.431,30,30S49.568,64,33,64z" style="fill-rule:evenodd;clip-rule:evenodd;"/></svg>
+</span>
+      
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;"/>
+</svg>
+</span></a>
+  
+    
+    <a href="https://github.com/sugatagh" target="_blank" rel="noopener" class="github ananke-social-link link-transition stackoverflow link dib z-999 pt3 pt0-l mr1" title="GitHub link" aria-label="follow on GitHub——Opens in a new window">
+      
+        <span class="icon"><svg style="enable-background:new 0 0 512 512;" version="1.1" viewBox="0 0 512 512"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+  <path d="M256,32C132.3,32,32,134.8,32,261.7c0,101.5,64.2,187.5,153.2,217.9c11.2,2.1,15.3-5,15.3-11.1   c0-5.5-0.2-19.9-0.3-39.1c-62.3,13.9-75.5-30.8-75.5-30.8c-10.2-26.5-24.9-33.6-24.9-33.6c-20.3-14.3,1.5-14,1.5-14   c22.5,1.6,34.3,23.7,34.3,23.7c20,35.1,52.4,25,65.2,19.1c2-14.8,7.8-25,14.2-30.7c-49.7-5.8-102-25.5-102-113.5   c0-25.1,8.7-45.6,23-61.6c-2.3-5.8-10-29.2,2.2-60.8c0,0,18.8-6.2,61.6,23.5c17.9-5.1,37-7.6,56.1-7.7c19,0.1,38.2,2.6,56.1,7.7   c42.8-29.7,61.5-23.5,61.5-23.5c12.2,31.6,4.5,55,2.2,60.8c14.3,16.1,23,36.6,23,61.6c0,88.2-52.4,107.6-102.3,113.3   c8,7.1,15.2,21.1,15.2,42.5c0,30.7-0.3,55.5-0.3,63c0,6.1,4,13.3,15.4,11C415.9,449.1,480,363.1,480,261.7   C480,134.8,379.7,32,256,32z"/>
+</svg>
+</span>
+      
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;"/>
+</svg>
+</span></a>
+  
+    
+    <a href="https://www.kaggle.com/sugataghosh" target="_blank" rel="noopener" class="Kaggle ananke-social-link link-transition stackoverflow link dib z-999 pt3 pt0-l mr1" title="Kaggle link" aria-label="follow on Kaggle——Opens in a new window">
+      
+        Kaggle
+      
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;"/>
+</svg>
+</span></a>
+  
+</div>
+
+    </div>
+  </div>
+</nav>
+
+      <div class="tc-l pv6 ph3 ph4-ns">
+        
+          <div class="f2 f1-l fw2 white-90 mb0 lh-title">Implementing Neural Network with Callbacks</div>
+          
+        
+      </div>
+    </div>
+  </header>
+
+
+
+    <main class="pb7" role="main">
+      
+  
+  <article class="flex-l flex-wrap justify-between mw8 center ph3">
+    <header class="mt4 w-100">
+      <aside class="instapaper_ignoref b helvetica tracked ttu">
+          
+        Notes
+      </aside>
+      
+
+
+
+
+
+
+
+
+
+
+  <div id="sharing" class="mt3 ananke-socials">
+    
+      
+      <a href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https://sugatagh.github.io/dsml/notes/implementing-neural-network-with-callbacks/&amp;title=Implementing%20Neural%20Network%20with%20Callbacks" class="ananke-social-link linkedin no-underline" aria-label="share on LinkedIn">
+        
+        <span class="icon"> <svg style="enable-background:new 0 0 65 65;" version="1.1" viewBox="0 0 65 65"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <path d="M50.837,48.137V36.425c0-6.275-3.35-9.195-7.816-9.195  c-3.604,0-5.219,1.983-6.119,3.374V27.71h-6.79c0.09,1.917,0,20.427,0,20.427h6.79V36.729c0-0.609,0.044-1.219,0.224-1.655  c0.49-1.22,1.607-2.483,3.482-2.483c2.458,0,3.44,1.873,3.44,4.618v10.929H50.837z M22.959,24.922c2.367,0,3.842-1.57,3.842-3.531  c-0.044-2.003-1.475-3.528-3.797-3.528s-3.841,1.524-3.841,3.528c0,1.961,1.474,3.531,3.753,3.531H22.959z M34,64  C17.432,64,4,50.568,4,34C4,17.431,17.432,4,34,4s30,13.431,30,30C64,50.568,50.568,64,34,64z M26.354,48.137V27.71h-6.789v20.427  H26.354z" style="fill-rule:evenodd;clip-rule:evenodd;"/>
+</svg>
+</span>
+        
+      </a>
+    
+      
+      <a href="https://twitter.com/intent/tweet?url=https://sugatagh.github.io/dsml/notes/implementing-neural-network-with-callbacks/&amp;text=Implementing%20Neural%20Network%20with%20Callbacks" class="ananke-social-link twitter no-underline" aria-label="share on Twitter">
+        
+        <span class="icon"> <svg style="enable-background:new 0 0 67 67;" version="1.1" viewBox="0 0 67 67"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M37.167,22.283c-2.619,0.953-4.274,3.411-4.086,6.101  l0.063,1.038l-1.048-0.127c-3.813-0.487-7.145-2.139-9.974-4.915l-1.383-1.377l-0.356,1.017c-0.754,2.267-0.272,4.661,1.299,6.271  c0.838,0.89,0.649,1.017-0.796,0.487c-0.503-0.169-0.943-0.296-0.985-0.233c-0.146,0.149,0.356,2.076,0.754,2.839  c0.545,1.06,1.655,2.097,2.871,2.712l1.027,0.487l-1.215,0.021c-1.173,0-1.215,0.021-1.089,0.467  c0.419,1.377,2.074,2.839,3.918,3.475l1.299,0.444l-1.131,0.678c-1.676,0.976-3.646,1.526-5.616,1.568  C19.775,43.256,19,43.341,19,43.405c0,0.211,2.557,1.397,4.044,1.864c4.463,1.377,9.765,0.783,13.746-1.568  c2.829-1.673,5.657-5,6.978-8.221c0.713-1.716,1.425-4.851,1.425-6.354c0-0.975,0.063-1.102,1.236-2.267  c0.692-0.678,1.341-1.419,1.467-1.631c0.21-0.403,0.188-0.403-0.88-0.043c-1.781,0.636-2.033,0.551-1.152-0.402  c0.649-0.678,1.425-1.907,1.425-2.267c0-0.063-0.314,0.042-0.671,0.233c-0.377,0.212-1.215,0.53-1.844,0.72l-1.131,0.361l-1.027-0.7  c-0.566-0.381-1.361-0.805-1.781-0.932C39.766,21.902,38.131,21.944,37.167,22.283z M33,64C16.432,64,3,50.569,3,34S16.432,4,33,4  s30,13.431,30,30S49.568,64,33,64z" style="fill-rule:evenodd;clip-rule:evenodd;"/></svg>
+</span>
+        
+      </a>
+    
+  </div>
+
+
+      <h1 class="f1 athelas mt3 mb1">Implementing Neural Network with Callbacks</h1>
+      
+      
+      
+      <time class="f6 mv4 dib tracked" datetime="2024-04-06T00:00:00+05:30">April 6, 2024</time>
+      
+
+      
+      
+    </header>
+    <div class="nested-copy-line-height lh-copy serif f4 nested-links mid-gray pr4-l w-two-thirds-l"><p>A callback is an object that can perform certain actions at various stages of training. It is typically used to confirm or adjust specific behaviors and is called periodically throughout a procedure. Callbacks can be used in machine learning to specify what occurs before, during, or after a training epoch or a single batch. In this note, we implement <code>EarlyStopping</code>, <code>LearningRateScheduler</code>, and <code>ModelCheckpoint</code> callbacks in the training of a neural network.</p>
+<h3 id="-contents">○ Contents</h3>
+<ul>
+<li><a href="#-data">Data</a></li>
+<li><a href="#-visualization">Visualization</a></li>
+<li><a href="#-feature-unrolling">Feature Unrolling</a></li>
+<li><a href="#-target-encoding">Target Encoding</a></li>
+<li><a href="#-model-creation">Model Creation</a></li>
+<li><a href="#-model-compilation">Model Compilation</a></li>
+<li><a href="#-earlystopping-callback">EarlyStopping Callback</a></li>
+<li><a href="#-learningratescheduler-callback">LearningRateScheduler Callback</a></li>
+<li><a href="#-modelcheckpoint-callback">ModelCheckpoint Callback</a></li>
+<li><a href="#-training">Training</a></li>
+<li><a href="#-inference">Inference</a></li>
+<li><a href="#-evaluation">Evaluation</a></li>
+<li><a href="#-references">References</a></li>
+</ul>
+<h3 id="-data">○ Data</h3>
+<p>In this note, we use the <a href="https://en.wikipedia.org/wiki/MNIST_database">MNIST dataset</a> and consider the problem of recognizing handwritten digits. There are multiple ways to load the dataset. The <a href="https://keras.io/api/datasets/">keras.datasets</a> module provides it readily.</p>
+<pre tabindex="0"><code>from keras.datasets import mnist
+data = mnist.load_data()
+</code></pre><p>A good place to understand the data is the <a href="https://keras.io/api/datasets/mnist/">Keras documentation</a> on it. Taking a quick look at the documentation page, we understand that the loaded data contains sixty thousand <span class="has-mathjax">\(28 \times 28\)</span>
+ grayscale images of the <span class="has-mathjax">\(10\)</span>
+ digits, along with a test set of ten thousand images.</p>
+<p>We also see from the documentation that the data is in the format of a tuple of NumPy arrays: <code>(X_train, y_train), (X_test, y_test)</code>.</p>
+<pre tabindex="0"><code>(X_train, y_train), (X_test, y_test) = data
+</code></pre><p>We check the shape of the arrays.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-notes/nn-callbacks/nn-callbacks-array-shape.png"/>
+</figure>
+
+<h3 id="-visualization">○ Visualization</h3>
+<p>To visualize the handwritten digits from the raw data, we use the <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.imshow.html">imshow</a> function from the <a href="https://matplotlib.org/stable/api/pyplot_summary.html">matplotlib.pyplot</a> module.</p>
+<pre tabindex="0"><code>import matplotlib.pyplot as plt
+num_images = 25
+fig, axes = plt.subplots(5, 5, figsize = (5, 5))
+axes = axes.flatten()
+for i in range(num_images):
+    axes[i].imshow(X_train[i], cmap = &#39;gray&#39;)
+    axes[i].axis(&#39;off&#39;)
+    axes[i].set_title(f&#34;Label: {y_train[i]}&#34;, fontsize = 10)
+plt.tight_layout()
+plt.show()
+</code></pre><figure><img src="https://sugatagh.github.io/dsml/images/images-notes/nn-callbacks/nn-callbacks-digits.png"/>
+</figure>
+
+<h3 id="-feature-unrolling">○ Feature Unrolling</h3>
+<p>To train a <a href="https://en.wikipedia.org/wiki/Neural_network_(machine_learning)">neural network</a> on the data, we need to unroll the pixel values to a one-dimensional array. For this reason, we reshape <code>X_train</code> and <code>X_test</code> such that the <span class="has-mathjax">\(28 \times 28\)</span>
+ greyscale pixel values corresponding to each observation becomes an array of <span class="has-mathjax">\(784\)</span>
+ values.</p>
+<pre tabindex="0"><code>import numpy as np
+X_train_unrolled = X_train.reshape(X_train.shape[0], np.prod(X_train.shape[1:]))
+X_test_unrolled = X_test.reshape(X_test.shape[0], np.prod(X_test.shape[1:]))
+</code></pre><p>We check the shape of <code>X_train_unrolled</code> and <code>X_test_unrolled</code>.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-notes/nn-callbacks/nn-callbacks-array-unrolled-shape.png"/>
+</figure>
+
+<h3 id="-target-encoding">○ Target Encoding</h3>
+<p>The target variable can assume <span class="has-mathjax">\(10\)</span>
+ different labels. To train a neural network, we need <a href="https://en.wikipedia.org/wiki/One-hot">one-hot</a> encode it.</p>
+<pre tabindex="0"><code>def vec_to_mat(y_in, num_classes = None, dtype = &#39;float32&#39;):
+    y_in = np.array(y_in, dtype = &#39;int&#39;)
+    if not num_classes:
+        num_classes = np.max(y_in) + 1
+    m = y_in.shape[0]
+    Y_out = np.zeros((m, num_classes), dtype = dtype)
+    Y_out[np.arange(m), y_in] = 1
+    return Y_out
+
+Y_train_arr = vec_to_mat(y_train, num_classes = 10, dtype = &#39;int&#39;)
+Y_test_arr = vec_to_mat(y_test, num_classes = 10, dtype = &#39;int&#39;)
+</code></pre><p>We check the shape of <code>Y_train_arr</code> and <code>Y_test_arr</code>.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-notes/nn-callbacks/nn-callbacks-target-one-hot-shape.png"/>
+</figure>
+
+<h3 id="-model-creation">○ Model Creation</h3>
+<p>We begin by adding <a href="https://en.wikipedia.org/wiki/Layer_(deep_learning)#Layer_Types">dense layers</a>, with appropriate number of units and <a href="https://en.wikipedia.org/wiki/Activation_function">activation function</a>, to a <a href="https://www.tensorflow.org/guide/keras/sequential_model">sequential model</a>.</p>
+<pre tabindex="0"><code>from keras.models import Sequential
+from keras.layers import Dense
+model = Sequential()
+model.add(Dense(units = 128, input_dim = X_train_unrolled.shape[1], activation = &#39;relu&#39;))
+model.add(Dense(units = 32, activation = &#39;relu&#39;))
+model.add(Dense(units = 16, activation = &#39;relu&#39;))
+model.add(Dense(units = 10, activation = &#39;softmax&#39;))
+model.summary()
+</code></pre><figure><img src="https://sugatagh.github.io/dsml/images/images-notes/nn-callbacks/nn-callbacks-model-summary.png"/>
+</figure>
+
+<h3 id="-model-compilation">○ Model Compilation</h3>
+<p>We compile the model with <a href="https://www.tensorflow.org/api_docs/python/tf/keras/metrics/binary_crossentropy">binary cross-entropy</a> <a href="https://keras.io/api/losses/">loss</a> and <a href="https://arxiv.org/abs/1412.6980">Adam</a> <a href="https://keras.io/api/optimizers/">optimizer</a> with an input <a href="https://en.wikipedia.org/wiki/Learning_rate">learning rate</a>. The model is evaluated with the <a href="https://keras.io/api/metrics/accuracy_metrics/">accuracy</a> metric during the training process.</p>
+<pre tabindex="0"><code>model.compile(
+    loss = &#39;binary_crossentropy&#39;,
+    optimizer = &#39;adam&#39;,
+    metrics = [&#39;accuracy&#39;]
+)
+</code></pre><p>Note that the Adam optimizer is set with a learning rate of <span class="has-mathjax">\(0.001\)</span>
+ by default. To experiment with the learning rate parameter, we can compile the model as follows.</p>
+<pre tabindex="0"><code>from keras.optimizers import Adam
+model.compile(
+    loss = &#39;binary_crossentropy&#39;,
+    optimizer = Adam(learning_rate = 0.001),
+    metrics = [&#39;accuracy&#39;]
+)
+</code></pre><h3 id="-earlystopping-callback">○ EarlyStopping Callback</h3>
+<p>The <a href="https://keras.io/api/callbacks/early_stopping/">EarlyStopping</a> callback stops the training process when a given monitored metric stops improving by a certain amount for a certain number of epochs, starting from a given epoch.</p>
+<pre tabindex="0"><code>from keras.callbacks import EarlyStopping
+earlystop = EarlyStopping(
+    monitor = &#39;val_loss&#39;,
+    min_delta = 0.001,
+    patience = 20,
+    verbose = 0,
+    mode = &#39;auto&#39;,
+    start_from_epoch = 60
+)
+</code></pre><h3 id="-learningratescheduler-callback">○ LearningRateScheduler Callback</h3>
+<p>The <a href="https://keras.io/api/callbacks/learning_rate_scheduler/">LearningRateScheduler</a> callback updates the learning rate value at the beginning of every epoch from an input schedule function with the current epoch and current learning rate. It then applies the updated learning rate to the optimizer.</p>
+<p>The modified linear schedule function holds the learning rate constant for a certain number of epochs and then diminishes it linearly.</p>
+<pre tabindex="0"><code>def scheduler_modified_linear(epoch, learning_rate):
+    if epoch &lt; 40:
+        return learning_rate
+    else:
+        return learning_rate * (100 - epoch) / (100 - epoch + 1)
+</code></pre><figure><img src="https://sugatagh.github.io/dsml/images/images-notes/nn-callbacks/nn-callbacks-learning-rate-modified-linear-decay.png"/>
+</figure>
+
+<p>The modified exponential schedule function holds the learning rate constant for a certain number of epochs and then diminishes it exponentially.</p>
+<pre tabindex="0"><code>import math
+def scheduler_modified_exponential(epoch, learning_rate):
+    if epoch &lt; 40:
+        return learning_rate
+    else:
+        return learning_rate * math.exp(-0.1)
+</code></pre><figure><img src="https://sugatagh.github.io/dsml/images/images-notes/nn-callbacks/nn-callbacks-learning-rate-modified-exponential-decay.png"/>
+</figure>
+
+<p>In this note, we use the modified linear schedule function.</p>
+<pre tabindex="0"><code>from keras.callbacks import LearningRateScheduler
+learning_rate_scheduler = LearningRateScheduler(scheduler_modified_linear)
+</code></pre><h3 id="-modelcheckpoint-callback">○ ModelCheckpoint Callback</h3>
+<p>The <a href="https://keras.io/api/callbacks/model_checkpoint/">ModelCheckpoint</a> callback saves the Keras model or model weights at some frequency. The model or weights can be loaded later for inference or to continue the training from the saved instance.</p>
+<pre tabindex="0"><code>from keras.callbacks import ModelCheckpoint
+model_checkpoint = ModelCheckpoint(
+    filepath = &#39;best_model.h5&#39;,
+    monitor = &#39;val_loss&#39;,
+    save_best_only = True
+)
+</code></pre><h3 id="-training">○ Training</h3>
+<p>We incorporate the three callbacks in the <code>model.fit()</code> function and train the model on <code>(X_train_unrolled, Y_train_arr)</code>.</p>
+<pre tabindex="0"><code>history = model.fit(
+    x = X_train_unrolled,
+    y = Y_train_arr,
+    batch_size = 32,
+    epochs = 100,
+    validation_split = 0.2,
+    callbacks = [earlystop, learning_rate_scheduler, model_checkpoint],
+    verbose = 0
+)
+</code></pre><p><em>Note:</em> If we try to train the model on <code>(X_train_unrolled, y_train)</code>, we would get the following error message:</p>
+<p><code>ValueError: `logits` and `labels` must have the same shape, received ((32, 10) vs (32, 1)).</code></p>
+<p>Now, we plot the model loss (binary crossentropy) against the epochs.</p>
+<pre tabindex="0"><code>import seaborn as sns
+plt.figure(figsize = (15, 10))
+plt.title(&#39;Model loss (binary crossentropy)&#39;, fontsize = 14)
+sns.lineplot(data = history.history[&#39;loss&#39;], label = &#39;Train&#39;)
+sns.lineplot(data = history.history[&#39;val_loss&#39;], label = &#39;Validation&#39;)
+plt.xlabel(&#39;Epoch&#39;, fontsize = 14)
+plt.ylabel(&#39;Loss&#39;, fontsize = 14)
+plt.legend()
+plt.show()
+</code></pre><figure><img src="https://sugatagh.github.io/dsml/images/images-notes/nn-callbacks/nn-callbacks-model-loss.png"/>
+</figure>
+
+<p>We also plot the model accuracy against the epochs.</p>
+<pre tabindex="0"><code>plt.figure(figsize = (15, 10))
+plt.title(&#39;Model accuracy&#39;, fontsize = 14)
+sns.lineplot(data = history.history[&#39;accuracy&#39;], label = &#39;Train&#39;)
+sns.lineplot(data = history.history[&#39;val_accuracy&#39;], label = &#39;Validation&#39;)
+plt.xlabel(&#39;Epoch&#39;, fontsize = 14)
+plt.ylabel(&#39;Accuracy&#39;, fontsize = 14)
+plt.legend()
+plt.show()
+</code></pre><figure><img src="https://sugatagh.github.io/dsml/images/images-notes/nn-callbacks/nn-callbacks-model-accuracy.png"/>
+</figure>
+
+<h3 id="-inference">○ Inference</h3>
+<p>We load the model instance with best validation loss.</p>
+<pre tabindex="0"><code>model.load_weights(&#39;best_model.h5&#39;)
+</code></pre><p>Next, we use this model instance to predict the test class probabilities based on the unrolled test features <code>X_test_unrolled</code>.</p>
+<pre tabindex="0"><code>y_pred_proba = model.predict(X_test_unrolled, verbose = 0)
+</code></pre><p>Each row of <code>y_pred_proba</code> gives a vector of predicted probabilities, the <span class="has-mathjax">\(i\)th</span>
+ element of which is the probability that the test observation belongs to the <span class="has-mathjax">\(i\)th</span>
+ target class. We convert the probability vector to a label by taking the class with the highest probability of having the test observation.</p>
+<pre tabindex="0"><code>y_pred = [np.argmax(y_pred_proba[i]) for i in range(len(y_pred_proba))]
+</code></pre><h3 id="-evaluation">○ Evaluation</h3>
+<p>The <a href="https://scikit-learn.org/stable/modules/classes.html#module-sklearn.metrics">sklearn.metrics</a> module provides a number of measures to evaluate models. We import the <a href="https://scikit-learn.org/stable/modules/generated/sklearn.metrics.accuracy_score.html">accuracy_score</a> metric and feed the true test labels <code>y_test</code> and the predicted test labels <code>y_pred</code> to it.</p>
+<pre tabindex="0"><code>from sklearn.metrics import accuracy_score
+accuracy_score(y_test, y_pred)
+</code></pre><p>We obtain an accuracy score of <span class="has-mathjax">\(0.9733\).</span>
+ Next, we compute and print the <a href="https://en.wikipedia.org/wiki/Confusion_matrix">confusion matrix</a> depicting the model performance on each class.</p>
+<pre tabindex="0"><code>import pandas as pd
+import seaborn as sns
+from sklearn import metrics
+def conf_mat(y_test, y_pred, num_class, figsize = (10, 8), font_scale = 1.2, annot_kws_size = 16):
+    class_names = np.arange(num_class)
+    tick_marks_y = np.arange(num_class) + 0.5
+    tick_marks_x = np.arange(num_class) + 0.5
+    confusion_matrix = metrics.confusion_matrix(y_test, y_pred)
+    confusion_matrix_df = pd.DataFrame(confusion_matrix, range(num_class), range(num_class))
+    plt.figure(figsize = figsize)
+    sns.set(font_scale = font_scale) # label size
+    plt.title(&#34;Confusion Matrix&#34;)
+    sns.heatmap(confusion_matrix_df, annot = True, annot_kws = {&#34;size&#34;: annot_kws_size}, fmt = &#39;d&#39;) # font size
+    plt.yticks(tick_marks_y, class_names, rotation = &#39;vertical&#39;)
+    plt.xticks(tick_marks_x, class_names, rotation = &#39;horizontal&#39;)
+    plt.ylabel(&#39;True label&#39;)
+    plt.xlabel(&#39;Predicted label&#39;)
+    plt.grid(False)
+    plt.show()
+
+conf_mat(y_test, y_pred, num_class = 10, figsize = (15, 12), font_scale = 1.2, annot_kws_size = 16)
+</code></pre><figure><img src="https://sugatagh.github.io/dsml/images/images-notes/nn-callbacks/nn-callbacks-confusion-matrix.png"/>
+</figure>
+
+<h3 id="-references">○ References</h3>
+<ul>
+<li><a href="https://keras.io/api/metrics/accuracy_metrics/">Accuracy</a></li>
+<li><a href="https://scikit-learn.org/stable/modules/generated/sklearn.metrics.accuracy_score.html">Accuracy score documentation</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Activation_function">Activation function</a></li>
+<li><a href="https://arxiv.org/abs/1412.6980">Adam optimizer</a></li>
+<li><a href="https://www.tensorflow.org/api_docs/python/tf/keras/metrics/binary_crossentropy">Binary cross-entropy</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Confusion_matrix">Confusion matrix</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Layer_(deep_learning)#Layer_Types">Dense layer</a></li>
+<li><a href="https://keras.io/api/callbacks/early_stopping/">EarlyStopping callback</a></li>
+<li><a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.imshow.html">imshow function</a></li>
+<li><a href="https://keras.io/api/datasets/">Keras datasets</a></li>
+<li><a href="https://keras.io/api/losses/">Keras losses</a></li>
+<li><a href="https://keras.io/api/optimizers/">Keras optimizers</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Learning_rate">Learning rate</a></li>
+<li><a href="https://keras.io/api/callbacks/learning_rate_scheduler/">LearningRateScheduler callback</a></li>
+<li><a href="https://en.wikipedia.org/wiki/MNIST_database">MNIST database</a></li>
+<li><a href="https://keras.io/api/datasets/mnist/">MNIST digits classification dataset</a></li>
+<li><a href="https://keras.io/api/callbacks/model_checkpoint/">ModelCheckpoint callback</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Neural_network_(machine_learning)">Neural network</a></li>
+<li><a href="https://en.wikipedia.org/wiki/One-hot">One-hot</a></li>
+<li><a href="https://matplotlib.org/stable/api/pyplot_summary.html">Pyplot module</a></li>
+<li><a href="https://scikit-learn.org/stable/modules/classes.html#module-sklearn.metrics">Scikit-learn metrics</a></li>
+<li><a href="https://www.tensorflow.org/guide/keras/sequential_model">Sequential model</a></li>
+</ul>
+<ul class="pa0">
+  
+</ul>
+<div class="mt6 instapaper_ignoref">
+      
+      
+      </div>
+    </div>
+
+    <aside class="w-30-l mt6-l">
+
+
+
+
+</aside>
+
+  </article>
+
+    </main>
+    <footer class="bg-black bottom-0 w-100 pa3" role="contentinfo">
+  <div class="flex justify-between">
+  <a class="f4 fw4 hover-white no-underline white-70 dn dib-ns pv2 ph3" href="https://sugatagh.github.io/dsml/" >
+    &copy;  Sugata Ghosh, PhD 2024 
+  </a>
+    <div>
+<div class="ananke-socials">
+  
+    
+    <a href="https://www.linkedin.com/in/sugataghosh/" target="_blank" rel="noopener" class="linkedin ananke-social-link link-transition stackoverflow link dib z-999 pt3 pt0-l mr1" title="LinkedIn link" aria-label="follow on LinkedIn——Opens in a new window">
+      
+        <span class="icon"><svg style="enable-background:new 0 0 65 65;" version="1.1" viewBox="0 0 65 65"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <path d="M50.837,48.137V36.425c0-6.275-3.35-9.195-7.816-9.195  c-3.604,0-5.219,1.983-6.119,3.374V27.71h-6.79c0.09,1.917,0,20.427,0,20.427h6.79V36.729c0-0.609,0.044-1.219,0.224-1.655  c0.49-1.22,1.607-2.483,3.482-2.483c2.458,0,3.44,1.873,3.44,4.618v10.929H50.837z M22.959,24.922c2.367,0,3.842-1.57,3.842-3.531  c-0.044-2.003-1.475-3.528-3.797-3.528s-3.841,1.524-3.841,3.528c0,1.961,1.474,3.531,3.753,3.531H22.959z M34,64  C17.432,64,4,50.568,4,34C4,17.431,17.432,4,34,4s30,13.431,30,30C64,50.568,50.568,64,34,64z M26.354,48.137V27.71h-6.789v20.427  H26.354z" style="fill-rule:evenodd;clip-rule:evenodd;"/>
+</svg>
+</span>
+      
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;"/>
+</svg>
+</span></a>
+  
+    
+    <a href="https://twitter.com/sugatagh" target="_blank" rel="noopener" class="twitter ananke-social-link link-transition stackoverflow link dib z-999 pt3 pt0-l mr1" title="Twitter link" aria-label="follow on Twitter——Opens in a new window">
+      
+        <span class="icon"><svg style="enable-background:new 0 0 67 67;" version="1.1" viewBox="0 0 67 67"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M37.167,22.283c-2.619,0.953-4.274,3.411-4.086,6.101  l0.063,1.038l-1.048-0.127c-3.813-0.487-7.145-2.139-9.974-4.915l-1.383-1.377l-0.356,1.017c-0.754,2.267-0.272,4.661,1.299,6.271  c0.838,0.89,0.649,1.017-0.796,0.487c-0.503-0.169-0.943-0.296-0.985-0.233c-0.146,0.149,0.356,2.076,0.754,2.839  c0.545,1.06,1.655,2.097,2.871,2.712l1.027,0.487l-1.215,0.021c-1.173,0-1.215,0.021-1.089,0.467  c0.419,1.377,2.074,2.839,3.918,3.475l1.299,0.444l-1.131,0.678c-1.676,0.976-3.646,1.526-5.616,1.568  C19.775,43.256,19,43.341,19,43.405c0,0.211,2.557,1.397,4.044,1.864c4.463,1.377,9.765,0.783,13.746-1.568  c2.829-1.673,5.657-5,6.978-8.221c0.713-1.716,1.425-4.851,1.425-6.354c0-0.975,0.063-1.102,1.236-2.267  c0.692-0.678,1.341-1.419,1.467-1.631c0.21-0.403,0.188-0.403-0.88-0.043c-1.781,0.636-2.033,0.551-1.152-0.402  c0.649-0.678,1.425-1.907,1.425-2.267c0-0.063-0.314,0.042-0.671,0.233c-0.377,0.212-1.215,0.53-1.844,0.72l-1.131,0.361l-1.027-0.7  c-0.566-0.381-1.361-0.805-1.781-0.932C39.766,21.902,38.131,21.944,37.167,22.283z M33,64C16.432,64,3,50.569,3,34S16.432,4,33,4  s30,13.431,30,30S49.568,64,33,64z" style="fill-rule:evenodd;clip-rule:evenodd;"/></svg>
+</span>
+      
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;"/>
+</svg>
+</span></a>
+  
+    
+    <a href="https://github.com/sugatagh" target="_blank" rel="noopener" class="github ananke-social-link link-transition stackoverflow link dib z-999 pt3 pt0-l mr1" title="GitHub link" aria-label="follow on GitHub——Opens in a new window">
+      
+        <span class="icon"><svg style="enable-background:new 0 0 512 512;" version="1.1" viewBox="0 0 512 512"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+  <path d="M256,32C132.3,32,32,134.8,32,261.7c0,101.5,64.2,187.5,153.2,217.9c11.2,2.1,15.3-5,15.3-11.1   c0-5.5-0.2-19.9-0.3-39.1c-62.3,13.9-75.5-30.8-75.5-30.8c-10.2-26.5-24.9-33.6-24.9-33.6c-20.3-14.3,1.5-14,1.5-14   c22.5,1.6,34.3,23.7,34.3,23.7c20,35.1,52.4,25,65.2,19.1c2-14.8,7.8-25,14.2-30.7c-49.7-5.8-102-25.5-102-113.5   c0-25.1,8.7-45.6,23-61.6c-2.3-5.8-10-29.2,2.2-60.8c0,0,18.8-6.2,61.6,23.5c17.9-5.1,37-7.6,56.1-7.7c19,0.1,38.2,2.6,56.1,7.7   c42.8-29.7,61.5-23.5,61.5-23.5c12.2,31.6,4.5,55,2.2,60.8c14.3,16.1,23,36.6,23,61.6c0,88.2-52.4,107.6-102.3,113.3   c8,7.1,15.2,21.1,15.2,42.5c0,30.7-0.3,55.5-0.3,63c0,6.1,4,13.3,15.4,11C415.9,449.1,480,363.1,480,261.7   C480,134.8,379.7,32,256,32z"/>
+</svg>
+</span>
+      
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;"/>
+</svg>
+</span></a>
+  
+    
+    <a href="https://www.kaggle.com/sugataghosh" target="_blank" rel="noopener" class="Kaggle ananke-social-link link-transition stackoverflow link dib z-999 pt3 pt0-l mr1" title="Kaggle link" aria-label="follow on Kaggle——Opens in a new window">
+      
+        Kaggle
+      
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;"/>
+</svg>
+</span></a>
+  
+</div>
+</div>
+  </div>
+</footer>
+
+  </body>
+</html>

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Notes on Sugata Ghosh, PhD</title>
+    <link>https://sugatagh.github.io/dsml/notes/</link>
+    <description>Recent content in Notes on Sugata Ghosh, PhD</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Thu, 18 Apr 2024 00:00:00 +0530</lastBuildDate>
+    <atom:link href="https://sugatagh.github.io/dsml/notes/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Data Preparation with Pipeline and ColumnTransformer</title>
+      <link>https://sugatagh.github.io/dsml/notes/data-preparation-with-pipeline-and-columntransformer/</link>
+      <pubDate>Thu, 18 Apr 2024 00:00:00 +0530</pubDate>
+      <guid>https://sugatagh.github.io/dsml/notes/data-preparation-with-pipeline-and-columntransformer/</guid>
+      <description>One way to prepare data for the machine learning algorithms is to implement preprocessing and feature engineering steps one by one. A more convenient way is to create class objects for each step with fit and transform methods, combine these into a set of pipelines (for instance, one pipeline for float type columns, another for object type columns), and finally implement each pipeline on the desired set of columns. We can accomplish this using the Pipeline and ColumnTransformer classes from the scikit-learn library.</description>
+    </item>
+    <item>
+      <title>Implementing Neural Network with Callbacks</title>
+      <link>https://sugatagh.github.io/dsml/notes/implementing-neural-network-with-callbacks/</link>
+      <pubDate>Sat, 06 Apr 2024 00:00:00 +0530</pubDate>
+      <guid>https://sugatagh.github.io/dsml/notes/implementing-neural-network-with-callbacks/</guid>
+      <description>A callback is an object that can perform certain actions at various stages of training. It is typically used to confirm or adjust specific behaviors and is called periodically throughout a procedure. Callbacks can be used in machine learning to specify what occurs before, during, or after a training epoch or a single batch. In this note, we implement EarlyStopping, LearningRateScheduler, and ModelCheckpoint callbacks in the training of a neural network.</description>
+    </item>
+    <item>
+      <title>A Simple Implementation of Support Vector Machine (SVM)</title>
+      <link>https://sugatagh.github.io/dsml/notes/a-simple-implementation-of-support-vector-machine-svm/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0530</pubDate>
+      <guid>https://sugatagh.github.io/dsml/notes/a-simple-implementation-of-support-vector-machine-svm/</guid>
+      <description>In this note, we implement the support vector machine algorithm to recognize handwritten digits. The MNIST dataset available in Keras is in tuple format. We fetch the training set and test set from this dataset, visualize some observations, and unroll the 2-D pixel values into 1-D arrays. Then, we train the SVM classifier with default hyperparameters on the training set, use the fitted model to predict on the test set, and evaluate the performance in terms of accuracy.</description>
+    </item>
+    <item>
+      <title>Term Frequency-Inverse Document Frequency (TF-IDF)</title>
+      <link>https://sugatagh.github.io/dsml/notes/term-frequency-inverse-document-frequency-tf-idf/</link>
+      <pubDate>Sun, 24 Mar 2024 00:00:00 +0530</pubDate>
+      <guid>https://sugatagh.github.io/dsml/notes/term-frequency-inverse-document-frequency-tf-idf/</guid>
+      <description>Term frequency-inverse document frequency, or TF-IDF, is a numerical statistic used in information retrieval that aims to represent the significance of a word within a document in a collection or corpus. It is frequently utilized as a weighting factor in text mining, user modeling, and information retrieval searches. In order to account for the fact that some words appear more frequently than others overall, the TF-IDF value increases proportionately to the number of times a word appears in the document and is offset by the number of documents in the corpus that contain the term.</description>
+    </item>
+    <item>
+      <title>Implementing Logistic Regression from Scratch</title>
+      <link>https://sugatagh.github.io/dsml/notes/implementing-logistic-regression-from-scratch/</link>
+      <pubDate>Mon, 25 Jul 2022 17:08:00 +0530</pubDate>
+      <guid>https://sugatagh.github.io/dsml/notes/implementing-logistic-regression-from-scratch/</guid>
+      <description>Many advanced libraries, such as scikit-learn, make it possible to carry out training and inference with a few lines of code. While it is very convenient for day-to-day practice, it does not give insight into the details of what really happens underneath when we run those codes. In this note, we implement a logistic regression model manually from scratch, without using any advanced library, to understand how it works in the context of binary classification.</description>
+    </item>
+  </channel>
+</rss>

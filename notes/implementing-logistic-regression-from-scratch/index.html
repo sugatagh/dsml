@@ -1,0 +1,1181 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    
+    <title>Implementing Logistic Regression from Scratch | Sugata Ghosh, PhD</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1">
+    <meta name="description" content="Many advanced libraries, such as scikit-learn, make it possible to carry out training and inference with a few lines of code. While it is very convenient for day-to-day practice, it does not give insight into the details of what really happens underneath when we run those codes. In this note, we implement a logistic regression model manually from scratch, without using any advanced library, to understand how it works in the context of binary classification.">
+    <meta name="generator" content="Hugo 0.121.2">
+    
+    
+    
+    
+      <meta name="robots" content="noindex, nofollow">
+    
+
+    
+<link rel="stylesheet" href="https://sugatagh.github.io/dsml/ananke/css/main.min.css" >
+
+
+
+    
+
+    
+      
+
+    
+
+    
+
+    
+      <link rel="canonical" href="https://sugatagh.github.io/dsml/notes/implementing-logistic-regression-from-scratch/">
+    
+
+    <meta property="og:title" content="Implementing Logistic Regression from Scratch" />
+<meta property="og:description" content="Many advanced libraries, such as scikit-learn, make it possible to carry out training and inference with a few lines of code. While it is very convenient for day-to-day practice, it does not give insight into the details of what really happens underneath when we run those codes. In this note, we implement a logistic regression model manually from scratch, without using any advanced library, to understand how it works in the context of binary classification." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://sugatagh.github.io/dsml/notes/implementing-logistic-regression-from-scratch/" /><meta property="article:section" content="notes" />
+<meta property="article:published_time" content="2022-07-25T17:08:00+05:30" />
+<meta property="article:modified_time" content="2022-07-25T17:08:00+05:30" />
+
+<meta itemprop="name" content="Implementing Logistic Regression from Scratch">
+<meta itemprop="description" content="Many advanced libraries, such as scikit-learn, make it possible to carry out training and inference with a few lines of code. While it is very convenient for day-to-day practice, it does not give insight into the details of what really happens underneath when we run those codes. In this note, we implement a logistic regression model manually from scratch, without using any advanced library, to understand how it works in the context of binary classification."><meta itemprop="datePublished" content="2022-07-25T17:08:00+05:30" />
+<meta itemprop="dateModified" content="2022-07-25T17:08:00+05:30" />
+<meta itemprop="wordCount" content="5487">
+<meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/><meta name="twitter:title" content="Implementing Logistic Regression from Scratch"/>
+<meta name="twitter:description" content="Many advanced libraries, such as scikit-learn, make it possible to carry out training and inference with a few lines of code. While it is very convenient for day-to-day practice, it does not give insight into the details of what really happens underneath when we run those codes. In this note, we implement a logistic regression model manually from scratch, without using any advanced library, to understand how it works in the context of binary classification."/>
+
+	<style>
+.has-mathjax {
+    visibility: hidden;
+}
+</style>
+
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+<script>
+window.MathJax = {
+  startup: {
+    pageReady: () => {
+      return MathJax.startup.defaultPageReady().then(() => {
+        for (let element of document.getElementsByClassName("has-mathjax")) {
+            element.style.visibility = "visible"
+        }
+      });
+    }
+  }
+};
+</script>
+  </head>
+
+  <body class="ma0 avenir bg-near-white">
+
+    
+   
+  
+
+  
+  <header class="cover bg-top" style="background-image: url('https://sugatagh.github.io/dsml/images/bg-notes/bg-tf-idf-10.jpg');">
+    <div class="bg-black-60">
+      <nav class="pv3 ph3 ph4-ns" role="navigation">
+  <div class="flex-l justify-between items-center center">
+    <a href="https://sugatagh.github.io/dsml/" class="f3 fw2 hover-white no-underline white-90 dib">
+      
+        Sugata Ghosh, PhD
+      
+    </a>
+    <div class="flex-l items-center">
+      
+
+      
+        <ul class="pl0 mr3">
+          
+          <li class="list f5 f4-ns fw4 dib pr3">
+            <a class="hover-white no-underline white-90" href="https://sugatagh.github.io/dsml/about/" title="About page">
+              About
+            </a>
+          </li>
+          
+          <li class="list f5 f4-ns fw4 dib pr3">
+            <a class="hover-white no-underline white-90" href="https://sugatagh.github.io/dsml/overview/" title="Overview page">
+              Overview
+            </a>
+          </li>
+          
+          <li class="list f5 f4-ns fw4 dib pr3">
+            <a class="hover-white no-underline white-90" href="https://sugatagh.github.io/dsml/certifications/" title="Certifications page">
+              Certifications
+            </a>
+          </li>
+          
+          <li class="list f5 f4-ns fw4 dib pr3">
+            <a class="hover-white no-underline white-90" href="https://sugatagh.github.io/dsml/projects/" title="Projects page">
+              Projects
+            </a>
+          </li>
+          
+          <li class="list f5 f4-ns fw4 dib pr3">
+            <a class="hover-white no-underline white-90" href="https://sugatagh.github.io/dsml/notes/" title="Notes page">
+              Notes
+            </a>
+          </li>
+          
+          <li class="list f5 f4-ns fw4 dib pr3">
+            <a class="hover-white no-underline white-90" href="https://sugatagh.github.io/dsml/cv/" title="CV page">
+              CV
+            </a>
+          </li>
+          
+          <li class="list f5 f4-ns fw4 dib pr3">
+            <a class="hover-white no-underline white-90" href="https://sugatagh.github.io/dsml/contact/" title="Contact page">
+              Contact
+            </a>
+          </li>
+          
+        </ul>
+      
+      
+<div class="ananke-socials">
+  
+    
+    <a href="https://www.linkedin.com/in/sugataghosh/" target="_blank" rel="noopener" class="linkedin ananke-social-link link-transition stackoverflow link dib z-999 pt3 pt0-l mr1" title="LinkedIn link" aria-label="follow on LinkedIn——Opens in a new window">
+      
+        <span class="icon"><svg style="enable-background:new 0 0 65 65;" version="1.1" viewBox="0 0 65 65"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <path d="M50.837,48.137V36.425c0-6.275-3.35-9.195-7.816-9.195  c-3.604,0-5.219,1.983-6.119,3.374V27.71h-6.79c0.09,1.917,0,20.427,0,20.427h6.79V36.729c0-0.609,0.044-1.219,0.224-1.655  c0.49-1.22,1.607-2.483,3.482-2.483c2.458,0,3.44,1.873,3.44,4.618v10.929H50.837z M22.959,24.922c2.367,0,3.842-1.57,3.842-3.531  c-0.044-2.003-1.475-3.528-3.797-3.528s-3.841,1.524-3.841,3.528c0,1.961,1.474,3.531,3.753,3.531H22.959z M34,64  C17.432,64,4,50.568,4,34C4,17.431,17.432,4,34,4s30,13.431,30,30C64,50.568,50.568,64,34,64z M26.354,48.137V27.71h-6.789v20.427  H26.354z" style="fill-rule:evenodd;clip-rule:evenodd;"/>
+</svg>
+</span>
+      
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;"/>
+</svg>
+</span></a>
+  
+    
+    <a href="https://twitter.com/sugatagh" target="_blank" rel="noopener" class="twitter ananke-social-link link-transition stackoverflow link dib z-999 pt3 pt0-l mr1" title="Twitter link" aria-label="follow on Twitter——Opens in a new window">
+      
+        <span class="icon"><svg style="enable-background:new 0 0 67 67;" version="1.1" viewBox="0 0 67 67"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M37.167,22.283c-2.619,0.953-4.274,3.411-4.086,6.101  l0.063,1.038l-1.048-0.127c-3.813-0.487-7.145-2.139-9.974-4.915l-1.383-1.377l-0.356,1.017c-0.754,2.267-0.272,4.661,1.299,6.271  c0.838,0.89,0.649,1.017-0.796,0.487c-0.503-0.169-0.943-0.296-0.985-0.233c-0.146,0.149,0.356,2.076,0.754,2.839  c0.545,1.06,1.655,2.097,2.871,2.712l1.027,0.487l-1.215,0.021c-1.173,0-1.215,0.021-1.089,0.467  c0.419,1.377,2.074,2.839,3.918,3.475l1.299,0.444l-1.131,0.678c-1.676,0.976-3.646,1.526-5.616,1.568  C19.775,43.256,19,43.341,19,43.405c0,0.211,2.557,1.397,4.044,1.864c4.463,1.377,9.765,0.783,13.746-1.568  c2.829-1.673,5.657-5,6.978-8.221c0.713-1.716,1.425-4.851,1.425-6.354c0-0.975,0.063-1.102,1.236-2.267  c0.692-0.678,1.341-1.419,1.467-1.631c0.21-0.403,0.188-0.403-0.88-0.043c-1.781,0.636-2.033,0.551-1.152-0.402  c0.649-0.678,1.425-1.907,1.425-2.267c0-0.063-0.314,0.042-0.671,0.233c-0.377,0.212-1.215,0.53-1.844,0.72l-1.131,0.361l-1.027-0.7  c-0.566-0.381-1.361-0.805-1.781-0.932C39.766,21.902,38.131,21.944,37.167,22.283z M33,64C16.432,64,3,50.569,3,34S16.432,4,33,4  s30,13.431,30,30S49.568,64,33,64z" style="fill-rule:evenodd;clip-rule:evenodd;"/></svg>
+</span>
+      
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;"/>
+</svg>
+</span></a>
+  
+    
+    <a href="https://github.com/sugatagh" target="_blank" rel="noopener" class="github ananke-social-link link-transition stackoverflow link dib z-999 pt3 pt0-l mr1" title="GitHub link" aria-label="follow on GitHub——Opens in a new window">
+      
+        <span class="icon"><svg style="enable-background:new 0 0 512 512;" version="1.1" viewBox="0 0 512 512"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+  <path d="M256,32C132.3,32,32,134.8,32,261.7c0,101.5,64.2,187.5,153.2,217.9c11.2,2.1,15.3-5,15.3-11.1   c0-5.5-0.2-19.9-0.3-39.1c-62.3,13.9-75.5-30.8-75.5-30.8c-10.2-26.5-24.9-33.6-24.9-33.6c-20.3-14.3,1.5-14,1.5-14   c22.5,1.6,34.3,23.7,34.3,23.7c20,35.1,52.4,25,65.2,19.1c2-14.8,7.8-25,14.2-30.7c-49.7-5.8-102-25.5-102-113.5   c0-25.1,8.7-45.6,23-61.6c-2.3-5.8-10-29.2,2.2-60.8c0,0,18.8-6.2,61.6,23.5c17.9-5.1,37-7.6,56.1-7.7c19,0.1,38.2,2.6,56.1,7.7   c42.8-29.7,61.5-23.5,61.5-23.5c12.2,31.6,4.5,55,2.2,60.8c14.3,16.1,23,36.6,23,61.6c0,88.2-52.4,107.6-102.3,113.3   c8,7.1,15.2,21.1,15.2,42.5c0,30.7-0.3,55.5-0.3,63c0,6.1,4,13.3,15.4,11C415.9,449.1,480,363.1,480,261.7   C480,134.8,379.7,32,256,32z"/>
+</svg>
+</span>
+      
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;"/>
+</svg>
+</span></a>
+  
+    
+    <a href="https://www.kaggle.com/sugataghosh" target="_blank" rel="noopener" class="Kaggle ananke-social-link link-transition stackoverflow link dib z-999 pt3 pt0-l mr1" title="Kaggle link" aria-label="follow on Kaggle——Opens in a new window">
+      
+        Kaggle
+      
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;"/>
+</svg>
+</span></a>
+  
+</div>
+
+    </div>
+  </div>
+</nav>
+
+      <div class="tc-l pv6 ph3 ph4-ns">
+        
+          <div class="f2 f1-l fw2 white-90 mb0 lh-title">Implementing Logistic Regression from Scratch</div>
+          
+        
+      </div>
+    </div>
+  </header>
+
+
+
+    <main class="pb7" role="main">
+      
+  
+  <article class="flex-l flex-wrap justify-between mw8 center ph3">
+    <header class="mt4 w-100">
+      <aside class="instapaper_ignoref b helvetica tracked ttu">
+          
+        Notes
+      </aside>
+      
+
+
+
+
+
+
+
+
+
+
+  <div id="sharing" class="mt3 ananke-socials">
+    
+      
+      <a href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https://sugatagh.github.io/dsml/notes/implementing-logistic-regression-from-scratch/&amp;title=Implementing%20Logistic%20Regression%20from%20Scratch" class="ananke-social-link linkedin no-underline" aria-label="share on LinkedIn">
+        
+        <span class="icon"> <svg style="enable-background:new 0 0 65 65;" version="1.1" viewBox="0 0 65 65"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <path d="M50.837,48.137V36.425c0-6.275-3.35-9.195-7.816-9.195  c-3.604,0-5.219,1.983-6.119,3.374V27.71h-6.79c0.09,1.917,0,20.427,0,20.427h6.79V36.729c0-0.609,0.044-1.219,0.224-1.655  c0.49-1.22,1.607-2.483,3.482-2.483c2.458,0,3.44,1.873,3.44,4.618v10.929H50.837z M22.959,24.922c2.367,0,3.842-1.57,3.842-3.531  c-0.044-2.003-1.475-3.528-3.797-3.528s-3.841,1.524-3.841,3.528c0,1.961,1.474,3.531,3.753,3.531H22.959z M34,64  C17.432,64,4,50.568,4,34C4,17.431,17.432,4,34,4s30,13.431,30,30C64,50.568,50.568,64,34,64z M26.354,48.137V27.71h-6.789v20.427  H26.354z" style="fill-rule:evenodd;clip-rule:evenodd;"/>
+</svg>
+</span>
+        
+      </a>
+    
+      
+      <a href="https://twitter.com/intent/tweet?url=https://sugatagh.github.io/dsml/notes/implementing-logistic-regression-from-scratch/&amp;text=Implementing%20Logistic%20Regression%20from%20Scratch" class="ananke-social-link twitter no-underline" aria-label="share on Twitter">
+        
+        <span class="icon"> <svg style="enable-background:new 0 0 67 67;" version="1.1" viewBox="0 0 67 67"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M37.167,22.283c-2.619,0.953-4.274,3.411-4.086,6.101  l0.063,1.038l-1.048-0.127c-3.813-0.487-7.145-2.139-9.974-4.915l-1.383-1.377l-0.356,1.017c-0.754,2.267-0.272,4.661,1.299,6.271  c0.838,0.89,0.649,1.017-0.796,0.487c-0.503-0.169-0.943-0.296-0.985-0.233c-0.146,0.149,0.356,2.076,0.754,2.839  c0.545,1.06,1.655,2.097,2.871,2.712l1.027,0.487l-1.215,0.021c-1.173,0-1.215,0.021-1.089,0.467  c0.419,1.377,2.074,2.839,3.918,3.475l1.299,0.444l-1.131,0.678c-1.676,0.976-3.646,1.526-5.616,1.568  C19.775,43.256,19,43.341,19,43.405c0,0.211,2.557,1.397,4.044,1.864c4.463,1.377,9.765,0.783,13.746-1.568  c2.829-1.673,5.657-5,6.978-8.221c0.713-1.716,1.425-4.851,1.425-6.354c0-0.975,0.063-1.102,1.236-2.267  c0.692-0.678,1.341-1.419,1.467-1.631c0.21-0.403,0.188-0.403-0.88-0.043c-1.781,0.636-2.033,0.551-1.152-0.402  c0.649-0.678,1.425-1.907,1.425-2.267c0-0.063-0.314,0.042-0.671,0.233c-0.377,0.212-1.215,0.53-1.844,0.72l-1.131,0.361l-1.027-0.7  c-0.566-0.381-1.361-0.805-1.781-0.932C39.766,21.902,38.131,21.944,37.167,22.283z M33,64C16.432,64,3,50.569,3,34S16.432,4,33,4  s30,13.431,30,30S49.568,64,33,64z" style="fill-rule:evenodd;clip-rule:evenodd;"/></svg>
+</span>
+        
+      </a>
+    
+  </div>
+
+
+      <h1 class="f1 athelas mt3 mb1">Implementing Logistic Regression from Scratch</h1>
+      
+      
+      
+      <time class="f6 mv4 dib tracked" datetime="2022-07-25T17:08:00+05:30">July 25, 2022</time>
+      
+
+      
+      
+    </header>
+    <div class="nested-copy-line-height lh-copy serif f4 nested-links mid-gray pr4-l w-two-thirds-l"><p>Many advanced libraries, such as <em>scikit-learn</em>, make it possible to carry out training and inference with a few lines of code. While it is very convenient for day-to-day practice, it does not give insight into the details of what really happens underneath when we run those codes. In this note, we implement a logistic regression model manually from scratch, without using any advanced library, to understand how it works in the context of binary classification.</p>
+<p><a href="https://github.com/sugatagh/Implementing-Logistic-Regression-from-Scratch">GitHub repository</a></p>
+<h3 id="-contents">○ Contents</h3>
+<ul>
+<li><a href="#-introduction">Introduction</a></li>
+<li><a href="#-logistic-function">Logistic Function</a></li>
+<li><a href="#-log-loss">Log Loss</a></li>
+<li><a href="#-cost-function">Cost Function</a></li>
+<li><a href="#-gradient-descent">Gradient Descent</a></li>
+<li><a href="#-preprocessing">Preprocessing</a></li>
+<li><a href="#-model-fitting">Model Fitting</a></li>
+<li><a href="#-prediction-and-evaluation">Prediction and Evaluation</a></li>
+<li><a href="#-regularization">Regularization</a></li>
+<li><a href="#-acknowledgements">Acknowledgements</a></li>
+<li><a href="#-references">References</a></li>
+</ul>
+<h3 id="-introduction">○ Introduction</h3>
+<p><strong>Classification.</strong> In <a href="https://en.wikipedia.org/wiki/Statistics">statistics</a> and <a href="https://en.wikipedia.org/wiki/Machine_learning">machine learning</a>, <a href="https://en.wikipedia.org/wiki/Statistical_classification">classification</a> refers to a type of <a href="https://en.wikipedia.org/wiki/Supervised_learning">supervised learning</a>. For this task, training data with known class labels are given and is used to develop a <a href="https://en.wikipedia.org/wiki/Classification_rule">classification rule</a> for assigning new unlabeled data to one of the classes. A special case of the task is <a href="https://en.wikipedia.org/wiki/Binary_classification">binary classification</a>, which involves only two classes. Some examples:</p>
+<ul>
+<li>Classifying an email as <code>spam</code> or <code>non-spam</code></li>
+<li>Classifying a tumor as <code>benign</code> or <code>malignant</code></li>
+</ul>
+<p>The algorithms that sort unlabeled data into labeled classes are called <em>classifiers</em>. Loosely speaking, the <a href="https://en.wikipedia.org/wiki/Magical_objects_in_Harry_Potter#Sorting_Hat">sorting hat</a> from <a href="https://en.wikipedia.org/wiki/Hogwarts">Hogwarts</a> can be thought of as a classifier that sorts incoming students into four distinct houses. In real life, some common classifiers are <a href="https://en.wikipedia.org/wiki/Logistic_regression">logistic regression</a>, <a href="https://en.wikipedia.org/wiki/K-nearest_neighbors_algorithm">k-nearest neighbors</a>, <a href="https://en.wikipedia.org/wiki/Decision_tree_learning">decision tree</a>, <a href="https://en.wikipedia.org/wiki/Random_forest">random forest</a>, <a href="https://en.wikipedia.org/wiki/Support-vector_machine">support vector machine</a>, <a href="https://en.wikipedia.org/wiki/Naive_Bayes_classifier">naive Bayes</a>, <a href="https://en.wikipedia.org/wiki/Linear_discriminant_analysis">linear discriminant analysis</a>, <a href="https://en.wikipedia.org/wiki/Stochastic_gradient_descent">stochastic gradient descent</a>, <a href="https://en.wikipedia.org/wiki/XGBoost">XGBoost</a>, <a href="https://en.wikipedia.org/wiki/AdaBoost">AdaBoost</a>, and <a href="https://en.wikipedia.org/wiki/Artificial_neural_network">neural networks</a>.</p>
+<p><strong>The purpose of the note.</strong> Many advanced libraries, such as <a href="https://en.wikipedia.org/wiki/Scikit-learn">scikit-learn</a>, make it possible for us to train various models on labeled <a href="https://en.wikipedia.org/wiki/Training,_validation,_and_test_data_sets#Training_data_set">training data</a>, and predict on unlabeled <a href="https://en.wikipedia.org/wiki/Training,_validation,_and_test_data_sets#Test_data_set">test data</a>, with a few lines of code. While it is very convenient for day-to-day practice, it does not give insight into the details of what really happens underneath when we run those codes. In this note, we implement a logistic regression model manually from scratch, without using any advanced library, to understand how it works in the context of binary classification. The basic idea is to segment the computations into pieces, and write functions to compute each piece in a sequential manner, so that we can build a function on the basis of the previously defined functions. Wherever applicable, we have complemented a function which is constructed using for loops, with a much faster vectorized implementation of the same.</p>
+<p><strong>A problem from particle physics.</strong> We have chosen the particular problem posed in <a href="https://www.kaggle.com/competitions/higgs-boson">this competition</a>. In <a href="https://en.wikipedia.org/wiki/Particle_physics">particle physics</a>, an event refers to the results just after a <a href="https://en.wikipedia.org/wiki/Fundamental_interaction">fundamental interaction</a> takes place between <a href="https://en.wikipedia.org/wiki/Subatomic_particle">subatomic particles</a>, occurring in a very short time span, at a well-localized region of space. The problem is to classify an event produced in a particle accelerator as <em>background</em> or <em>signal</em>, based on relevant feature variables. A background event is explained by the existing theories and previous observations. A signal event, however, indicates a process that cannot be described by previous observations and leads to the potential discovery of a new particle. More on this problem is detailed in the introduction section of <a href="https://www.kaggle.com/code/sugataghosh/higgs-boson-event-detection-part-1-eda">this notebook</a>.</p>
+<p><strong>Data.</strong> <a href="https://www.kaggle.com/competitions/higgs-boson/data">The dataset</a>, provided with the competition, has been built from official ATLAS full-detector simulation. The simulator has two parts. In the first, random proton-proton collisions are simulated based on the knowledge that we have accumulated on particle physics. It reproduces the random microscopic explosions resulting from the proton-proton collisions. In the second part, the resulting particles are tracked through a virtual model of the detector. The process yields simulated events with properties that mimic the statistical properties of the real events with additional information on what has happened during the collision, before particles are measured in the detector. Information on <span class="has-mathjax">\(250000\)</span>
+ events are included int he dataset. For each event, it has information on <span class="has-mathjax">\(31\)</span>
+ features (<span class="has-mathjax">\(2\)</span>
+ integer-type features and <span class="has-mathjax">\(29\)</span>
+ float-type features). Additionally, the dataset contains the object-type target variable <code>labels</code> and float-type variable <code>weights</code>. The target variable can take two possible values: <span class="has-mathjax">\(b\)</span>
+ (indicating a background event) and <span class="has-mathjax">\(s\)</span>
+ (indicating a signal event).</p>
+<p><em>Synopsis of the data</em></p>
+<ul>
+<li>Number of observations: <span class="has-mathjax">\(250000\)</span>
+</li>
+<li>Number of columns: <span class="has-mathjax">\(33\)</span>
+</li>
+<li>Number of integer columns: <span class="has-mathjax">\(2\)</span>
+</li>
+<li>Number of float columns: <span class="has-mathjax">\(30\)</span>
+</li>
+<li>Number of object columns: <span class="has-mathjax">\(1\)</span>
+</li>
+<li>Number of duplicate observations: <span class="has-mathjax">\(0\)</span>
+</li>
+<li>Constant columns: None</li>
+<li>Number of columns with missing values: <span class="has-mathjax">\(0\)</span>
+</li>
+<li>Memory Usage: <span class="has-mathjax">\(62.94\)</span>
+ MB</li>
+</ul>
+<h3 id="-logistic-function">○ Logistic Function</h3>
+<p>A function <span class="has-mathjax">\(g: \mathbb{R} \to \mathbb{R}\)</span>
+ is said to be a <a href="https://en.wikipedia.org/wiki/Sigmoid_function">sigmoid function</a> if it has the following properties:</p>
+<ul>
+<li>It is <a href="https://en.wikipedia.org/wiki/Bounded_function">bounded</a>.</li>
+<li>It is <a href="https://en.wikipedia.org/wiki/Differentiable_function">differentiable</a>.</li>
+<li>It has nonnegative derivative at each point.</li>
+<li>It has exactly one <a href="https://en.wikipedia.org/wiki/Inflection_point">inflection point</a>.</li>
+</ul>
+<p>An example of a sigmoid function is the standard <a href="https://en.wikipedia.org/wiki/Logistic_function">logistic function</a> (sometimes simply referred to as the <em>sigmoid</em>), which is given by
+<div class="has-mathjax">
+
+\[ g(x) = \frac{1}{1+e^{-x}}, \]
+
+</div>
+</p>
+<p>for <span class="has-mathjax">\(x \in \mathbb{R}\).</span>
+ The next code block constructs this function.</p>
+<pre tabindex="0"><code>def logistic(x):
+    &#34;&#34;&#34;
+    Computes the logistic function applied to an input scalar/array
+    Args:
+        x (scalar/ndarray): scalar or numpy array of any size
+    Returns:
+        y (scalar/ndarray): logistic function applied to x, has the same shape as x
+    &#34;&#34;&#34;
+    y = 1 / (1 + np.exp(-x))
+    return y
+</code></pre><figure><img src="https://sugatagh.github.io/dsml/images/images-notes/ilrfs/ilrfs-standard-logistic-function.png"/>
+</figure>
+
+<h3 id="-log-loss">○ Log Loss</h3>
+<p>The <code>loss function</code>, which corresponds to the <em>true value</em> and <em>predicted value</em> of a single observation. The <code>cost function</code> can be thought of as <em>expected loss</em> or <em>average loss</em> over a group of observations. Contrary to linear regression, which employs <code>squared loss</code>, logistic regression makes use of the <code>log loss</code> function, given by</p>
+<div class="has-mathjax">
+
+\[ L(y, y') = -y \log\left(y'\right) - \left(1 - y\right) \log\left(1 - y'\right), \]
+
+</div>
+
+<p>where <span class="has-mathjax">\(y\)</span>
+ is the true value of a binary target (taking values <span class="has-mathjax">\(0\)</span>
+ or <span class="has-mathjax">\(1\))</span>
+ and <span class="has-mathjax">\(y'\)</span>
+ is the prediction, which can be thought of as the predicted probability of <span class="has-mathjax">\(y\)</span>
+ being <span class="has-mathjax">\(1\).</span>
+</p>
+<p>Observe that the loss is <span class="has-mathjax">\(0\),</span>
+ when the true value and predicted value agree with each other, i.e., <span class="has-mathjax">\(L(0, 0) = L(1, 1) = 0\).</span>
+</p>
+<p>On the other hand, the loss explodes towards infinity if the predicted value approaches <span class="has-mathjax">\(1\)</span>
+ when the true value is <span class="has-mathjax">\(0\),</span>
+ or it approaches <span class="has-mathjax">\(0\)</span>
+ when the true value is <span class="has-mathjax">\(1\).</span>
+ Mathematically,</p>
+<div class="has-mathjax">
+
+\[ \lim_{t \to 1-} L(0, t) = \lim_{t \to 0+} L(1, t) = \infty. \]
+
+</div>
+
+<p>Next, we construct the function to compute log loss and plot it for <span class="has-mathjax">\(y = 0\)</span>
+ and <span class="has-mathjax">\(y = 1\).</span>
+ Since the true values (labels) are always <span class="has-mathjax">\(0\)</span>
+ or <span class="has-mathjax">\(1\),</span>
+ we do not need to pay heed to the behaviour of the function <span class="has-mathjax">\(L\)</span>
+ for other values of <span class="has-mathjax">\(y\).</span>
+</p>
+<pre tabindex="0"><code>def log_loss(y, y_dash):
+    &#34;&#34;&#34;
+    Computes log loss for inputs true value (0 or 1) and predicted value (between 0 and 1)
+    Args:
+      y      (scalar): true value (0 or 1)
+      y_dash (scalar): predicted value (probability of y being 1)
+    Returns:
+      loss (float): nonnegative loss corresponding to y and y_dash
+    &#34;&#34;&#34;
+    loss = - (y * np.log(y_dash)) - ((1 - y) * np.log(1 - y_dash))
+    return loss
+</code></pre><figure><img src="https://sugatagh.github.io/dsml/images/images-notes/ilrfs/ilrfs-log-loss.png"/>
+</figure>
+
+<p>The plots sync with the intuition that loss should be minimum when the predicted value (probability) matches the true value <span class="has-mathjax">(\(0\)</span>
+ or <span class="has-mathjax">\(1\))</span>
+ and should increase as the two values drift apart.</p>
+<h3 id="-cost-function">○ Cost Function</h3>
+<p>Let <span class="has-mathjax">\(\mathbf{y} = (y_1, y_2, \cdots, y_n)\)</span>
+ be the true values <span class="has-mathjax">(\(0\)</span>
+ or <span class="has-mathjax">\(1\))</span>
+ and <span class="has-mathjax">\(\mathbf{y'} = (y_1', y_2', \cdots, y_n')\)</span>
+ be the corresponding predictions (probabilities). Then, the <em>cost function</em> is given by the average loss:</p>
+<div class="has-mathjax">
+
+\[ C(\mathbf{y}, \mathbf{y'}) = \frac{1}{m}\sum_{i = 1}^m L(y_i, y_i'). \]
+
+</div>
+
+<p>We construct the function to compute cost. An important structural distinction from the log loss function is that here the arguments <code>y</code> and <code>y_dash</code> are vectors, not scalars.</p>
+<pre tabindex="0"><code>def cost_func(y, y_dash):
+    &#34;&#34;&#34;
+    Computes log loss for inputs true value (0 or 1) and predicted value (between 0 and 1)
+    Args:
+      y      (array_like, shape (m,)): array of true values (0 or 1)
+      y_dash (array_like, shape (m,)): array of predicted values (probability of y being 1)
+    Returns:
+      cost (float): nonnegative cost corresponding to y and y_dash
+    &#34;&#34;&#34;
+    assert len(y) == len(y_dash), &#34;Length of true values and length of predicted values do not match&#34;
+    m = len(y)
+    cost = 0
+    for i in range(m):
+        cost += log_loss(y[i], y_dash[i])
+    cost = cost / m
+    return cost
+</code></pre><p>The previous function computes cost using for loop. Now, we compute the same using vectorization.</p>
+<pre tabindex="0"><code>def cost_func_vec(y, y_dash):
+    &#34;&#34;&#34;
+    Computes log loss for inputs true value (0 or 1) and predicted value (between 0 and 1)
+    Args:
+      y      (array_like, shape (m,)): array of true values (0 or 1)
+      y_dash (array_like, shape (m,)): array of predicted values (probability of y being 1)
+    Returns:
+      cost (float): nonnegative cost corresponding to y and y_dash
+    &#34;&#34;&#34;
+    assert len(y) == len(y_dash), &#34;Length of true values and length of predicted values do not match&#34;
+    m = len(y)
+    loss_vec = np.array([log_loss(y[i], y_dash[i]) for i in range(m)])
+    cost = np.dot(loss_vec, np.ones(m)) / m
+    return cost
+</code></pre><p>Let us assume that we want to predict <span class="has-mathjax">\(y\)</span>
+ based on <span class="has-mathjax">\(n\)</span>
+ features. In this setup, a logistic regression model is characterized by <span class="has-mathjax">\(n+1\)</span>
+ parameters:</p>
+<ul>
+<li>weight parameters <span class="has-mathjax">\(\mathbf{w} = (w_1, w_2, \cdots, w_n)\)</span>
+</li>
+<li>bias parameter <span class="has-mathjax">\(b\)</span>
+</li>
+</ul>
+<p>Note that, the <a href="https://en.wikipedia.org/wiki/Dot_product">dot product</a> of two vectors <span class="has-mathjax">\(\mathbf{a} = (a_1, a_2, \cdots, a_n)\)</span>
+ and <span class="has-mathjax">\(\mathbf{b} = (b_1, b_2, \cdots, b_n)\)</span>
+ is given by <span class="has-mathjax">\(\mathbf{a} \cdot \mathbf{b} = \sum_{i=1}^n a_ib_i\).</span>
+ It is a scalar value and evidently, <span class="has-mathjax">\(\mathbf{a} \cdot \mathbf{b} = \mathbf{b} \cdot \mathbf{a}\).</span>
+ Given the realized values of <span class="has-mathjax">\(n\)</span>
+ features <span class="has-mathjax">\(\mathbf{x} = (x_1, x_2, \cdots, x_n)\),</span>
+ the model feeds <span class="has-mathjax">\(\mathbf{x} \cdot \mathbf{w} + b\)</span>
+ to the logistic function <span class="has-mathjax">\(g\),</span>
+ and projects the output as the predicted probability of <span class="has-mathjax">\(y = 1\).</span>
+ Concretely, we have</p>
+<div class="has-mathjax">
+
+\[ y' = g\left(\mathbf{x} \cdot \mathbf{w} + b\right) = \frac{1}{1 + e^{-\left(\mathbf{x} \cdot \mathbf{w} + b\right)}}. \tag{1} \]
+
+</div>
+
+<p>Let us consider the situation of <span class="has-mathjax">\(m\)</span>
+ observations, with the <span class="has-mathjax">\(i\)th</span>
+ observation having feature values <span class="has-mathjax">\(\mathbf{x_i} = (x_{i,1}, x_{i,2}, \cdots, x_{i,n})\),</span>
+ true target value <span class="has-mathjax">\(y_i\)</span>
+ and predicted probabilities <span class="has-mathjax">\(y_i' = g\left(\mathbf{x_i} \cdot \mathbf{w} + b\right)\).</span>
+ Stacking them up, we obtain the feature matrix <span class="has-mathjax">\(\mathbf{X}\),</span>
+ target vector <span class="has-mathjax">\(\mathbf{y}\)</span>
+ and the vector of predicted probability <span class="has-mathjax">\(\mathbf{y'}\),</span>
+ as follows:</p>
+<div class="has-mathjax">
+
+\begin{align*}
+&\mathbf{X} = \begin{pmatrix}
+\mathbf{x_1} \newline
+\mathbf{x_2} \newline
+\vdots \newline
+\mathbf{x_m}
+\end{pmatrix} = \begin{pmatrix}
+x_{1,1} & x_{1,2} & \cdots & x_{1,n} \newline
+x_{2,1} & x_{2,2} & \cdots & x_{2,n} \newline
+\vdots & \vdots & \ddots & \vdots \newline
+x_{m,1} & x_{m,2} & \cdots & x_{m,n}
+\end{pmatrix},\,\,\mathbf{y} = \begin{pmatrix}
+y_1 \newline
+y_2 \newline
+\vdots \newline
+y_m
+\end{pmatrix},\\\\
+&\mathbf{y'} = \begin{pmatrix}
+g\left(\mathbf{x_1} \cdot \mathbf{w} + b\right) \newline
+g\left(\mathbf{x_2} \cdot \mathbf{w} + b\right) \newline
+\vdots \newline
+g\left(\mathbf{x_n} \cdot \mathbf{w} + b\right)
+\end{pmatrix}. \tag{2}
+\end{align*}
+
+</div>
+
+<p>Now, we are in a position to rewrite the cost function in terms of model parameters:</p>
+<div class="has-mathjax">
+
+\begin{align*}
+J\left(\mathbf{w}, b\right) &:= C\left(\mathbf{y}, \mathbf{y'} \,\vert\, \mathbf{X}, \mathbf{w}, b \right)\\\\
+&= \frac{1}{m}\sum_{i = 1}^m L\left(y_i, \frac{1}{1 + e^{-\left(\mathbf{x_i} \cdot \mathbf{w} + b\right)}}\right)\\\\
+&= \frac{1}{m}\sum_{i = 1}^m \left[ -y_i \log\left(\frac{1}{1 + e^{-\left(\mathbf{x_i} \cdot \mathbf{w} + b\right)}}\right) - \left(1 - y_i\right) \log\left(1 - \frac{1}{1 + e^{-\left(\mathbf{x_i} \cdot \mathbf{w} + b\right)}}\right) \right]. \tag{3}
+\end{align*}
+
+</div>
+
+<p>Note that <span class="has-mathjax">\(J\left(\mathbf{0}, 0\right) = \log{2}\)</span>
+ for every input data <span class="has-mathjax">\(\mathbf{X}\)</span>
+ (features) and <span class="has-mathjax">\(\mathbf{y}\)</span>
+ (target). We construct a function to compute the cost, given data and model parameters, in the general setup of <span class="has-mathjax">\(n\)</span>
+ features.</p>
+<pre tabindex="0"><code>def cost_logreg(X, y, w, b):
+    &#34;&#34;&#34;
+    Computes the cost function, given data and model parameters
+    Args:
+      X (ndarray, shape (m,n))  : data on features, m observations with n features
+      y (array_like, shape (m,)): array of true values (0 or 1) of target
+      w (array_like, shape (n,)): weight parameters of the model      
+      b (float)                 : bias parameter of the model
+    Returns:
+      cost (float): nonnegative cost corresponding to y and y_dash
+    &#34;&#34;&#34;
+    m, n = X.shape
+    assert len(y) == m, &#34;Number of feature observations and number of target observations do not match&#34;
+    assert len(w) == n, &#34;Number of features and number of weight parameters do not match&#34;
+    z = []
+    for i in range(m):
+        s = 0
+        for j in range(n):
+            s += X[i, j] * w[j]
+        z.append(s + b)
+    z = np.array(z)
+    y_dash = logistic(z)
+    cost = cost_func(y, y_dash)
+    return cost
+</code></pre><p>The code for logistic function <span class="has-mathjax">\(g\)</span>
+ is constructed in such a way that, if applied on an array, it acts separately on each component and returns an array. Using this, it follows from <span class="has-mathjax">\((2)\)</span>
+ that</p>
+<div class="has-mathjax">
+
+\[ \mathbf{y'} = g\left(\mathbf{X} \mathbf{w} + b \mathbf{1} \right), \]
+
+</div>
+
+<p>where <span class="has-mathjax">\(\mathbf{1}\)</span>
+ has the same dimension as that of <span class="has-mathjax">\(\mathbf{X} \mathbf{w}\).</span>
+ We use <a href="https://en.wikipedia.org/wiki/Matrix_multiplication">matrix multiplication</a> in computing <span class="has-mathjax">\(\mathbf{X} \mathbf{w}\),</span>
+ <a href="https://en.wikipedia.org/wiki/Scalar_multiplication">scalar multiplication of a vector</a> in computing <span class="has-mathjax">\(b \mathbf{1}\)</span>
+ and add them up using <a href="https://en.wikipedia.org/wiki/Euclidean_vector#Addition_and_subtraction">vector addition</a>. This representation leads to a much faster vectorized implementation of computing the cost function in terms of model parameters.</p>
+<pre tabindex="0"><code>def cost_logreg_vec(X, y, w, b):
+    &#34;&#34;&#34;
+    Computes the cost function, given data and model parameters
+    Args:
+      X (ndarray, shape (m,n))  : data on features, m observations with n features
+      y (array_like, shape (m,)): array of true values of target (0 or 1)
+      w (array_like, shape (n,)): weight parameters of the model      
+      b (float)                 : bias parameter of the model
+    Returns:
+      cost (float): nonnegative cost corresponding to y and y_dash
+    &#34;&#34;&#34;
+    m, n = X.shape
+    assert len(y) == m, &#34;Number of feature observations and number of target observations do not match&#34;
+    assert len(w) == n, &#34;Number of features and number of weight parameters do not match&#34;
+    z = np.matmul(X, w) + (b * np.ones(m))
+    y_dash = logistic(z)
+    cost = cost_func_vec(y, y_dash)
+    return cost
+</code></pre><p>We visualize the cost function for a simplified setup, consisting of a single feature <span class="has-mathjax">\(x\).</span>
+ In this setup, the model involves two parameters only, the weight parameter <span class="has-mathjax">\(w\)</span>
+ and the bias parameter <span class="has-mathjax">\(b\).</span>
+</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-notes/ilrfs/ilrfs-cost.png"/>
+</figure>
+
+<p>The prediction <span class="has-mathjax">\(y'\)</span>
+ in <span class="has-mathjax">\((1)\)</span>
+ can be converted to a decision by using a threshold value. For instance, suppose we take the threshold to be <span class="has-mathjax">\(0.5\).</span>
+ Then, we may classify the observation to class <span class="has-mathjax">\(1\)</span>
+ if <span class="has-mathjax">\(y' \geq 0.5\),</span>
+ and to class <span class="has-mathjax">\(0\)</span>
+ otherwise. The problem, however, is that we do not know the model parameters <span class="has-mathjax">\(\mathbf{w}\)</span>
+ and <span class="has-mathjax">\(b\),</span>
+ and hence cannot compute <span class="has-mathjax">\(y'\)</span>
+ directly. First, we have to fit the model by finding the best fitting parameters. Observe that, given the training data, <span class="has-mathjax">\(C\left(\mathbf{y}, \mathbf{y'}\right)\)</span>
+ depends on <span class="has-mathjax">\(\mathbf{w}\)</span>
+ and <span class="has-mathjax">\(b\)</span>
+ only. A reasonable strategy, therefore, is:</p>
+<div class="has-mathjax">
+
+\[ \text{To minimise } J\left(\mathbf{w}, b\right), \text{ with respect to } \mathbf{w} \text{ and } b. \]
+
+</div>
+
+<p>We shall employ the <a href="https://en.wikipedia.org/wiki/Gradient_descent">gradient descent</a> <a href="https://en.wikipedia.org/wiki/Algorithm">algorithm</a> to solve this <a href="https://en.wikipedia.org/wiki/Mathematical_optimization">optimization</a> problem.</p>
+<h3 id="-gradient-descent">○ Gradient Descent</h3>
+<p><strong>What is it?</strong> The gradient descent algorithm is a <a href="https://en.wikipedia.org/wiki/Category:First_order_methods">first order</a> <a href="https://en.wikipedia.org/wiki/Iterative_method">iterative</a> optimization algorithm for finding a <a href="https://en.wikipedia.org/wiki/Maxima_and_minima">local minimum</a> of a differentiable function. The idea is to take repeated steps in the opposite direction of the <a href="https://en.wikipedia.org/wiki/Gradient">gradient</a> (or approximate gradient) of the function at the current point, because this is the direction of steepest descent. Conversely, stepping in the direction of the gradient will lead to a local maximum of that function. This procedure is then known as <em>gradient ascent</em>.</p>
+<p><strong>History.</strong> Gradient descent is generally attributed to <a href="https://en.wikipedia.org/wiki/Augustin-Louis_Cauchy">Augustin-Louis Cauchy</a>, who first suggested it in <span class="has-mathjax">\(1847\).</span>
+ <a href="https://en.wikipedia.org/wiki/Jacques_Hadamard">Jacques Hadamard</a> independently proposed a similar method in <span class="has-mathjax">\(1907\).</span>
+ Its convergence properties for non-linear optimization problems were first studied by <a href="https://en.wikipedia.org/wiki/Haskell_Curry">Haskell Curry</a> in <span class="has-mathjax">\(1944\),</span>
+ with the method becoming increasingly well-studied and used in the following decades.</p>
+<p><strong>The algorithm.</strong> In the context of minimising the cost function <span class="has-mathjax">\(J\),</span>
+ with respect to the model parameters <span class="has-mathjax">\(\mathbf{w}\)</span>
+ and <span class="has-mathjax">\(b\),</span>
+ the gradient descent algorithm is given by:</p>
+<div class="has-mathjax">
+
+\begin{align*}
+& \text{repeat until convergence:}\,\, \{ \\
+& w_j := w_j -  \alpha \frac{\partial J(\mathbf{w},b)}{\partial w_j},\, \text{ for } j = 1, 2, \ldots, n; \\
+& b := b -  \alpha \frac{\partial J(\mathbf{w}, b)}{\partial b}. \tag{4} \\
+& \}
+\end{align*}
+
+</div>
+
+<p>where <span class="has-mathjax">\(\alpha\)</span>
+ is the <a href="https://en.wikipedia.org/wiki/Learning_rate">learning rate</a>, and the parameters <span class="has-mathjax">\(\mathbf{w} = (w_1, w_2, \cdots, w_n)\)</span>
+ and <span class="has-mathjax">\(b\)</span>
+ are updated simultaniously in each iteration.</p>
+<p><strong>Computing gradient.</strong> Before we can implement the gradient descent algorithm, we need to compute the gradients first. From <span class="has-mathjax">\((3)\),</span>
+ we can compute the partial derivatives of <span class="has-mathjax">\(J\)</span>
+ with respect to <span class="has-mathjax">\(w_j\)</span>
+ and <span class="has-mathjax">\(b\)</span>
+ as follows:</p>
+<div class="has-mathjax">
+
+\begin{align*}
+& \frac{\partial J(\mathbf{w},b)}{\partial w_j} = \frac{1}{m} \sum\limits_{i = 1}^m \left(\frac{1}{1 + e^{-\left(\mathbf{x_i} \cdot \mathbf{w} + b\right)}} - y_i\right) x_{i,j},\, \text{ for } j = 1, 2, \ldots, n; \\\\
+& \frac{\partial J(\mathbf{w}, b)}{\partial b} = \frac{1}{m} \sum\limits_{i = 1}^m \left(\frac{1}{1 + e^{-\left(\mathbf{x_i} \cdot \mathbf{w} + b\right)}} - y_i\right).
+\end{align*}
+
+</div>
+
+<p>Next, we construct a function to compute these gradients.</p>
+<pre tabindex="0"><code>def grad_logreg(X, y, w, b):
+    &#34;&#34;&#34;
+    Computes gradients of the cost function with respect to model parameters
+    Args:
+      X (ndarray, shape (m,n))  : data on features, m observations with n features
+      y (array_like, shape (m,)): array of true values of target (0 or 1)
+      w (array_like, shape (n,)): weight parameters of the model      
+      b (float)                 : bias parameter of the model
+    Returns:
+      grad_w (array_like, shape (n,)): gradients of the cost function with respect to the weight parameters
+      grad_b (float)                 : gradient of the cost function with respect to the bias parameter
+    &#34;&#34;&#34;
+    m, n = X.shape
+    assert len(y) == m, &#34;Number of feature observations and number of target observations do not match&#34;
+    assert len(w) == n, &#34;Number of features and number of weight parameters do not match&#34;
+    grad_w, grad_b = np.zeros(n), 0
+    for i in range(m):
+        s = 0
+        for j in range(n):
+            s += X[i, j] * w[j]
+        y_dash_i = logistic(s + b)
+        for j in range(n):
+            grad_w[j] += (y_dash_i  - y[i]) * X[i,j]
+        grad_b += y_dash_i  - y[i]
+    grad_w, grad_b = grad_w / m, grad_b / m
+    return grad_w, grad_b
+</code></pre><p>The next function computes the same using vectorization.</p>
+<pre tabindex="0"><code>def grad_logreg_vec(X, y, w, b):
+    &#34;&#34;&#34;
+    Computes gradients of the cost function with respect to model parameters
+    Args:
+      X (ndarray, shape (m,n))  : data on features, m observations with n features
+      y (array_like, shape (m,)): array of true values of target (0 or 1)
+      w (array_like, shape (n,)): weight parameters of the model      
+      b (float)                 : bias parameter of the model
+    Returns:
+      grad_w (array_like, shape (n,)): gradients of the cost function with respect to the weight parameters
+      grad_b (float)                 : gradient of the cost function with respect to the bias parameter
+    &#34;&#34;&#34;
+    m, n = X.shape
+    assert len(y) == m, &#34;Number of feature observations and number of target observations do not match&#34;
+    assert len(w) == n, &#34;Number of features and number of weight parameters do not match&#34;
+    y_dash = logistic(np.matmul(X, w) + b * np.ones(m))
+    grad_w = np.matmul(y_dash - y, X) / m
+    grad_b = np.dot(y_dash - y, np.ones(m)) / m
+    return grad_w, grad_b
+</code></pre><p>Armed with the required functions, we can now implement the gradient descent algorithm, given in <span class="has-mathjax">\((4)\).</span>
+</p>
+<pre tabindex="0"><code>def grad_desc(X, y, w, b, alpha, n_iter, show_cost = True, show_params = False):
+    &#34;&#34;&#34;
+    Implements batch gradient descent algorithm to learn and update model parameters
+    with prespecified number of interations and learning rate
+    Args:
+      X (ndarray, shape (m,n))  : data on features, m observations with n features
+      y (array_like, shape (m,)): true values of target (0 or 1)
+      w (array_like, shape (n,)): initial value of weight parameters
+      b (scalar)                : initial value of bias parameter
+      alpha (float)             : learning rate
+      n_iter (int)              : number of iterations
+      show_cost (Boolean)       : if true, prints the cost associated with some iterations
+      show_params (Boolean)     : if true, additionally prints the corresponding parameter values (effective only if show_cost is true)
+    Returns:
+      w (array_like, shape (n,))                       : updated values of weight parameters
+      b (scalar)                                       : updated value of bias parameter
+      cost_history (array_like, shape (len(n_iter),))  : list of cost values associated with each iteration
+      params_history (array_like, shape (len(n_iter),)): list of parameter values associated with each iteration
+    &#34;&#34;&#34;
+    m, n = X.shape
+    assert len(y) == m, &#34;Number of feature observations and number of target observations do not match&#34;
+    assert len(w) == n, &#34;Number of features and number of weight parameters do not match&#34;
+    cost_history, params_history = [], []
+    for i in range(n_iter):
+        grad_w, grad_b = grad_logreg_vec(X, y, w, b)   
+        w += - alpha * grad_w
+        b += - alpha * grad_b
+        cost =  cost_logreg_vec(X, y, w, b)
+        cost_history.append(cost)
+        params_history.append([w, b])
+        if show_cost == True and show_params == False and (i % math.ceil(n_iter / 10) == 0 or i == n_iter - 1):
+            print(f&#34;Iteration {i:6}:    Cost  {float(cost_history[i]):3.4f}&#34;)
+        if show_cost == True and show_params == True and (i % math.ceil(n_iter / 10) == 0 or i == n_iter - 1):
+            print(f&#34;Iteration {i:6}:    Cost  {float(cost_history[i]):3.4f},    Params  {params_history[i]}&#34;)
+    return w, b, cost_history, params_history
+</code></pre><p>To demonstrate, we take example inputs and feed them to the function. If implemented properly, the cost should diminish over iterations.</p>
+<pre tabindex="0"><code>X, y = np.array([[0.1, 0.2], [-0.1, 0.1]]), np.array([1, 0])
+w, b, alpha, n_iter = np.array([0., 0.]), 0., 0.1, 100000
+w_out, b_out, cost_history, params_history = grad_desc(X, y, w, b, alpha, n_iter, show_cost = True, show_params = True)
+</code></pre><figure><img src="https://sugatagh.github.io/dsml/images/images-notes/ilrfs/ilrfs-grad-desc-cost-params.png"/>
+</figure>
+
+<p>We visualize how the cost evolves over iterations.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-notes/ilrfs/ilrfs-cost-vs-iteration.png"/>
+</figure>
+
+<h3 id="-preprocessing">○ Preprocessing</h3>
+<p>The columns <code>EventId</code> and <code>Weight</code> will not be used in this notebook. Thus we drop these columns.</p>
+<pre tabindex="0"><code>data.drop([&#39;EventId&#39;, &#39;Weight&#39;], axis = 1, inplace = True)
+</code></pre><p>Even though there are no <code>NaN</code> values in the dataset, we observe that several columns unnaturally contain the value <span class="has-mathjax">\(-999\)</span>
+ for many observations. We suspect that these are missing or corrupted values that have been replaced with <span class="has-mathjax">\(-999\)</span>
+ and we convert them to <code>np.nan</code>. We shall impute these values after <em>train-test split</em>.</p>
+<pre tabindex="0"><code>data.replace(to_replace = -999, value = np.nan, inplace = True)
+</code></pre><p>Furthermore, we encode the <code>Label</code> column as follows: <span class="has-mathjax">\(b \mapsto 0\)</span>
+ and <span class="has-mathjax">\(s \mapsto 1\).</span>
+</p>
+<pre tabindex="0"><code>label_dict = {&#39;b&#39;: 0, &#39;s&#39;: 1}
+data.replace({&#39;Label&#39;: label_dict}, inplace = True)
+</code></pre><p>Next, we split <code>data</code> into two parts:</p>
+<ul>
+<li><code>data_train</code> : The portion of data that we use to train the models</li>
+<li><code>data_test</code> : The portion of data that we use to test or evaluate the models</li>
+</ul>
+<pre tabindex="0"><code>data_train, data_test = train_test_split(data, test_size = 0.2, random_state = 40)
+</code></pre><p>Next, we identify <span class="has-mathjax">\(11\)</span>
+ columns with missing values. Among them, <span class="has-mathjax">\(10\)</span>
+ columns have more than <span class="has-mathjax">\(30\%\)</span>
+ data missing, and hence we shall discard them. The column <code>DER_mass_MMC</code> has about <span class="has-mathjax">\(15.25\%\)</span>
+ data missing. We show the relative frequency of missing values in these columns.</p>
+<pre tabindex="0"><code>(data.isna().sum()[data.isna().sum() &gt; 0] / len(data)).sort_values(ascending = False)
+</code></pre><figure><img src="https://sugatagh.github.io/dsml/images/images-notes/ilrfs/ilrfs-missing.png"/>
+</figure>
+
+<pre tabindex="0"><code>cols_missing_drop = data.isna().sum()[data.isna().sum() / len(data) &gt; 0.3].index.tolist()
+data_train.drop(cols_missing_drop, axis = 1, inplace = True)
+data_test.drop(cols_missing_drop, axis = 1, inplace = True)
+</code></pre><p>We impute the missing values in the <code>DER_mass_MMC</code> column by the median of the rest of the values in the column.</p>
+<pre tabindex="0"><code>data_train[&#39;DER_mass_MMC&#39;].fillna(data_train[&#39;DER_mass_MMC&#39;].median(), inplace = True)
+data_test[&#39;DER_mass_MMC&#39;].fillna(data_test[&#39;DER_mass_MMC&#39;].median(), inplace = True)
+</code></pre><p>Next, we shall split the data into features and target.</p>
+<pre tabindex="0"><code>def predictor_target_split(data, target):
+    X = data.drop(target, axis = 1)
+    y = data[target]
+    return X, y
+X_train, y_train = predictor_target_split(data_train, &#39;Label&#39;)
+X_train, y_train = predictor_target_split(data_train, &#39;Label&#39;)
+</code></pre><p>We normalize the data, so that each column has values in the similar scale.</p>
+<pre tabindex="0"><code>from sklearn.preprocessing import MinMaxScaler
+def scaler(X_train, X_test):
+    scaling = MinMaxScaler().fit(X_train)
+    X_train_scaled = scaling.transform(X_train)
+    X_test_scaled = scaling.transform(X_test)
+    return X_train_scaled, X_test_scaled
+X_train, X_test = scaler(X_train, X_test)
+</code></pre><h3 id="-model-fitting">○ Model Fitting</h3>
+<p>We fix the initial values of the parameters, based on running the algorithm several times and noting down the final parameter values. It gives us a better <em>starting point</em> and helps to achieve a better performance in a limited number of iterations.</p>
+<pre tabindex="0"><code>w_init = np.array([-5, -15, -10, 9, 4, -6, 3, -10, 1, 14, 0, 0, 15, 0, 0, 7, 0, -3, 1, -8]).astype(float)
+b_init = -1.
+</code></pre><p>Next, we learn the model parameters using gradient descent algorithm.</p>
+<pre tabindex="0"><code>w_out, b_out, cost_history, params_history = grad_desc(
+    X_train.to_numpy(),
+    y_train.to_numpy(),
+    w = w_init, # np.zeros(X_train.shape[1]),
+    b = b_init, # 0,
+    alpha = 0.1,
+    n_iter = 2000,
+    show_cost = True,
+    show_params = False
+)
+</code></pre><figure><img src="https://sugatagh.github.io/dsml/images/images-notes/ilrfs/ilrfs-grad-desc-higgs-cost.png"/>
+</figure>
+
+<p>We visualize how the cost evolves over iterations.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-notes/ilrfs/ilrfs-cost-vs-iteration-higgs.png"/>
+</figure>
+
+<p>The final values of the parameters <span class="has-mathjax">\(\mathbf{w}\)</span>
+ and <span class="has-mathjax">\(b\),</span>
+ stored in <code>w_out</code> and <code>b_out</code>, respectively, are given below.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-notes/ilrfs/ilrfs-grad-desc-higgs-final-params.png"/>
+</figure>
+
+<h3 id="-prediction-and-evaluation">○ Prediction and Evaluation</h3>
+<p>We use the final parameter values <code>w_out</code> and <code>b_out</code> to predict the positive class probabilities for both the training observations and the test observations.</p>
+<pre tabindex="0"><code>y_train_prob = logistic(np.matmul(X_train.to_numpy(), w_out) + (b_out * np.ones(X_train.shape[0])))
+y_test_prob = logistic(np.matmul(X_test.to_numpy(), w_out) + (b_out * np.ones(X_test.shape[0])))
+</code></pre><p>Now, we convert the predicted class probabilities to class labels.</p>
+<div class="has-mathjax">
+
+\begin{align*}
+&\text{probability} \leq 0.5 \mapsto y = 0\\
+&\text{probability} > 0.5 \mapsto y = 1
+\end{align*}
+
+</div>
+
+<pre tabindex="0"><code>y_train_pred = (y_train_prob &gt; 0.5).astype(int)
+y_test_pred = (y_test_prob &gt; 0.5).astype(int)
+</code></pre><p>We evaluate the model performance on the training set and the test set through the <a href="https://en.wikipedia.org/wiki/Accuracy_and_precision#In_binary_classification">accuracy</a> metric.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-notes/ilrfs/ilrfs-accuracy.png"/>
+</figure>
+
+<p>The <a href="https://en.wikipedia.org/wiki/Confusion_matrix">confusion matrix</a>, depicting the test set performance, is given below.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-notes/ilrfs/ilrfs-confusion-matrix.png"/>
+</figure>
+
+<h3 id="-regularization">○ Regularization</h3>
+<p><a href="https://en.wikipedia.org/wiki/Regularization_(mathematics)#Regularization_in_machine_learning">Regularization</a> provides a tool to deal with overfitting. Essentially it puts a restriction the parameter values by adding a term in the cost function. This way, it prevents the model from fitting <em>too well</em> on the training set and failing to generalize on the test set. The following is one way to do this:</p>
+<div class="has-mathjax">
+
+\[ \text{new } J(\mathbf{w}, b) := \text{old } J(\mathbf{w}, b) + \frac{\lambda}{2m} \sum_{j=1}^n w_j^2, \tag{5} \]
+
+</div>
+
+<p>where <span class="has-mathjax">\(\lambda \geq 0\)</span>
+ is called the regularization parameter.</p>
+<p>Evidently, if <span class="has-mathjax">\(\lambda = 0\),</span>
+ we get back the previous setup. Thus, the new cost function, parameterized by <span class="has-mathjax">\(\lambda\),</span>
+ gives a generalization of the setup described in the previous sections.</p>
+<p>The setup in <span class="has-mathjax">\((5)\)</span>
+ is called the <span class="has-mathjax">\(L_2\)</span>
+ regularization, as the regularization term essentially is <span class="has-mathjax">\((\lambda/2m)\,\Vert \mathbf{w} \Vert_2^2\),</span>
+ i.e., the <a href="https://mathworld.wolfram.com/L2-Norm.html"><span class="has-mathjax">\(l^2\)</span>
+ norm</a> of <span class="has-mathjax">\(\mathbf{w}\),</span>
+ multiplied by the term <span class="has-mathjax">\((\lambda/2m)\).</span>
+</p>
+<p>In this section, we shall employ the <span class="has-mathjax">\(L_2\)</span>
+ regularization on the cost function, given in <span class="has-mathjax">\((3)\),</span>
+ and check if it improves performance of the logistic regression model, derived thence. We rewrite the functions to compute cost, gradient and to implement gradient descent algorithm, incorporating regularization with the extra parameter <span class="has-mathjax">\(l\).</span>
+</p>
+<p>We begin with the function to compute regularized cost function in terms of model parameters using for loops.</p>
+<pre tabindex="0"><code>def cost_logreg_reg(X, y, w, b, l):
+    &#34;&#34;&#34;
+    Computes the cost function, given data and model parameters
+    Args:
+      X (ndarray, shape (m,n))  : data on features, m observations with n features
+      y (array_like, shape (m,)): array of true values (0 or 1) of target
+      w (array_like, shape (n,)): weight parameters of the model      
+      b (float)                 : bias parameter of the model
+      l (float)                 : regularization parameter
+    Returns:
+      cost (float): nonnegative cost corresponding to y and y_dash
+    &#34;&#34;&#34;
+    m, n = X.shape
+    assert len(y) == m, &#34;Number of feature observations and number of target observations do not match&#34;
+    assert len(w) == n, &#34;Number of features and number of weight parameters do not match&#34;
+    cost = cost_logreg(X, y, w, b)
+    for j in range(n):
+        cost += (l / (2 * m)) * (w[j]**2)
+    return cost
+</code></pre><p>Next, we implement the same using vectorization.</p>
+<pre tabindex="0"><code>def cost_logreg_vec_reg(X, y, w, b, l):
+    &#34;&#34;&#34;
+    Computes the cost function, given data and model parameters
+    Args:
+      X (ndarray, shape (m,n))  : data on features, m observations with n features
+      y (array_like, shape (m,)): array of true values (0 or 1) of target
+      w (array_like, shape (n,)): weight parameters of the model      
+      b (float)                 : bias parameter of the model
+      l (float)                 : regularization parameter
+    Returns:
+      cost (float): nonnegative cost corresponding to y and y_dash
+    &#34;&#34;&#34;
+    m, n = X.shape
+    assert len(y) == m, &#34;Number of feature observations and number of target observations do not match&#34;
+    assert len(w) == n, &#34;Number of features and number of weight parameters do not match&#34;
+    cost = cost_logreg_vec(X, y, w, b)
+    cost += (l / (2 * m)) * np.dot(w, w)
+    return cost
+</code></pre><p>From <span class="has-mathjax">\((5)\),</span>
+ we can compute the modified partial derivatives of <span class="has-mathjax">\(J\)</span>
+ with respect to <span class="has-mathjax">\(w_j\)</span>
+ and <span class="has-mathjax">\(b\)</span>
+ as follows:</p>
+<div class="has-mathjax">
+
+\begin{align*}
+& \text{new } \frac{\partial J(\mathbf{w},b)}{\partial w_j} = \text{old } \frac{\partial J(\mathbf{w},b)}{\partial w_j} + \frac{\lambda}{m} w_j,\,\, \text{ for } j = 1, 2, \ldots, n; \newline
+& \text{new } \frac{\partial J(\mathbf{w}, b)}{\partial b} = \text{old } \frac{\partial J(\mathbf{w}, b)}{\partial b}.
+\end{align*}
+
+</div>
+
+<p>We construct a function to compute these gradients using for loops.</p>
+<pre tabindex="0"><code>def grad_logreg_reg(X, y, w, b, l):
+    &#34;&#34;&#34;
+    Computes gradients of the cost function with respect to model parameters
+    Args:
+      X (ndarray, shape (m,n))  : data on features, m observations with n features
+      y (array_like, shape (m,)): array of true values of target (0 or 1)
+      w (array_like, shape (n,)): weight parameters of the model      
+      b (float)                 : bias parameter of the model
+      l (float)                 : regularization parameter
+    Returns:
+      grad_w (array_like, shape (n,)): gradients of the cost function with respect to the weight parameters
+      grad_b (float)                 : gradient of the cost function with respect to the bias parameter
+    &#34;&#34;&#34;
+    m, n = X.shape
+    assert len(y) == m, &#34;Number of feature observations and number of target observations do not match&#34;
+    assert len(w) == n, &#34;Number of features and number of weight parameters do not match&#34;
+    grad_w, grad_b = grad_logreg(X, y, w, b)
+    for j in range(n):
+        grad_w[j] += (l / m) * w[j]
+    return grad_w, grad_b
+</code></pre><p>Next, we implement the same using vectorization.</p>
+<pre tabindex="0"><code>def grad_logreg_vec_reg(X, y, w, b, l):
+    &#34;&#34;&#34;
+    Computes gradients of the cost function with respect to model parameters
+    Args:
+      X (ndarray, shape (m,n))  : data on features, m observations with n features
+      y (array_like, shape (m,)): array of true values of target (0 or 1)
+      w (array_like, shape (n,)): weight parameters of the model      
+      b (float)                 : bias parameter of the model
+      l (float)                 : regularization parameter
+    Returns:
+      grad_w (array_like, shape (n,)): gradients of the cost function with respect to the weight parameters
+      grad_b (float)                 : gradient of the cost function with respect to the bias parameter
+    &#34;&#34;&#34;
+    m, n = X.shape
+    assert len(y) == m, &#34;Number of feature observations and number of target observations do not match&#34;
+    assert len(w) == n, &#34;Number of features and number of weight parameters do not match&#34;
+    grad_w, grad_b = grad_logreg_vec(X, y, w, b)
+    grad_w += (l / m) * w
+    return grad_w, grad_b
+</code></pre><p>Using the regularised cost function and its gradients with respect to the model parameters, we construct a function to implement the gradient descent algorithm for logistic regression, incorporating regularization. Specifically, the algorithm learns the model parameters, with the goal of minimizing the regularised cost function in <span class="has-mathjax">\((5)\),</span>
+ instead of the usual cost function in <span class="has-mathjax">\((3)\).</span>
+</p>
+<pre tabindex="0"><code>def grad_desc_reg(X, y, w, b, l, alpha, n_iter, show_cost = True, show_params = False):
+    &#34;&#34;&#34;
+    Implements batch gradient descent algorithm to learn and update model parameters
+    with prespecified number of interations and learning rate
+    Args:
+      X (ndarray, shape (m,n))  : data on features, m observations with n features
+      y (array_like, shape (m,)): true values of target (0 or 1)
+      w (array_like, shape (n,)): initial value of weight parameters
+      b (scalar)                : initial value of bias parameter
+      l (float)                 : regularization parameter
+      alpha (float)             : learning rate
+      n_iter (int)              : number of iterations
+      show_cost (Boolean)       : if true, prints the cost associated with some iterations
+      show_params (Boolean)     : if true, additionally prints the corresponding parameter values (effective only if show_cost is true)
+    Returns:
+      w (array_like, shape (n,))                       : updated values of weight parameters
+      b (scalar)                                       : updated value of bias parameter
+      cost_history (array_like, shape (len(n_iter),))  : list of cost values associated with each iteration
+      params_history (array_like, shape (len(n_iter),)): list of parameter values associated with each iteration
+    &#34;&#34;&#34;
+    m, n = X.shape
+    assert len(y) == m, &#34;Number of feature observations and number of target observations do not match&#34;
+    assert len(w) == n, &#34;Number of features and number of weight parameters do not match&#34;
+    cost_history, params_history = [], []
+    for i, j in itertools.product(range(n_iter), range(1)):
+        grad_w, grad_b = grad_logreg_vec_reg(X, y, w, b, l)   
+        w += - alpha * grad_w
+        b += - alpha * grad_b
+        cost =  cost_logreg_vec_reg(X, y, w, b, l)
+        cost_history.append(cost)
+        params_history.append([w, b])
+        if show_cost == True and show_params == False and (i % math.ceil(n_iter / 10) == 0 or i == n_iter - 1):
+            print(f&#34;Iteration {i:6}:    Cost  {float(cost_history[i]):3.4f}&#34;)
+        if show_cost == True and show_params == True and (i % math.ceil(n_iter / 10) == 0 or i == n_iter - 1):
+            print(f&#34;Iteration {i:6}:    Cost  {float(cost_history[i]):3.4f},    Params  {params_history[i]}&#34;)
+    return w, b, cost_history, params_history
+</code></pre><p>We use the same initial values for the model parameters as in the unregularized implementation.</p>
+<pre tabindex="0"><code>w_init = np.array([-5, -15, -10, 9, 4, -6, 3, -10, 1, 14, 0, 0, 15, 0, 0, 7, 0, -3, 1, -8]).astype(float)
+b_init = -1.
+</code></pre><p>Next, we learn the model parameters using gradient descent algorithm.</p>
+<pre tabindex="0"><code>w_out_reg, b_out_reg, cost_history_reg, params_history_reg = grad_desc_reg(
+    X_train.to_numpy(),
+    y_train.to_numpy(),
+    w = w_init, # np.zeros(X_train.shape[1]),
+    b = b_init, # 0,
+    l = 1.,
+    alpha = 0.1,
+    n_iter = 2000
+)
+</code></pre><figure><img src="https://sugatagh.github.io/dsml/images/images-notes/ilrfs/ilrfs-grad-desc-higgs-cost-reg.png"/>
+</figure>
+
+<p>We visualize how the cost evolves over iterations.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-notes/ilrfs/ilrfs-cost-vs-iteration-higgs-reg.png"/>
+</figure>
+
+<p>The final values of the parameters <span class="has-mathjax">\(\mathbf{w}\)</span>
+ and <span class="has-mathjax">\(b\),</span>
+ stored in <code>w_out_reg</code> and <code>b_out_reg</code>, respectively, are given below.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-notes/ilrfs/ilrfs-grad-desc-higgs-final-params-reg.png"/>
+</figure>
+
+<p>We use the final parameter values <code>w_out_reg</code> and <code>b_out_reg</code> to predict the positive class probabilities for both the training observations and the test observations.</p>
+<pre tabindex="0"><code>y_train_prob_reg = logistic(np.matmul(X_train.to_numpy(), w_out_reg) + (b_out_reg * np.ones(X_train.shape[0])))
+y_test_prob_reg = logistic(np.matmul(X_test.to_numpy(), w_out_reg) + (b_out_reg * np.ones(X_test.shape[0])))
+</code></pre><p>Now, we convert the predicted class probabilities to class labels.</p>
+<div class="has-mathjax">
+
+\begin{align*}
+&\text{probability} \leq 0.5 \mapsto y = 0\\
+&\text{probability} > 0.5 \mapsto y = 1
+\end{align*}
+
+</div>
+
+<pre tabindex="0"><code>y_train_pred_reg = (y_train_prob_reg &gt; 0.5).astype(int)
+y_test_pred_reg = (y_test_prob_reg &gt; 0.5).astype(int)
+</code></pre><p>We evaluate the model performance on the training set and the test set through the accuracy metric.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-notes/ilrfs/ilrfs-accuracy-reg.png"/>
+</figure>
+
+<p>The confusion matrix, depicting the test set performance, is given below.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-notes/ilrfs/ilrfs-confusion-matrix-reg.png"/>
+</figure>
+
+<p>Thus, in this scenario, regularization does not help much. This is expected since the unregularized implementation does not indicate overfitting.</p>
+<h3 id="-acknowledgements">○ Acknowledgements</h3>
+<ul>
+<li><a href="https://www.kaggle.com/competitions/higgs-boson">Higgs Boson Machine Learning Challenge</a></li>
+<li><a href="https://higgsml.ijclab.in2p3.fr/documentation/">The HiggsML challenge documentation</a></li>
+</ul>
+<h3 id="-references">○ References</h3>
+<ul>
+<li><a href="https://en.wikipedia.org/wiki/Accuracy_and_precision#In_binary_classification">Accuracy</a></li>
+<li><a href="https://en.wikipedia.org/wiki/AdaBoost">AdaBoost</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Algorithm">Algorithm</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Augustin-Louis_Cauchy">Augustin-Louis Cauchy</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Binary_classification">Binary classification</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Bounded_function">Bounded function</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Classification_rule">Classification rule</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Confusion_matrix">Confusion matrix</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Decision_tree_learning">Decision tree</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Differentiable_function">Differentiable function</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Dot_product">Dot product</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Category:First_order_methods">First order methods</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Fundamental_interaction">Fundamental interaction</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Gradient">Gradient</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Gradient_descent">Gradient descent</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Haskell_Curry">Haskell Curry</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Hogwarts">Hogwarts</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Inflection_point">Inflection point</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Jacques_Hadamard">Jacques Hadamard</a></li>
+<li><a href="https://en.wikipedia.org/wiki/K-nearest_neighbors_algorithm">K-nearest neighbors algorithm</a></li>
+<li><a href="https://mathworld.wolfram.com/L2-Norm.html"><span class="has-mathjax">\(l^2\)</span>
+ norm</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Learning_rate">Learning rate</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Linear_discriminant_analysis">Linear discriminant analysis</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Logistic_function">Logistic function</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Logistic_regression">Logistic regression</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Machine_learning">Machine learning</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Matrix_multiplication">Matrix multiplication</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Maxima_and_minima">Maxima and minima</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Naive_Bayes_classifier">Naive Bayes classifier</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Artificial_neural_network">Neural network</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Mathematical_optimization">Optimization</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Particle_physics">Particle physics</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Random_forest">Random forest</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Regularization_(mathematics)#Regularization_in_machine_learning">Regularization</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Scalar_multiplication">Scalar multiplication</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Scikit-learn">Scikit-learn</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Sigmoid_function">Sigmoid function</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Magical_objects_in_Harry_Potter#Sorting_Hat">Sorting hat</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Statistical_classification">Statistical classification</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Statistics">Statistics</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Stochastic_gradient_descent">Stochastic gradient descent</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Subatomic_particle">Subatomic particle</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Supervised_learning">Supervised learning</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Support-vector_machine">Support vector machine</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Training,_validation,_and_test_data_sets#Test_data_set">Test data</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Training,_validation,_and_test_data_sets#Training_data_set">Training data</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Euclidean_vector#Addition_and_subtraction">Vector addition</a></li>
+<li><a href="https://en.wikipedia.org/wiki/XGBoost">XGBoost</a></li>
+</ul>
+<ul class="pa0">
+  
+</ul>
+<div class="mt6 instapaper_ignoref">
+      
+      
+      </div>
+    </div>
+
+    <aside class="w-30-l mt6-l">
+
+
+
+
+</aside>
+
+  </article>
+
+    </main>
+    <footer class="bg-black bottom-0 w-100 pa3" role="contentinfo">
+  <div class="flex justify-between">
+  <a class="f4 fw4 hover-white no-underline white-70 dn dib-ns pv2 ph3" href="https://sugatagh.github.io/dsml/" >
+    &copy;  Sugata Ghosh, PhD 2024 
+  </a>
+    <div>
+<div class="ananke-socials">
+  
+    
+    <a href="https://www.linkedin.com/in/sugataghosh/" target="_blank" rel="noopener" class="linkedin ananke-social-link link-transition stackoverflow link dib z-999 pt3 pt0-l mr1" title="LinkedIn link" aria-label="follow on LinkedIn——Opens in a new window">
+      
+        <span class="icon"><svg style="enable-background:new 0 0 65 65;" version="1.1" viewBox="0 0 65 65"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <path d="M50.837,48.137V36.425c0-6.275-3.35-9.195-7.816-9.195  c-3.604,0-5.219,1.983-6.119,3.374V27.71h-6.79c0.09,1.917,0,20.427,0,20.427h6.79V36.729c0-0.609,0.044-1.219,0.224-1.655  c0.49-1.22,1.607-2.483,3.482-2.483c2.458,0,3.44,1.873,3.44,4.618v10.929H50.837z M22.959,24.922c2.367,0,3.842-1.57,3.842-3.531  c-0.044-2.003-1.475-3.528-3.797-3.528s-3.841,1.524-3.841,3.528c0,1.961,1.474,3.531,3.753,3.531H22.959z M34,64  C17.432,64,4,50.568,4,34C4,17.431,17.432,4,34,4s30,13.431,30,30C64,50.568,50.568,64,34,64z M26.354,48.137V27.71h-6.789v20.427  H26.354z" style="fill-rule:evenodd;clip-rule:evenodd;"/>
+</svg>
+</span>
+      
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;"/>
+</svg>
+</span></a>
+  
+    
+    <a href="https://twitter.com/sugatagh" target="_blank" rel="noopener" class="twitter ananke-social-link link-transition stackoverflow link dib z-999 pt3 pt0-l mr1" title="Twitter link" aria-label="follow on Twitter——Opens in a new window">
+      
+        <span class="icon"><svg style="enable-background:new 0 0 67 67;" version="1.1" viewBox="0 0 67 67"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M37.167,22.283c-2.619,0.953-4.274,3.411-4.086,6.101  l0.063,1.038l-1.048-0.127c-3.813-0.487-7.145-2.139-9.974-4.915l-1.383-1.377l-0.356,1.017c-0.754,2.267-0.272,4.661,1.299,6.271  c0.838,0.89,0.649,1.017-0.796,0.487c-0.503-0.169-0.943-0.296-0.985-0.233c-0.146,0.149,0.356,2.076,0.754,2.839  c0.545,1.06,1.655,2.097,2.871,2.712l1.027,0.487l-1.215,0.021c-1.173,0-1.215,0.021-1.089,0.467  c0.419,1.377,2.074,2.839,3.918,3.475l1.299,0.444l-1.131,0.678c-1.676,0.976-3.646,1.526-5.616,1.568  C19.775,43.256,19,43.341,19,43.405c0,0.211,2.557,1.397,4.044,1.864c4.463,1.377,9.765,0.783,13.746-1.568  c2.829-1.673,5.657-5,6.978-8.221c0.713-1.716,1.425-4.851,1.425-6.354c0-0.975,0.063-1.102,1.236-2.267  c0.692-0.678,1.341-1.419,1.467-1.631c0.21-0.403,0.188-0.403-0.88-0.043c-1.781,0.636-2.033,0.551-1.152-0.402  c0.649-0.678,1.425-1.907,1.425-2.267c0-0.063-0.314,0.042-0.671,0.233c-0.377,0.212-1.215,0.53-1.844,0.72l-1.131,0.361l-1.027-0.7  c-0.566-0.381-1.361-0.805-1.781-0.932C39.766,21.902,38.131,21.944,37.167,22.283z M33,64C16.432,64,3,50.569,3,34S16.432,4,33,4  s30,13.431,30,30S49.568,64,33,64z" style="fill-rule:evenodd;clip-rule:evenodd;"/></svg>
+</span>
+      
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;"/>
+</svg>
+</span></a>
+  
+    
+    <a href="https://github.com/sugatagh" target="_blank" rel="noopener" class="github ananke-social-link link-transition stackoverflow link dib z-999 pt3 pt0-l mr1" title="GitHub link" aria-label="follow on GitHub——Opens in a new window">
+      
+        <span class="icon"><svg style="enable-background:new 0 0 512 512;" version="1.1" viewBox="0 0 512 512"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+  <path d="M256,32C132.3,32,32,134.8,32,261.7c0,101.5,64.2,187.5,153.2,217.9c11.2,2.1,15.3-5,15.3-11.1   c0-5.5-0.2-19.9-0.3-39.1c-62.3,13.9-75.5-30.8-75.5-30.8c-10.2-26.5-24.9-33.6-24.9-33.6c-20.3-14.3,1.5-14,1.5-14   c22.5,1.6,34.3,23.7,34.3,23.7c20,35.1,52.4,25,65.2,19.1c2-14.8,7.8-25,14.2-30.7c-49.7-5.8-102-25.5-102-113.5   c0-25.1,8.7-45.6,23-61.6c-2.3-5.8-10-29.2,2.2-60.8c0,0,18.8-6.2,61.6,23.5c17.9-5.1,37-7.6,56.1-7.7c19,0.1,38.2,2.6,56.1,7.7   c42.8-29.7,61.5-23.5,61.5-23.5c12.2,31.6,4.5,55,2.2,60.8c14.3,16.1,23,36.6,23,61.6c0,88.2-52.4,107.6-102.3,113.3   c8,7.1,15.2,21.1,15.2,42.5c0,30.7-0.3,55.5-0.3,63c0,6.1,4,13.3,15.4,11C415.9,449.1,480,363.1,480,261.7   C480,134.8,379.7,32,256,32z"/>
+</svg>
+</span>
+      
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;"/>
+</svg>
+</span></a>
+  
+    
+    <a href="https://www.kaggle.com/sugataghosh" target="_blank" rel="noopener" class="Kaggle ananke-social-link link-transition stackoverflow link dib z-999 pt3 pt0-l mr1" title="Kaggle link" aria-label="follow on Kaggle——Opens in a new window">
+      
+        Kaggle
+      
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;"/>
+</svg>
+</span></a>
+  
+</div>
+</div>
+  </div>
+</footer>
+
+  </body>
+</html>

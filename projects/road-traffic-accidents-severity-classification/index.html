@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    
+    <title>Road Traffic Accidents Severity Classification | Sugata Ghosh, PhD</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1">
+    <meta name="description" content="Multiclass Classification with Decision Tree, Random Forest, XGBoost, and ExtraTrees">
+    <meta name="generator" content="Hugo 0.121.2">
+    
+    
+    
+    
+      <meta name="robots" content="noindex, nofollow">
+    
+
+    
+<link rel="stylesheet" href="https://sugatagh.github.io/dsml/ananke/css/main.min.css" >
+
+
+
+    
+
+    
+      
+
+    
+
+    
+
+    
+      <link rel="canonical" href="https://sugatagh.github.io/dsml/projects/road-traffic-accidents-severity-classification/">
+    
+
+    <meta property="og:title" content="Road Traffic Accidents Severity Classification" />
+<meta property="og:description" content="Multiclass Classification with Decision Tree, Random Forest, XGBoost, and ExtraTrees" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://sugatagh.github.io/dsml/projects/road-traffic-accidents-severity-classification/" /><meta property="article:section" content="projects" />
+<meta property="article:published_time" content="2022-04-07T00:00:00+05:30" />
+<meta property="article:modified_time" content="2022-04-07T00:00:00+05:30" />
+
+<meta itemprop="name" content="Road Traffic Accidents Severity Classification">
+<meta itemprop="description" content="Multiclass Classification with Decision Tree, Random Forest, XGBoost, and ExtraTrees"><meta itemprop="datePublished" content="2022-04-07T00:00:00+05:30" />
+<meta itemprop="dateModified" content="2022-04-07T00:00:00+05:30" />
+<meta itemprop="wordCount" content="3043">
+<meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/><meta name="twitter:title" content="Road Traffic Accidents Severity Classification"/>
+<meta name="twitter:description" content="Multiclass Classification with Decision Tree, Random Forest, XGBoost, and ExtraTrees"/>
+
+	<style>
+.has-mathjax {
+    visibility: hidden;
+}
+</style>
+
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+<script>
+window.MathJax = {
+  startup: {
+    pageReady: () => {
+      return MathJax.startup.defaultPageReady().then(() => {
+        for (let element of document.getElementsByClassName("has-mathjax")) {
+            element.style.visibility = "visible"
+        }
+      });
+    }
+  }
+};
+</script>
+  </head>
+
+  <body class="ma0 avenir bg-near-white">
+
+    
+   
+  
+
+  
+  <header class="cover bg-top" style="background-image: url('https://sugatagh.github.io/dsml/images/bg-projects/bg-rta-5.jpg');">
+    <div class="bg-black-60">
+      <nav class="pv3 ph3 ph4-ns" role="navigation">
+  <div class="flex-l justify-between items-center center">
+    <a href="https://sugatagh.github.io/dsml/" class="f3 fw2 hover-white no-underline white-90 dib">
+      
+        Sugata Ghosh, PhD
+      
+    </a>
+    <div class="flex-l items-center">
+      
+
+      
+        <ul class="pl0 mr3">
+          
+          <li class="list f5 f4-ns fw4 dib pr3">
+            <a class="hover-white no-underline white-90" href="https://sugatagh.github.io/dsml/about/" title="About page">
+              About
+            </a>
+          </li>
+          
+          <li class="list f5 f4-ns fw4 dib pr3">
+            <a class="hover-white no-underline white-90" href="https://sugatagh.github.io/dsml/overview/" title="Overview page">
+              Overview
+            </a>
+          </li>
+          
+          <li class="list f5 f4-ns fw4 dib pr3">
+            <a class="hover-white no-underline white-90" href="https://sugatagh.github.io/dsml/certifications/" title="Certifications page">
+              Certifications
+            </a>
+          </li>
+          
+          <li class="list f5 f4-ns fw4 dib pr3">
+            <a class="hover-white no-underline white-90" href="https://sugatagh.github.io/dsml/projects/" title="Projects page">
+              Projects
+            </a>
+          </li>
+          
+          <li class="list f5 f4-ns fw4 dib pr3">
+            <a class="hover-white no-underline white-90" href="https://sugatagh.github.io/dsml/notes/" title="Notes page">
+              Notes
+            </a>
+          </li>
+          
+          <li class="list f5 f4-ns fw4 dib pr3">
+            <a class="hover-white no-underline white-90" href="https://sugatagh.github.io/dsml/cv/" title="CV page">
+              CV
+            </a>
+          </li>
+          
+          <li class="list f5 f4-ns fw4 dib pr3">
+            <a class="hover-white no-underline white-90" href="https://sugatagh.github.io/dsml/contact/" title="Contact page">
+              Contact
+            </a>
+          </li>
+          
+        </ul>
+      
+      
+<div class="ananke-socials">
+  
+    
+    <a href="https://www.linkedin.com/in/sugataghosh/" target="_blank" rel="noopener" class="linkedin ananke-social-link link-transition stackoverflow link dib z-999 pt3 pt0-l mr1" title="LinkedIn link" aria-label="follow on LinkedIn——Opens in a new window">
+      
+        <span class="icon"><svg style="enable-background:new 0 0 65 65;" version="1.1" viewBox="0 0 65 65"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <path d="M50.837,48.137V36.425c0-6.275-3.35-9.195-7.816-9.195  c-3.604,0-5.219,1.983-6.119,3.374V27.71h-6.79c0.09,1.917,0,20.427,0,20.427h6.79V36.729c0-0.609,0.044-1.219,0.224-1.655  c0.49-1.22,1.607-2.483,3.482-2.483c2.458,0,3.44,1.873,3.44,4.618v10.929H50.837z M22.959,24.922c2.367,0,3.842-1.57,3.842-3.531  c-0.044-2.003-1.475-3.528-3.797-3.528s-3.841,1.524-3.841,3.528c0,1.961,1.474,3.531,3.753,3.531H22.959z M34,64  C17.432,64,4,50.568,4,34C4,17.431,17.432,4,34,4s30,13.431,30,30C64,50.568,50.568,64,34,64z M26.354,48.137V27.71h-6.789v20.427  H26.354z" style="fill-rule:evenodd;clip-rule:evenodd;"/>
+</svg>
+</span>
+      
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;"/>
+</svg>
+</span></a>
+  
+    
+    <a href="https://twitter.com/sugatagh" target="_blank" rel="noopener" class="twitter ananke-social-link link-transition stackoverflow link dib z-999 pt3 pt0-l mr1" title="Twitter link" aria-label="follow on Twitter——Opens in a new window">
+      
+        <span class="icon"><svg style="enable-background:new 0 0 67 67;" version="1.1" viewBox="0 0 67 67"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M37.167,22.283c-2.619,0.953-4.274,3.411-4.086,6.101  l0.063,1.038l-1.048-0.127c-3.813-0.487-7.145-2.139-9.974-4.915l-1.383-1.377l-0.356,1.017c-0.754,2.267-0.272,4.661,1.299,6.271  c0.838,0.89,0.649,1.017-0.796,0.487c-0.503-0.169-0.943-0.296-0.985-0.233c-0.146,0.149,0.356,2.076,0.754,2.839  c0.545,1.06,1.655,2.097,2.871,2.712l1.027,0.487l-1.215,0.021c-1.173,0-1.215,0.021-1.089,0.467  c0.419,1.377,2.074,2.839,3.918,3.475l1.299,0.444l-1.131,0.678c-1.676,0.976-3.646,1.526-5.616,1.568  C19.775,43.256,19,43.341,19,43.405c0,0.211,2.557,1.397,4.044,1.864c4.463,1.377,9.765,0.783,13.746-1.568  c2.829-1.673,5.657-5,6.978-8.221c0.713-1.716,1.425-4.851,1.425-6.354c0-0.975,0.063-1.102,1.236-2.267  c0.692-0.678,1.341-1.419,1.467-1.631c0.21-0.403,0.188-0.403-0.88-0.043c-1.781,0.636-2.033,0.551-1.152-0.402  c0.649-0.678,1.425-1.907,1.425-2.267c0-0.063-0.314,0.042-0.671,0.233c-0.377,0.212-1.215,0.53-1.844,0.72l-1.131,0.361l-1.027-0.7  c-0.566-0.381-1.361-0.805-1.781-0.932C39.766,21.902,38.131,21.944,37.167,22.283z M33,64C16.432,64,3,50.569,3,34S16.432,4,33,4  s30,13.431,30,30S49.568,64,33,64z" style="fill-rule:evenodd;clip-rule:evenodd;"/></svg>
+</span>
+      
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;"/>
+</svg>
+</span></a>
+  
+    
+    <a href="https://github.com/sugatagh" target="_blank" rel="noopener" class="github ananke-social-link link-transition stackoverflow link dib z-999 pt3 pt0-l mr1" title="GitHub link" aria-label="follow on GitHub——Opens in a new window">
+      
+        <span class="icon"><svg style="enable-background:new 0 0 512 512;" version="1.1" viewBox="0 0 512 512"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+  <path d="M256,32C132.3,32,32,134.8,32,261.7c0,101.5,64.2,187.5,153.2,217.9c11.2,2.1,15.3-5,15.3-11.1   c0-5.5-0.2-19.9-0.3-39.1c-62.3,13.9-75.5-30.8-75.5-30.8c-10.2-26.5-24.9-33.6-24.9-33.6c-20.3-14.3,1.5-14,1.5-14   c22.5,1.6,34.3,23.7,34.3,23.7c20,35.1,52.4,25,65.2,19.1c2-14.8,7.8-25,14.2-30.7c-49.7-5.8-102-25.5-102-113.5   c0-25.1,8.7-45.6,23-61.6c-2.3-5.8-10-29.2,2.2-60.8c0,0,18.8-6.2,61.6,23.5c17.9-5.1,37-7.6,56.1-7.7c19,0.1,38.2,2.6,56.1,7.7   c42.8-29.7,61.5-23.5,61.5-23.5c12.2,31.6,4.5,55,2.2,60.8c14.3,16.1,23,36.6,23,61.6c0,88.2-52.4,107.6-102.3,113.3   c8,7.1,15.2,21.1,15.2,42.5c0,30.7-0.3,55.5-0.3,63c0,6.1,4,13.3,15.4,11C415.9,449.1,480,363.1,480,261.7   C480,134.8,379.7,32,256,32z"/>
+</svg>
+</span>
+      
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;"/>
+</svg>
+</span></a>
+  
+    
+    <a href="https://www.kaggle.com/sugataghosh" target="_blank" rel="noopener" class="Kaggle ananke-social-link link-transition stackoverflow link dib z-999 pt3 pt0-l mr1" title="Kaggle link" aria-label="follow on Kaggle——Opens in a new window">
+      
+        Kaggle
+      
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;"/>
+</svg>
+</span></a>
+  
+</div>
+
+    </div>
+  </div>
+</nav>
+
+      <div class="tc-l pv6 ph3 ph4-ns">
+        
+          <div class="f2 f1-l fw2 white-90 mb0 lh-title">Road Traffic Accidents Severity Classification</div>
+          
+            <div class="fw1 f5 f3-l white-80 measure-wide-l center lh-copy mt3 mb4">
+              Multiclass Classification with Decision Tree, Random Forest, XGBoost, and ExtraTrees
+            </div>
+          
+        
+      </div>
+    </div>
+  </header>
+
+
+
+    <main class="pb7" role="main">
+      
+  
+  <article class="flex-l flex-wrap justify-between mw8 center ph3">
+    <header class="mt4 w-100">
+      <aside class="instapaper_ignoref b helvetica tracked ttu">
+          
+        Projects
+      </aside>
+      
+
+
+
+
+
+
+
+
+
+
+  <div id="sharing" class="mt3 ananke-socials">
+    
+      
+      <a href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https://sugatagh.github.io/dsml/projects/road-traffic-accidents-severity-classification/&amp;title=Road%20Traffic%20Accidents%20Severity%20Classification" class="ananke-social-link linkedin no-underline" aria-label="share on LinkedIn">
+        
+        <span class="icon"> <svg style="enable-background:new 0 0 65 65;" version="1.1" viewBox="0 0 65 65"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <path d="M50.837,48.137V36.425c0-6.275-3.35-9.195-7.816-9.195  c-3.604,0-5.219,1.983-6.119,3.374V27.71h-6.79c0.09,1.917,0,20.427,0,20.427h6.79V36.729c0-0.609,0.044-1.219,0.224-1.655  c0.49-1.22,1.607-2.483,3.482-2.483c2.458,0,3.44,1.873,3.44,4.618v10.929H50.837z M22.959,24.922c2.367,0,3.842-1.57,3.842-3.531  c-0.044-2.003-1.475-3.528-3.797-3.528s-3.841,1.524-3.841,3.528c0,1.961,1.474,3.531,3.753,3.531H22.959z M34,64  C17.432,64,4,50.568,4,34C4,17.431,17.432,4,34,4s30,13.431,30,30C64,50.568,50.568,64,34,64z M26.354,48.137V27.71h-6.789v20.427  H26.354z" style="fill-rule:evenodd;clip-rule:evenodd;"/>
+</svg>
+</span>
+        
+      </a>
+    
+      
+      <a href="https://twitter.com/intent/tweet?url=https://sugatagh.github.io/dsml/projects/road-traffic-accidents-severity-classification/&amp;text=Road%20Traffic%20Accidents%20Severity%20Classification" class="ananke-social-link twitter no-underline" aria-label="share on Twitter">
+        
+        <span class="icon"> <svg style="enable-background:new 0 0 67 67;" version="1.1" viewBox="0 0 67 67"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M37.167,22.283c-2.619,0.953-4.274,3.411-4.086,6.101  l0.063,1.038l-1.048-0.127c-3.813-0.487-7.145-2.139-9.974-4.915l-1.383-1.377l-0.356,1.017c-0.754,2.267-0.272,4.661,1.299,6.271  c0.838,0.89,0.649,1.017-0.796,0.487c-0.503-0.169-0.943-0.296-0.985-0.233c-0.146,0.149,0.356,2.076,0.754,2.839  c0.545,1.06,1.655,2.097,2.871,2.712l1.027,0.487l-1.215,0.021c-1.173,0-1.215,0.021-1.089,0.467  c0.419,1.377,2.074,2.839,3.918,3.475l1.299,0.444l-1.131,0.678c-1.676,0.976-3.646,1.526-5.616,1.568  C19.775,43.256,19,43.341,19,43.405c0,0.211,2.557,1.397,4.044,1.864c4.463,1.377,9.765,0.783,13.746-1.568  c2.829-1.673,5.657-5,6.978-8.221c0.713-1.716,1.425-4.851,1.425-6.354c0-0.975,0.063-1.102,1.236-2.267  c0.692-0.678,1.341-1.419,1.467-1.631c0.21-0.403,0.188-0.403-0.88-0.043c-1.781,0.636-2.033,0.551-1.152-0.402  c0.649-0.678,1.425-1.907,1.425-2.267c0-0.063-0.314,0.042-0.671,0.233c-0.377,0.212-1.215,0.53-1.844,0.72l-1.131,0.361l-1.027-0.7  c-0.566-0.381-1.361-0.805-1.781-0.932C39.766,21.902,38.131,21.944,37.167,22.283z M33,64C16.432,64,3,50.569,3,34S16.432,4,33,4  s30,13.431,30,30S49.568,64,33,64z" style="fill-rule:evenodd;clip-rule:evenodd;"/></svg>
+</span>
+        
+      </a>
+    
+  </div>
+
+
+      <h1 class="f1 athelas mt3 mb1">Road Traffic Accidents Severity Classification</h1>
+      
+      
+      
+      <time class="f6 mv4 dib tracked" datetime="2022-04-07T00:00:00+05:30">April 7, 2022</time>
+      
+
+      
+      
+    </header>
+    <div class="nested-copy-line-height lh-copy serif f4 nested-links mid-gray pr4-l w-two-thirds-l"><p>The severity of road traffic accidents can be influenced by several factors, including the various attributes of the vehicles involved, the drivers, the casualties, and the surrounding conditions. The objective of the project is to build a prediction model to classify the severity of road traffic accidents into a hierarchy consisting of three categories, namely <em>slight injury</em>, <em>serious injury</em>, and <em>fatal injury</em>, based on the information on the pertinent attributes.</p>
+<p><a href="https://github.com/sugatagh/Road-Traffic-Accident-Severity-Classification">GitHub repository</a></p>
+<h3 id="-contents">○ Contents</h3>
+<ul>
+<li><a href="#-overview">Overview</a></li>
+<li><a href="#-introduction">Introduction</a></li>
+<li><a href="#-exploratory-data-analysis">Exploratory Data Analysis</a></li>
+<li><a href="#-data-preprocessing">Data Preprocessing</a></li>
+<li><a href="#-baseline-models">Baseline Models</a></li>
+<li><a href="#-hyperparameter-tuning">Hyperparameter Tuning</a></li>
+<li><a href="#-prediction-and-evaluation">Prediction and Evaluation</a></li>
+<li><a href="#-acknowledgements">Acknowledgements</a></li>
+<li><a href="#-references">References</a></li>
+</ul>
+<h3 id="-overview">○ Overview</h3>
+<ul>
+<li>The severity of road traffic accidents may depend on several factors, including the attributes of the involved vehicles, drivers, casualties, and surrounding conditions.</li>
+<li>In this project, we aim to predict the severity of an accident in terms of a given hierarchy (<em>slight</em>, <em>serious</em>, and <em>fatal</em>), with the help of information on the relevant attributes.</li>
+<li>A detailed <a href="https://en.wikipedia.org/wiki/Exploratory_data_analysis">exploratory data analysis</a> on the dataset is carried out.</li>
+<li>The observations obtained from EDA are used in the <a href="https://en.wikipedia.org/wiki/Data_Preprocessing">data preprocessing</a> stages.</li>
+<li>We employ <a href="https://en.wikipedia.org/wiki/Decision_tree">decision tree</a>, <a href="https://en.wikipedia.org/wiki/Random_forest">random forest</a>, <a href="https://en.wikipedia.org/wiki/XGBoost">XGBoost</a>, and <a href="https://en.wikipedia.org/wiki/Random_forest#ExtraTrees">ExtraTrees</a> classifiers to predict the severity of an accident as <em>slight</em>, <em>serious</em>, or <em>fatal</em>.</li>
+<li>We apply <a href="https://en.wikipedia.org/wiki/Hyperparameter_optimization">hyperparameter tuning</a> to the XGBoost classifier, which appears to perform best among the baseline candidates. We also tune the ExtraTrees classifier and the random forest classifier, as their performance is very close to that of the XGBoost classifier.</li>
+<li>The final model obtains a weighted <a href="https://en.wikipedia.org/wiki/F-score"><span class="has-mathjax">\(F_1\)-score</span>
+</a> of <span class="has-mathjax">\(0.795060\)</span>
+ on the test set.</li>
+</ul>
+<h3 id="-introduction">○ Introduction</h3>
+<ul>
+<li><a href="#data">Data</a></li>
+<li><a href="#project-objective">Project Objective</a></li>
+<li><a href="#evaluation-metric">Evaluation Metric</a></li>
+</ul>
+<h4 id="data">Data</h4>
+<p><a href="https://doi.org/10.17632/xytv86278f.1">The dataset</a> used in the project has been prepared from manual records of road traffic accidents in the years <span class="has-mathjax">\(2017-2020\)</span>
+, collected from Addis Ababa sub city police departments. Sensitive information have been excluded during the data encoding process. The final dataset has information on <span class="has-mathjax">\(12316\)</span>
+ accidents, each with <span class="has-mathjax">\(32\)</span>
+ attributes.</p>
+<h4 id="project-objective">Project Objective</h4>
+<p>The aim of the project is to build prediction models, based on these factors, to classify the severity of accidents into three categories:</p>
+<ul>
+<li>Slight injury</li>
+<li>Serious injury</li>
+<li>Fatal injury</li>
+</ul>
+<p>Thus, it is a <a href="https://en.wikipedia.org/wiki/Multiclass_classification">multiclass classification</a> problem.</p>
+<h4 id="evaluation-metric">Evaluation Metric</h4>
+<p><a href="https://en.wikipedia.org/wiki/Precision_and_recall">Precision</a> and <a href="https://en.wikipedia.org/wiki/Precision_and_recall">recall</a> are universally accepted metrics to capture the performance of a model, when restricted respectively to the <strong>predicted positive class</strong> and the <strong>actual positive class</strong>. Let us denote</p>
+<ul>
+<li><strong>TP</strong>: Number of true positives</li>
+<li><strong>TN</strong>: Number of true negatives</li>
+<li><strong>FP</strong>: Number of false positives</li>
+<li><strong>FN</strong>: Number of false negatives</li>
+</ul>
+<p>In terms of these quantities, Precision and Recall are defined as</p>
+<div class="has-mathjax">
+
+\[\text{Precision} = \frac{\text{TP}}{\text{TP} + \text{FP}}\]
+
+</div>
+
+<div class="has-mathjax">
+
+\[\text{Recall} = \frac{\text{TP}}{\text{TP} + \text{FN}}\]
+
+</div>
+
+<p>The <span class="has-mathjax">\(F_1\)-score</span>
+ provides a balanced measuring stick by considering the <a href="https://en.wikipedia.org/wiki/Harmonic_mean">harmonic mean</a> of the above two metrics.</p>
+<div class="has-mathjax">
+
+\[F_1\text{-score} = \frac{2 \times \text{Precision} \times \text{Recall}}{\text{Precision} + \text{Recall}}\]
+
+</div>
+
+<p>For its equal emphasis on both precision and recall, <span class="has-mathjax">\(F_1\)-score</span>
+ is one of the most suitable metrics for evaluating the models in this project.</p>
+<p>In the dataset, we have a target variable (<code>Accident_severity</code>) that takes three possible values, essentially partitioning the dataset into three target classes. This can be converted to a binary partition by considering one class as the positive class and the rest two combined as the negative class. Now this positive-negative partition can be done from the perspective of each target class, producing three <span class="has-mathjax">\(F_1\)-scores.</span>
+ We take the weighted <span class="has-mathjax">\(F_1\)-score</span>
+, which is the average of these three scores weighted by the number of true instances for each class, as an evaluation metric to assess the models.</p>
+<h3 id="-exploratory-data-analysis">○ Exploratory Data Analysis</h3>
+<ul>
+<li><a href="#summary-of-the-data">Summary of the Data</a></li>
+<li><a href="#data-synopsis">Data Synopsis</a></li>
+<li><a href="#the-target-variable">The Target Variable</a></li>
+<li><a href="#time">Time</a></li>
+<li><a href="#other-features">Other Features</a></li>
+</ul>
+<h4 id="summary-of-the-data">Summary of the Data</h4>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/rta/rta-data-info.png"/>
+</figure>
+
+<h4 id="data-synopsis">Data Synopsis</h4>
+<ul>
+<li>Number of observations: <span class="has-mathjax">\(12316\)</span>
+</li>
+<li>Number of columns: <span class="has-mathjax">\(32\)</span>
+</li>
+<li>Memory Usage: <span class="has-mathjax">\(3.0+\) MB</span>
+</li>
+<li>Number of integer columns: <span class="has-mathjax">\(2\)</span>
+</li>
+<li>Number of object columns: <span class="has-mathjax">\(30\)</span>
+</li>
+<li>Number of columns with missing values: <span class="has-mathjax">\(16\)</span>
+</li>
+<li>Columns with missing values: <code>Educational_level</code>, <code>Vehicle_driver_relation</code>, <code>Driving_experience</code>, <code>Type_of_vehicle</code>, <code>Owner_of_vehicle</code>, <code>Service_year_of_vehicle</code>, <code>Defect_of_vehicle</code>, <code>Area_accident_occured</code>, <code>Lanes_or_Medians</code>, <code>Road_allignment</code>, <code>Types_of_Junction</code>, <code>Road_surface_type</code>, <code>Type_of_collision</code>, <code>Vehicle_movement</code>, <code>Work_of_casuality</code>, <code>Fitness_of_casuality</code></li>
+</ul>
+<h4 id="the-target-variable">The Target Variable</h4>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/rta/rta-frequency-comparison.png"/>
+</figure>
+
+<p>The charts show that the data is imbalanced with respect to the target variable <code>Accident_severity</code>. Note that the percentage values in the pie chart is rounded off to two decimal places and hence may not add up to exactly <span class="has-mathjax">\(100\%\)</span>
+. The class of accidents with slight injury is the majority class with <span class="has-mathjax">\(84.56\%\)</span>
+ of the instances falling in that category. The class of accidents with serious injury comes next with a proportion of <span class="has-mathjax">\(14.15\%\)</span>
+. The class of accidents with fatal injury contributes only <span class="has-mathjax">\(1.28\%\)</span>
+ of the entirety of the dataset. Next we explore various feature variables in the dataset with a particular goal of identifying how the target variable behaves in relation to variation in these features.</p>
+<h4 id="time">Time</h4>
+<p>To examine the distribution of time, we convert the feature from <span class="has-mathjax">\(hh:mm:ss\)</span>
+ format to seconds with the mapping</p>
+<div class="has-mathjax">
+
+\[hh:mm:ss \to (hh \times 60 \times 60)+(mm \times 60)+ss\]
+
+</div>
+
+<pre tabindex="0"><code>def convert_to_seconds(x):
+    hh = int(x.split(&#39;:&#39;)[0])
+    mm = int(x.split(&#39;:&#39;)[1])
+    ss = int(x.split(&#39;:&#39;)[2])
+    time_in_ss = (hh * 60 * 60) + (mm * 60) + ss
+    return time_in_ss
+</code></pre><p>Under this mapping, the range of time is <span class="has-mathjax">\(0\)</span>
+ to <span class="has-mathjax">\(86400\)</span>
+. We show the conversion for five specific, equispaced time points (the first and last of which are <span class="has-mathjax">\(24\)</span>
+ hours apart, but coincides in the cyclic scale).</p>
+<ul>
+<li><span class="has-mathjax">\(00:00:00 \to 0\)</span>
+ (<span class="has-mathjax">\(12\)</span>
+ a.m.)</li>
+<li><span class="has-mathjax">\(06:00:00 \to 21600\)</span>
+ (<span class="has-mathjax">\(6\)</span>
+ a.m.)</li>
+<li><span class="has-mathjax">\(12:00:00 \to 43200\)</span>
+ (<span class="has-mathjax">\(12\)</span>
+ p.m.)</li>
+<li><span class="has-mathjax">\(18:00:00 \to 64800\)</span>
+ (<span class="has-mathjax">\(6\)</span>
+ p.m.)</li>
+<li><span class="has-mathjax">\(24:00:00 \to 86400\)</span>
+ (next day <span class="has-mathjax">\(12\)</span>
+ a.m.)</li>
+</ul>
+<p>In the histograms, each bin denotes one-hour time interval, starting from <span class="has-mathjax">\(12\)</span>
+ a.m. We convert the time labels back to the usual notation with a.m. and p.m. for better understanding of the distribution.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/rta/rta-slight-injury.png"/>
+</figure>
+
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/rta/rta-serious-injury.png"/>
+</figure>
+
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/rta/rta-fatal-injury.png"/>
+</figure>
+
+<p>The distribution reflects the intuition that there are more traffic accidents in the day time than at night. In particular, for accidents with slight or serious injuries, the distribution appears to have a bimodal structure with a distinct local mode apart from the global mode. It rises sharply from <span class="has-mathjax">\(5\)</span>
+ a.m. - <span class="has-mathjax">\(6\)</span>
+ a.m. until it reaches the local peak at <span class="has-mathjax">\(8\)</span>
+ a.m. - <span class="has-mathjax">\(9\)</span>
+ a.m. After troughing slightly, it gradually rises to the global modal class <span class="has-mathjax">\(5\)</span>
+ p.m. - <span class="has-mathjax">\(6\)</span>
+ p.m. Then it falls sharply before stabilizing around <span class="has-mathjax">\(12\)</span>
+ a.m. - <span class="has-mathjax">\(1\)</span>
+ a.m. and stays low until <span class="has-mathjax">\(5\)</span>
+ a.m. - <span class="has-mathjax">\(6\)</span>
+ a.m. For accidents with fatal injuries, however, the distribution appears to be slightly different from the former two cases, with a global peak in <span class="has-mathjax">\(8\)</span>
+ p.m. - <span class="has-mathjax">\(10\)</span>
+ p.m. and a separate local peak in <span class="has-mathjax">\(4\)</span>
+ p.m. - <span class="has-mathjax">\(6\)</span>
+ p.m.</p>
+<h4 id="other-features">Other Features</h4>
+<p>We present categorical plots to compare frequency distributions of other features across target classes in <a href="https://github.com/sugatagh/Road-Traffic-Accident-Severity-Classification/blob/main/Notebook/rta_severity_classification.ipynb">this notebook</a>. Example:</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/rta/rta-number-of-casualties.png"/>
+</figure>
+
+<p>We denote:</p>
+<ul>
+<li><strong>target class 1:</strong> class of accidents with slight injury</li>
+<li><strong>target class 2:</strong> class of accidents with serious injury</li>
+<li><strong>target class 3:</strong> class of accidents with fatal injury</li>
+</ul>
+<p>Then we observe:</p>
+<ul>
+<li>
+<p><strong>Features that have more or less similar distribution for all target classes:</strong> <code>Sex_of_driver</code>, <code>Educational_level</code>, <code>Vehicle_driver_relation</code>, <code>Owner_of_vehicle</code>, <code>Defect_of_vehicle</code>, <code>Road_surface_type</code>, <code>Road_surface_conditions</code>, <code>Light_conditions</code>, <code>Weather_conditions</code>, <code>Vehicle_movement</code>, <code>Sex_of_casualty</code>, <code>Casualty_severity</code>, <code>Fitness_of_casuality</code>, <code>Pedestrian_movement</code></p>
+</li>
+<li>
+<p><strong>Features that have more or less similar distribution for <em>target class 1</em> and <em>target class 2</em>, but have a different distribution for <em>target class 3</em>:</strong> <code>Day_of_week</code>, <code>Driving_experience</code>, <code>Service_year_of_vehicle</code>, <code>Area_accident_occured</code>, <code>Lanes_or_Medians</code>, <code>Road_allignment</code>, <code>Types_of_Junction</code>, <code>Type_of_collision</code>, <code>Number_of_casualties</code>, <code>Casualty_class</code>, <code>Age_band_of_casualty</code>, <code>Work_of_casuality</code>, <code>Cause_of_accident</code></p>
+</li>
+<li>
+<p><strong>Features that have more or less similar distribution for <em>target class 2</em> and <em>target class 3</em>, but have a different distribution for <em>target class 1</em>:</strong> <code>Number_of_vehicles_involved</code></p>
+</li>
+<li>
+<p><strong>Features that have different distributions for all target class:</strong> <code>Age_band_of_driver</code>, <code>Type_of_vehicle</code></p>
+</li>
+</ul>
+<h3 id="-data-preprocessing">○ Data Preprocessing</h3>
+<ul>
+<li><a href="#outlier-detection">Outlier Detection</a></li>
+<li><a href="#combining-similar-values">Combining Similar Values</a></li>
+<li><a href="#missing-data-imputation">Missing Data Imputation</a></li>
+<li><a href="#categorical-data-encoding">Categorical Data Encoding</a></li>
+<li><a href="#predictor-target-split">Predictor-Target Split</a></li>
+<li><a href="#train-validation-test-split">Train-Validation-Test Split</a></li>
+<li><a href="#feature-scaling">Feature Scaling</a></li>
+<li><a href="#resampling">Resampling</a></li>
+<li><a href="#feature-selection">Feature Selection</a></li>
+</ul>
+<h4 id="outlier-detection">Outlier Detection</h4>
+<p>There are three numerical variables in the dataset.</p>
+<ul>
+<li><strong><code>Time</code></strong> is a bounded variable. After the convertion, it is strictly bounded between <span class="has-mathjax">\(0\)</span>
+ and <span class="has-mathjax">\(86400\)</span>
+. It has a minimum value of 60 and a maximum of <span class="has-mathjax">\(86340\)</span>
+. Since we know that the traffic are active round the clock (even with the obvious bias to day-time), we discard the possibility of <a href="https://en.wikipedia.org/wiki/Outlier">outliers</a> here.</li>
+<li><strong><code>Number_of_vehicles_involved</code></strong> is a count data, taking positive integer values (as there can be no traffic accident without vehicles).</li>
+<li><strong><code>Number_of_casualties</code></strong> is again a count data, taking positive integer values.</li>
+</ul>
+<p>We present the respective boxplots to check for outliers.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/rta/rta-outlier-detection.png"/>
+</figure>
+
+<p>Despite the appearances of the apparent outliers, <strong>we refrain from deleting or modifying</strong> them as it is evident from the range of the variables that these are most likely to be genuine values, containing relevant information about the corresponding variables.</p>
+<h4 id="combining-similar-values">Combining Similar Values</h4>
+<p>We combine certain similar categories that appear in the dataset. For instance, <code>5</code> and <code>Under 18</code> are two categories of the feature <code>Age_band_of_casualty</code>. These two categories can be combined for all practical purposes, as one is a subset of the other.</p>
+<pre tabindex="0"><code>def combine_similar(data):
+    data_out = data.copy(deep = True)
+    data_out = data_out.replace(&#39;Unknown&#39;, &#39;unknown&#39;)
+    data_out = data_out.replace(&#39;Other&#39;, &#39;other&#39;)
+    data_out = data_out.replace(&#39;Unknown or other&#39;, &#39;other&#39;)
+    data_out = data_out.replace(&#39;Darkness - lights unlit&#39;, &#39;Darkness - no lighting&#39;)
+    data_out[&#39;Age_band_of_casualty&#39;] = data_out[&#39;Age_band_of_casualty&#39;].replace(&#39;5&#39;, &#39;Under 18&#39;)
+    return data_out
+</code></pre><h4 id="missing-data-imputation">Missing Data Imputation</h4>
+<p>Columns with missing values (sorted by count):</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/rta/rta-missing-values.png"/>
+</figure>
+
+<p><span class="has-mathjax">\(16\)</span>
+ columns (out of <span class="has-mathjax">\(32\)</span>
+) contain missing values. All features with missing values are categorical in nature.</p>
+<p><strong>Proportional imputation:</strong> With the goal of keeping the feature distributions same before and after imputation, we impute the missing values in a column in such a way so that the proportions of the existing unique values in the column remain roughly same as those were prior to the imputation.</p>
+<pre tabindex="0"><code>def prop_imputer(data):
+    data_prop = data.copy(deep = True)
+    missing_cols = data_prop.isna().sum()[data_prop.isna().sum() != 0].index.tolist()
+    for col in missing_cols:
+        values_col = data_prop[col].value_counts(normalize = True).index.tolist()
+        probabilities_col = data_prop[col].value_counts(normalize = True).values.tolist()
+        data_prop[col] = data_prop[col].fillna(pd.Series(np.random.choice(values_col, p = probabilities_col, size = len(data))))
+    return data_prop
+</code></pre><p>Examples of frequency distributions of features before and after implementing proportional imputation:</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/rta/rta-missing-value-service-year-of-vehicle.png"/>
+</figure>
+
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/rta/rta-missing-value-types-of-junction.png"/>
+</figure>
+
+<p>As expected, we observe that while the frequencies change, the overall distributions of the features remain the same before and after applying proportional imputation.</p>
+<h4 id="categorical-data-encoding">Categorical Data Encoding</h4>
+<p>After convertion of time from <span class="has-mathjax">\(hh:mm:ss\)</span>
+ to <em>seconds</em> format, the dataset contains</p>
+<ul>
+<li><span class="has-mathjax">\(3\)</span>
+ integer variables</li>
+<li><span class="has-mathjax">\(29\)</span>
+ categorical variables</li>
+</ul>
+<p>Categorical variables can be <strong>ordinal</strong> (ordered, e.g. very bad, bad, good, very good) or <strong>nominal</strong> (unordered, e.g. red, blue, yellow, green). We observe that in the dataset, the following categorical variables are ordinal.</p>
+<ul>
+<li><code>Age_band_of_driver</code></li>
+<li><code>Educational_level</code></li>
+<li><code>Driving_experience</code></li>
+<li><code>Service_year_of_vehicle</code></li>
+<li><code>Light_conditions</code></li>
+<li><code>Age_band_of_casualty</code></li>
+<li><code>Casualty_severity</code></li>
+<li><code>Accident_severity</code></li>
+</ul>
+<p>The rest of the categorical variables are nominal. An appropriate encoding scheme is given as follows:</p>
+<ul>
+<li>Ordinal features <span class="has-mathjax">\(\to\)</span>
+ <strong>Manual encoding</strong> or <strong>Label encoding</strong></li>
+<li>Nominal features <span class="has-mathjax">\(\to\)</span>
+ <strong><a href="https://en.wikipedia.org/wiki/One-hot">One-hot</a> encoding</strong></li>
+</ul>
+<p>However, the dataset contains a lot of nominal features. As a result one-hot encoding produces too many columns, which eventually leads to <a href="https://en.wikipedia.org/wiki/Curse_of_dimensionality">curse of dimensionality</a> and loss of relevant information at the feature selection stage. For this reason, we resort to the following scheme:</p>
+<ul>
+<li>Ordinal features <span class="has-mathjax">\(\to\)</span>
+ <strong>Manual encoding</strong></li>
+<li>Nominal features <span class="has-mathjax">\(\to\)</span>
+ <strong>Label encoding</strong></li>
+</ul>
+<p>The manual encoding of ordinal features involves mapping the categories to integers while maintaining the order. For instance, the categories of the feature <code>Light_conditions</code> are mapped in the following way.</p>
+<ul>
+<li><code>Darkness - no lighting</code> <span class="has-mathjax">\(\to 1\)</span>
+</li>
+<li><code>Darkness - lights lit</code> <span class="has-mathjax">\(\to 2\)</span>
+</li>
+<li><code>Daylight</code> <span class="has-mathjax">\(\to 3\)</span>
+</li>
+</ul>
+<p>The <a href="https://github.com/sugatagh/Road-Traffic-Accident-Severity-Classification/blob/main/Notebook/rta_severity_classification.ipynb">notebook</a> contains the code for implementing manual encoding to several ordinal features simultaneously. This is done in three steps:</p>
+<ol>
+<li>Creating dictionary of mapping for each ordinal variable</li>
+<li>Creating a dictionary with keys as variable names and values as the corresponding dictionary of mapping created in <strong>step 1</strong></li>
+<li>Defining a function for implementing manual encoding using the dictionary of all mappings created in <strong>step 2</strong></li>
+</ol>
+<p>The function to implement label encoding to selected columns of an input DataFrame is given as follows.</p>
+<pre tabindex="0"><code>def label_encoder(data, cols):
+    data_le = data.copy(deep = True)
+    le = LabelEncoder()
+    for col in cols:    
+        data_le[col] = le.fit_transform(data_le[col])
+    return data_le
+</code></pre><p>The encoding scheme is implemented on the features, leaving the target variable as it is for the time being. The features data is now completely in numerical format, allowing us to examine the <a href="https://en.wikipedia.org/wiki/Correlation">correlation</a> structure of the features through a <a href="https://en.wikipedia.org/wiki/Heat_map">heatmap</a>. While the color-coding gives a rough idea, one may have to open the image in a new tab and zoom to check the numerical values.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/rta/rta-correlation-heatmap.png"/>
+</figure>
+
+<p>We observe that the features <code>Casualty_class</code>, <code>Sex_of_casualty</code>, <code>Age_band_of_casualty</code>, and <code>Casualty_severity</code> are highly correlated. We keep <code>Age_band_of_casualty</code> and drop the other three features.</p>
+<h4 id="predictor-target-split">Predictor-Target Split</h4>
+<p>At this stage, we split the target variable from the independent variables using the following function.</p>
+<pre tabindex="0"><code>def predictor_target_split(data, target):
+    X = data.drop(target, axis = 1)
+    y = data[target]
+    return X, y
+</code></pre><h4 id="train-validation-test-split">Train-Validation-Test Split</h4>
+<p>Then we split the dataset into a <a href="https://en.wikipedia.org/wiki/Training,_validation,_and_test_data_sets#Training_data_set">training set</a>, a <a href="https://en.wikipedia.org/wiki/Training,_validation,_and_test_data_sets#Validation_data_set">validation set</a>, and a <a href="https://en.wikipedia.org/wiki/Training,_validation,_and_test_data_sets#Test_data_set">test set</a> in <span class="has-mathjax">\(80:10:10\)</span>
+ ratio using the <a href="https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.train_test_split.html">train_test_split</a> function.</p>
+<pre tabindex="0"><code>X_train, X_test, y_train, y_test = train_test_split(X, y, stratify = y, test_size = 0.2, shuffle = True, random_state = 0)
+X_valid, X_test, y_valid, y_test = train_test_split(X_test, y_test, stratify = y_test, test_size = 0.5, shuffle = True, random_state = 0)
+</code></pre><h4 id="feature-scaling">Feature Scaling</h4>
+<p>The converted <code>Time</code> takes huge values and is likely to distort the training procedure. We consider a modified version of the <a href="https://en.wikipedia.org/wiki/Feature_scaling#Rescaling_(min-max_normalization)">min-max normalization</a>. The original transformation is given as:
+<div class="has-mathjax">
+
+\[x \mapsto \frac{x - \min{\left(x\right)}}{\max{\left(x\right)} - \min{\left(x\right)}}\]
+
+</div>
+</p>
+<p>We modify the transformation a bit to incorporate a scaling factor <span class="has-mathjax">\(c\)</span>
+, so that the rescaled <code>Time</code> variable has the range <span class="has-mathjax">\([0, c]\)</span>
+, whenever its maximum value exceeds <span class="has-mathjax">\(c\)</span>
+.
+<div class="has-mathjax">
+
+\[x \mapsto c \times \left(\frac{x - \min{\left(x\right)}}{\max{\left(x\right)} - \min{\left(x\right)}}\right), \text{ if } \max{\left(x\right)} > c\]
+
+</div>
+</p>
+<p>The next function implements this idea with slight modifications. Due to the well-defined bounds of the time variable, we replace <span class="has-mathjax">\(\min{\left(x\right)}\)</span>
+ and <span class="has-mathjax">\(\max{\left(x\right)}\)</span>
+ respectively by <span class="has-mathjax">\(0\)</span>
+ and <span class="has-mathjax">\(24 \times 60 \times 60\).</span>
+</p>
+<pre tabindex="0"><code>def normalize_time(data, c = 1):
+    data_normalized = data.copy(deep = True)
+    if &#39;Time&#39; in data_normalized.columns:
+        if data_normalized[&#39;Time&#39;].max() &gt; c:
+            data_normalized[&#39;Time&#39;] = c * data_normalized[&#39;Time&#39;] / (24*60*60)
+    return data_normalized
+</code></pre><p>We normalize the <code>Time</code> variable with the scaling factor <span class="has-mathjax">\(c\)</span>
+ set at <span class="has-mathjax">\(10\),</span>
+ i.e. the time (in seconds) is normalized to the scale of <span class="has-mathjax">\(0-10\),</span>
+ keeping the values to a similar scale as of the other variables.</p>
+<h4 id="resampling">Resampling</h4>
+<p>The next function implements the <a href="https://en.wikipedia.org/wiki/Oversampling_and_undersampling_in_data_analysis#SMOTE">synthetic minority over-sampling technique</a> (SMOTE) to balance out the training set with respect to the target variable.</p>
+<pre tabindex="0"><code>def smote(X_train, y_train):
+    smote = SMOTE()
+    X_train_smote, y_train_smote = smote.fit_resample(X_train, y_train)
+    return X_train_smote, y_train_smote
+</code></pre><p>We employ SMOTE to oversample the training set. The frequency distribution of the target variable before and after resampling is shown below.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/rta/rta-frequency-comparison-resampling-2.png"/>
+</figure>
+
+<p>Before we proceed further, we encode the target variable using the following map:</p>
+<ul>
+<li><code>Slight Injury</code> <span class="has-mathjax">\(\to 1\)</span>
+</li>
+<li><code>Serious Injury</code> <span class="has-mathjax">\(\to 2\)</span>
+</li>
+<li><code>Fatal injury</code> <span class="has-mathjax">\(\to 3\)</span>
+</li>
+</ul>
+<h4 id="feature-selection">Feature Selection</h4>
+<p>To <a href="https://en.wikipedia.org/wiki/Feature_selection">select the features</a> to be used in the modeling phase, we employ <strong>chi-squared feature selection</strong> from the <code>feature_selection</code> module of <a href="https://scikit-learn.org/stable/">scikit-learn</a> library.</p>
+<p>This method requires the input data not to contain any negative values. For this purpose, we have the following function which takes a DataFrame as input and relocates each column with negative values to make the resulting DataFrame consisting entirely of nonnegative values.</p>
+<pre tabindex="0"><code>def spread_positivity(data):
+    data_positive = data.copy(deep = True)
+    for feature in data_positive.columns:
+        if np.any(data_positive[feature] &lt; 0) == True:
+            min_ = data_positive[feature].min()
+            data_positive[feature] = data_positive[feature] - min_
+    return data_positive
+</code></pre><p>The next function implements the chi-squared feature selection scheme. Note that the argument <span class="has-mathjax">\(k\)</span>
+ determines the number of columns to be retained before we proceed to the modeling phase. If it is a positive integer, then <span class="has-mathjax">\(k\)</span>
+ features with the highest <code>SelectKBest</code> scores are retained. If it is set as <code>'all'</code>, then all features are retained.</p>
+<pre tabindex="0"><code>from sklearn.feature_selection import SelectKBest, chi2
+def feature_selection_chi2(X_train, y_train, X_valid, X_test, k = &#39;all&#39;):
+    X_train = spread_positivity(X_train)
+    X_valid = spread_positivity(X_valid)
+    X_test = spread_positivity(X_test)
+    fs = SelectKBest(score_func = chi2, k = k)
+    fs.fit(X_train, y_train)
+    cols = fs.get_support(indices = True)
+    X_train_fs = X_train.iloc[:, cols]
+    X_valid_fs = X_valid.iloc[:, cols]
+    X_test_fs = X_test.iloc[:, cols]
+    return X_train_fs, X_valid_fs, X_test_fs, fs
+</code></pre><p>We retain all features by setting <code>k = 'all'</code> and plot the <code>SelectKBest</code> scores of the features (which are converted to positive integers).</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/rta/rta-feature-selection-chi2-2.png"/>
+</figure>
+
+<h3 id="-baseline-models">○ Baseline Models</h3>
+<ul>
+<li><a href="#decision-tree">Decision Tree</a></li>
+<li><a href="#random-forest">Random Forest</a></li>
+<li><a href="#xgboost">XGBoost</a></li>
+<li><a href="#extratrees">ExtraTrees</a></li>
+<li><a href="#summary-of-baseline-models">Summary of Baseline Models</a></li>
+</ul>
+<h4 id="decision-tree">Decision Tree</h4>
+<p>The decision Tree classifier with default <a href="https://en.wikipedia.org/wiki/Hyperparameter_(machine_learning)">hyperparameter</a> values produces a weighted <span class="has-mathjax">\(F_1\)-score</span>
+ of <span class="has-mathjax">\(0.736950\)</span>
+ on the validation set.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/rta/rta-baseline-decision-tree.png"/>
+</figure>
+
+<h4 id="random-forest">Random Forest</h4>
+<p>The random forest classifier with default hyperparameter values produces a weighted <span class="has-mathjax">\(F_1\)-score</span>
+ of <span class="has-mathjax">\(0.777460\)</span>
+ on the validation set.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/rta/rta-baseline-random-forest-2.png"/>
+</figure>
+
+<h4 id="xgboost">XGBoost</h4>
+<p>The XGBoost classifier with default hyperparameter values produces a weighted <span class="has-mathjax">\(F_1\)-score</span>
+ of <span class="has-mathjax">\(0.789726\)</span>
+ on the validation set.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/rta/rta-baseline-xgboost-2.png"/>
+</figure>
+
+<h4 id="extratrees">ExtraTrees</h4>
+<p>The ExtraTrees classifier with default hyperparameter values produces a weighted <span class="has-mathjax">\(F_1\)-score</span>
+ of <span class="has-mathjax">\(0.779798\)</span>
+ on the validation set.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/rta/rta-baseline-extra-trees-2.png"/>
+</figure>
+
+<h4 id="summary-of-baseline-models">Summary of Baseline Models</h4>
+<p>The performance of the baseline models considered, ranked by the weighted <span class="has-mathjax">\(F_1\)-score,</span>
+ is summarized below.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/rta/rta-baseline-summary-2.png"/>
+</figure>
+
+<h3 id="-hyperparameter-tuning">○ Hyperparameter Tuning</h3>
+<ul>
+<li><a href="#tuning-of-random-forest">Tuning of Random Forest</a></li>
+<li><a href="#tuning-of-xgboost">Tuning of XGBoost</a></li>
+<li><a href="#tuning-of-extratrees">Tuning of ExtraTrees</a></li>
+<li><a href="#summary-of-tuned-models">Summary of Tuned Models</a></li>
+</ul>
+<p>The baseline XGBoost classifier gives the highest validation weighted <span class="has-mathjax">\(F_1\)-score.</span>
+ However, the ExtraTrees classifier and the random forest classifier are not far behind either. So, we employ the traditional <a href="https://en.wikipedia.org/wiki/Hyperparameter_optimization#Grid_search">grid search</a> technique for hyperparameter tuning on these three classifiers.</p>
+<p>Specifically, we use <span class="has-mathjax">\(3\)-fold</span>
+ <a href="https://en.wikipedia.org/wiki/Cross-validation_(statistics)">cross-validation</a> on the training set for each of the hyperparameter grid points to choose the best one in terms of the cross-validation weighted <span class="has-mathjax">\(F_1\)-score.</span>
+ We then proceed to check how the chosen model performs on the test set.</p>
+<h4 id="tuning-of-random-forest">Tuning of Random Forest</h4>
+<p>The random forest classifier with following hyperparameter values produces a cross-validation weighted <span class="has-mathjax">\(F_1\)-score</span>
+ of <span class="has-mathjax">\(0.925659\),</span>
+ and a weighted <span class="has-mathjax">\(F_1\)-score</span>
+ of <span class="has-mathjax">\(0.782367\)</span>
+ on the validation set.</p>
+<pre tabindex="0"><code>Best hyperparameter values: {
+  &#39;class_weight&#39;: &#39;balanced&#39;,
+  &#39;criterion&#39;: &#39;entropy&#39;,
+  &#39;max_depth&#39;: None,
+  &#39;max_features&#39;: &#39;log2&#39;,
+  &#39;n_estimators&#39;: 200
+}
+</code></pre><figure><img src="https://sugatagh.github.io/dsml/images/images-projects/rta/rta-hyperparameter-tuning-random-forest-2.png"/>
+</figure>
+
+<h4 id="tuning-of-xgboost">Tuning of XGBoost</h4>
+<p>The XGBoost classifier with following hyperparameter values produces a cross-validation weighted <span class="has-mathjax">\(F_1\)-score</span>
+ of <span class="has-mathjax">\(0.937394\),</span>
+ and a weighted <span class="has-mathjax">\(F_1\)-score</span>
+ of <span class="has-mathjax">\(0.791005\)</span>
+ on the validation set.</p>
+<pre tabindex="0"><code>Best hyperparameter values: {
+    &#39;gamma&#39;: 0,
+    &#39;learning_rate&#39;: 0.1,
+    &#39;max_depth&#39;: 10,
+    &#39;min_child_weight&#39;: 1,
+    &#39;n_estimators&#39;: 500,
+    &#39;reg_alpha&#39;: 0,
+    &#39;reg_lambda&#39;: 2,
+    &#39;subsample&#39;: 0.8
+}
+</code></pre><figure><img src="https://sugatagh.github.io/dsml/images/images-projects/rta/rta-hyperparameter-tuning-xgboost.png"/>
+</figure>
+
+<h4 id="tuning-of-extratrees">Tuning of ExtraTrees</h4>
+<p>The ExtraTrees classifier with following hyperparameter values produces a cross-validation weighted <span class="has-mathjax">\(F_1\)-score</span>
+ of <span class="has-mathjax">\(0.942512\),</span>
+ and a weighted <span class="has-mathjax">\(F_1\)-score</span>
+ of <span class="has-mathjax">\(0.779798\)</span>
+ on the validation set.</p>
+<pre tabindex="0"><code>Best hyperparameter values: {
+    &#39;ccp_alpha&#39;: 0.0,
+    &#39;class_weight&#39;: &#39;balanced&#39;,
+    &#39;criterion&#39;: &#39;gini&#39;,
+    &#39;max_depth&#39;: None,
+    &#39;min_samples_split&#39;: 2
+}
+</code></pre><figure><img src="https://sugatagh.github.io/dsml/images/images-projects/rta/rta-hyperparameter-tuning-extra-trees-2.png"/>
+</figure>
+
+<h4 id="summary-of-tuned-models">Summary of Tuned Models</h4>
+<p>The performance of the hyperparameter-tuned models on the validation set, ranked by the weighted <span class="has-mathjax">\(F_1\)-score,</span>
+ is summarized below.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/rta/rta-hyperparameter-tuning-summary-2.png"/>
+</figure>
+
+<h3 id="-prediction-and-evaluation">○ Prediction and Evaluation</h3>
+<p>The tuned XGBoost model performs best on the validation set in terms of weighted <span class="has-mathjax">\(F_1\)-score.</span>
+ We fit this model on the training set and predict on the test set, obtaining a weighted <span class="has-mathjax">\(F_1\)-score</span>
+ of <span class="has-mathjax">\(0.795060\).</span>
+</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/rta/rta-hyperparameter-tuning-xgboost-test-set.png"/>
+</figure>
+
+<h3 id="-acknowledgements">○ Acknowledgements</h3>
+<ul>
+<li><a href="https://doi.org/10.17632/xytv86278f.1">Bedane, Tarikwa Tesfa <span class="has-mathjax">\((2020)\),</span>
+ &ldquo;Road Traffic Accident Dataset of Addis Ababa City&rdquo;, Mendeley Data, <span class="has-mathjax">V\(1\),</span>
+ doi: 10.17632/xytv86278f.1</a></li>
+<li><a href="https://www.kaggle.com/saurabhshahane/road-traffic-accidents">Road Traffic Accidents</a> dataset by <a href="https://www.kaggle.com/saurabhshahane">Saurabh Shahane</a></li>
+</ul>
+<h3 id="-references">○ References</h3>
+<ul>
+<li><a href="https://en.wikipedia.org/wiki/Correlation">Correlation</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Cross-validation_(statistics)">Cross-validation</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Curse_of_dimensionality">Curse of dimensionality</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Data_Preprocessing">Data preprocessing</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Decision_tree">Decision tree</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Exploratory_data_analysis">Exploratory data analysis</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Random_forest#ExtraTrees">ExtraTrees</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Feature_selection">Feature selection</a></li>
+<li><a href="https://en.wikipedia.org/wiki/F-score"><span class="has-mathjax">\(F\)-score</span>
+</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Hyperparameter_optimization#Grid_search">Grid search</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Harmonic_mean">Harmonic mean</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Heat_map">Heatmap</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Hyperparameter_(machine_learning)">Hyperparameter</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Hyperparameter_optimization">Hyperparameter optimization</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Feature_scaling#Rescaling_(min-max_normalization)">Min-max normalization</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Multiclass_classification">Multiclass classification</a></li>
+<li><a href="https://en.wikipedia.org/wiki/One-hot">One-hot</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Outlier">Outlier</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Precision_and_recall">Precision</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Random_forest">Random forest</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Precision_and_recall">Recall</a></li>
+<li><a href="https://scikit-learn.org/stable/">scikit-learn</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Oversampling_and_undersampling_in_data_analysis#SMOTE">Synthetic minority over-sampling technique</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Training,_validation,_and_test_data_sets#Test_data_set">Test set</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Training,_validation,_and_test_data_sets#Training_data_set">Training set</a></li>
+<li><a href="https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.train_test_split.html">Train-test split</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Training,_validation,_and_test_data_sets#Validation_data_set">Validation set</a></li>
+<li><a href="https://en.wikipedia.org/wiki/XGBoost">XGBoost</a></li>
+</ul>
+<ul class="pa0">
+  
+</ul>
+<div class="mt6 instapaper_ignoref">
+      
+      
+      </div>
+    </div>
+
+    <aside class="w-30-l mt6-l">
+
+
+
+
+</aside>
+
+  </article>
+
+    </main>
+    <footer class="bg-black bottom-0 w-100 pa3" role="contentinfo">
+  <div class="flex justify-between">
+  <a class="f4 fw4 hover-white no-underline white-70 dn dib-ns pv2 ph3" href="https://sugatagh.github.io/dsml/" >
+    &copy;  Sugata Ghosh, PhD 2024 
+  </a>
+    <div>
+<div class="ananke-socials">
+  
+    
+    <a href="https://www.linkedin.com/in/sugataghosh/" target="_blank" rel="noopener" class="linkedin ananke-social-link link-transition stackoverflow link dib z-999 pt3 pt0-l mr1" title="LinkedIn link" aria-label="follow on LinkedIn——Opens in a new window">
+      
+        <span class="icon"><svg style="enable-background:new 0 0 65 65;" version="1.1" viewBox="0 0 65 65"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <path d="M50.837,48.137V36.425c0-6.275-3.35-9.195-7.816-9.195  c-3.604,0-5.219,1.983-6.119,3.374V27.71h-6.79c0.09,1.917,0,20.427,0,20.427h6.79V36.729c0-0.609,0.044-1.219,0.224-1.655  c0.49-1.22,1.607-2.483,3.482-2.483c2.458,0,3.44,1.873,3.44,4.618v10.929H50.837z M22.959,24.922c2.367,0,3.842-1.57,3.842-3.531  c-0.044-2.003-1.475-3.528-3.797-3.528s-3.841,1.524-3.841,3.528c0,1.961,1.474,3.531,3.753,3.531H22.959z M34,64  C17.432,64,4,50.568,4,34C4,17.431,17.432,4,34,4s30,13.431,30,30C64,50.568,50.568,64,34,64z M26.354,48.137V27.71h-6.789v20.427  H26.354z" style="fill-rule:evenodd;clip-rule:evenodd;"/>
+</svg>
+</span>
+      
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;"/>
+</svg>
+</span></a>
+  
+    
+    <a href="https://twitter.com/sugatagh" target="_blank" rel="noopener" class="twitter ananke-social-link link-transition stackoverflow link dib z-999 pt3 pt0-l mr1" title="Twitter link" aria-label="follow on Twitter——Opens in a new window">
+      
+        <span class="icon"><svg style="enable-background:new 0 0 67 67;" version="1.1" viewBox="0 0 67 67"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M37.167,22.283c-2.619,0.953-4.274,3.411-4.086,6.101  l0.063,1.038l-1.048-0.127c-3.813-0.487-7.145-2.139-9.974-4.915l-1.383-1.377l-0.356,1.017c-0.754,2.267-0.272,4.661,1.299,6.271  c0.838,0.89,0.649,1.017-0.796,0.487c-0.503-0.169-0.943-0.296-0.985-0.233c-0.146,0.149,0.356,2.076,0.754,2.839  c0.545,1.06,1.655,2.097,2.871,2.712l1.027,0.487l-1.215,0.021c-1.173,0-1.215,0.021-1.089,0.467  c0.419,1.377,2.074,2.839,3.918,3.475l1.299,0.444l-1.131,0.678c-1.676,0.976-3.646,1.526-5.616,1.568  C19.775,43.256,19,43.341,19,43.405c0,0.211,2.557,1.397,4.044,1.864c4.463,1.377,9.765,0.783,13.746-1.568  c2.829-1.673,5.657-5,6.978-8.221c0.713-1.716,1.425-4.851,1.425-6.354c0-0.975,0.063-1.102,1.236-2.267  c0.692-0.678,1.341-1.419,1.467-1.631c0.21-0.403,0.188-0.403-0.88-0.043c-1.781,0.636-2.033,0.551-1.152-0.402  c0.649-0.678,1.425-1.907,1.425-2.267c0-0.063-0.314,0.042-0.671,0.233c-0.377,0.212-1.215,0.53-1.844,0.72l-1.131,0.361l-1.027-0.7  c-0.566-0.381-1.361-0.805-1.781-0.932C39.766,21.902,38.131,21.944,37.167,22.283z M33,64C16.432,64,3,50.569,3,34S16.432,4,33,4  s30,13.431,30,30S49.568,64,33,64z" style="fill-rule:evenodd;clip-rule:evenodd;"/></svg>
+</span>
+      
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;"/>
+</svg>
+</span></a>
+  
+    
+    <a href="https://github.com/sugatagh" target="_blank" rel="noopener" class="github ananke-social-link link-transition stackoverflow link dib z-999 pt3 pt0-l mr1" title="GitHub link" aria-label="follow on GitHub——Opens in a new window">
+      
+        <span class="icon"><svg style="enable-background:new 0 0 512 512;" version="1.1" viewBox="0 0 512 512"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+  <path d="M256,32C132.3,32,32,134.8,32,261.7c0,101.5,64.2,187.5,153.2,217.9c11.2,2.1,15.3-5,15.3-11.1   c0-5.5-0.2-19.9-0.3-39.1c-62.3,13.9-75.5-30.8-75.5-30.8c-10.2-26.5-24.9-33.6-24.9-33.6c-20.3-14.3,1.5-14,1.5-14   c22.5,1.6,34.3,23.7,34.3,23.7c20,35.1,52.4,25,65.2,19.1c2-14.8,7.8-25,14.2-30.7c-49.7-5.8-102-25.5-102-113.5   c0-25.1,8.7-45.6,23-61.6c-2.3-5.8-10-29.2,2.2-60.8c0,0,18.8-6.2,61.6,23.5c17.9-5.1,37-7.6,56.1-7.7c19,0.1,38.2,2.6,56.1,7.7   c42.8-29.7,61.5-23.5,61.5-23.5c12.2,31.6,4.5,55,2.2,60.8c14.3,16.1,23,36.6,23,61.6c0,88.2-52.4,107.6-102.3,113.3   c8,7.1,15.2,21.1,15.2,42.5c0,30.7-0.3,55.5-0.3,63c0,6.1,4,13.3,15.4,11C415.9,449.1,480,363.1,480,261.7   C480,134.8,379.7,32,256,32z"/>
+</svg>
+</span>
+      
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;"/>
+</svg>
+</span></a>
+  
+    
+    <a href="https://www.kaggle.com/sugataghosh" target="_blank" rel="noopener" class="Kaggle ananke-social-link link-transition stackoverflow link dib z-999 pt3 pt0-l mr1" title="Kaggle link" aria-label="follow on Kaggle——Opens in a new window">
+      
+        Kaggle
+      
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;"/>
+</svg>
+</span></a>
+  
+</div>
+</div>
+  </div>
+</footer>
+
+  </body>
+</html>

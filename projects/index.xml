@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Projects on Sugata Ghosh, PhD</title>
+    <link>https://sugatagh.github.io/dsml/projects/</link>
+    <description>Recent content in Projects on Sugata Ghosh, PhD</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Mon, 26 Sep 2022 00:00:00 +0530</lastBuildDate>
+    <atom:link href="https://sugatagh.github.io/dsml/projects/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>E-commerce Text Classification</title>
+      <link>https://sugatagh.github.io/dsml/projects/e-commerce-text-classification/</link>
+      <pubDate>Mon, 26 Sep 2022 00:00:00 +0530</pubDate>
+      <guid>https://sugatagh.github.io/dsml/projects/e-commerce-text-classification/</guid>
+      <description>Product categorization is a type of economic taxonomy that refers to a system of categories into which a collection of products would fall. The problem considered in this project involves the categorization of products offered on e-commerce platforms based on the descriptions of the products mentioned therein. The categories are: Electronics, Household, Books, and Clothing &amp;amp; Accessories. The purpose of such categorization is to enhance the user experience and achieve better results with external search engines.</description>
+    </item>
+    <item>
+      <title>Anomaly Detection in Credit Card Transactions</title>
+      <link>https://sugatagh.github.io/dsml/projects/anomaly-detection-in-credit-card-transactions/</link>
+      <pubDate>Sat, 17 Sep 2022 00:00:00 +0530</pubDate>
+      <guid>https://sugatagh.github.io/dsml/projects/anomaly-detection-in-credit-card-transactions/</guid>
+      <description>An anomaly or outlier refers to a rare observation that deviates significantly from the majority of the data and does not conform to a well-defined notion of normal behaviour. Anomaly detection can be very useful in identifying fraudulent credit card transactions, which are rare compared to authentic transactions. Also, the methods through which fraudulent transactions occur keep evolving as the old ways get flagged by existing fraud detection systems. In this project, we shall develop a basic anomaly detection system that flags transactions with feature values deviating significantly from those of authentic transactions.</description>
+    </item>
+    <item>
+      <title>Higgs Boson Event Detection</title>
+      <link>https://sugatagh.github.io/dsml/projects/higgs-boson-event-detection/</link>
+      <pubDate>Sun, 29 May 2022 22:01:00 +0530</pubDate>
+      <guid>https://sugatagh.github.io/dsml/projects/higgs-boson-event-detection/</guid>
+      <description>In particle physics, events refer to the results just after a fundamental interaction took place between subatomic particles, occurring in a very short time span in a well-localized region of space. A background event is explained by the existing theories. On the other hand, a signal event indicates a process that cannot be described by previous observations and leads to the potential discovery of a new particle. In this project, we aim to predict if a given event is background or signal.</description>
+    </item>
+    <item>
+      <title>Electron Energy Flux Prediction</title>
+      <link>https://sugatagh.github.io/dsml/projects/electron-energy-flux-prediction/</link>
+      <pubDate>Sat, 30 Apr 2022 06:13:00 +0530</pubDate>
+      <guid>https://sugatagh.github.io/dsml/projects/electron-energy-flux-prediction/</guid>
+      <description>In McGranaghan et al. (2021), the authors considered the problem of modeling electron particle precipitation from the magnetosphere to the ionosphere. They attempted to address the problem through a new particle precipitation database, using machine learning tools to extract useful information from it. The new database contains 51 satellite years of Defense Meteorological Satellite Program (DMSP) observations. Based on this, we aim to predict the continuous target variable electron total energy flux.</description>
+    </item>
+    <item>
+      <title>Site Energy Usage Intensity Prediction</title>
+      <link>https://sugatagh.github.io/dsml/projects/site-energy-usage-intensity-prediction/</link>
+      <pubDate>Fri, 08 Apr 2022 00:00:00 +0530</pubDate>
+      <guid>https://sugatagh.github.io/dsml/projects/site-energy-usage-intensity-prediction/</guid>
+      <description>Energy usage intensity (EUI) refers to the amount of energy used per square foot annually. It is calculated by dividing the total energy consumed by the building in a year by the total gross floor area. Like miles per gallon for cars, EUI is the prime indicator of the energy performance of a building. In this project, we aim to predict the continuous target variable site EUI, given the characteristics of the building and the weather data for its location.</description>
+    </item>
+    <item>
+      <title>Patient Survival Prediction</title>
+      <link>https://sugatagh.github.io/dsml/projects/patient-survival-prediction/</link>
+      <pubDate>Thu, 07 Apr 2022 00:00:00 +0530</pubDate>
+      <guid>https://sugatagh.github.io/dsml/projects/patient-survival-prediction/</guid>
+      <description>Deriving a quick understanding of the overall health of a patient is of paramount importance in emergency healthcare situations. Often, this understanding is hindered for many different reasons. In particular, the intensive care units in hospitals often lack a verified medical history of the incoming patients. The knowledge of medical records indicates the survival odds of a patient to a great extent. In this project, we predict whether a patient will survive or not based on various relevant medical information.</description>
+    </item>
+    <item>
+      <title>Road Traffic Accidents Severity Classification</title>
+      <link>https://sugatagh.github.io/dsml/projects/road-traffic-accidents-severity-classification/</link>
+      <pubDate>Thu, 07 Apr 2022 00:00:00 +0530</pubDate>
+      <guid>https://sugatagh.github.io/dsml/projects/road-traffic-accidents-severity-classification/</guid>
+      <description>The severity of road traffic accidents can be influenced by several factors, including the various attributes of the vehicles involved, the drivers, the casualties, and the surrounding conditions. The objective of the project is to build a prediction model to classify the severity of road traffic accidents into a hierarchy consisting of three categories, namely slight injury, serious injury, and fatal injury, based on the information on the pertinent attributes.</description>
+    </item>
+    <item>
+      <title>Natural Language Processing with Disaster Tweets</title>
+      <link>https://sugatagh.github.io/dsml/projects/natural-language-processing-with-disaster-tweets/</link>
+      <pubDate>Tue, 09 Nov 2021 08:38:00 +0530</pubDate>
+      <guid>https://sugatagh.github.io/dsml/projects/natural-language-processing-with-disaster-tweets/</guid>
+      <description>Disaster-related tweets have the potential to alert relevant authorities early on so that they can take action to reduce damage and possibly save lives. In this project, we attempt to predict whether a given tweet indicates a real disaster or not. We take a number of text normalization processes into consideration. For text representation, we experiment with the bag of words model (count vectorizer), TF-IDF vectorizer, and word2vec embedding. For each approach, we consider several binary classifiers and compare their performances through cross-validation.</description>
+    </item>
+    <item>
+      <title>Credit Card Fraud Detection</title>
+      <link>https://sugatagh.github.io/dsml/projects/credit-card-fraud-detection/</link>
+      <pubDate>Sun, 08 Aug 2021 01:53:00 +0530</pubDate>
+      <guid>https://sugatagh.github.io/dsml/projects/credit-card-fraud-detection/</guid>
+      <description>The detection of a fraudulent credit card transaction can be helped by a number of attributes regarding the particular transaction. In this work, we build a number of classification models to predict whether a credit card transaction is authentic or fraudulent based on the data regarding time, amount, and a set of PCA-transformed features. Apart from the unaltered training set, we use different resampled training sets (with both classes represented equally) to counter the class imbalance issue.</description>
+    </item>
+  </channel>
+</rss>

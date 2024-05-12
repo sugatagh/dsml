@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    
+    <title>Electron Energy Flux Prediction | Sugata Ghosh, PhD</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1">
+    <meta name="description" content="Regression with Deep Learning">
+    <meta name="generator" content="Hugo 0.121.2">
+    
+    
+    
+    
+      <meta name="robots" content="noindex, nofollow">
+    
+
+    
+<link rel="stylesheet" href="https://sugatagh.github.io/dsml/ananke/css/main.min.css" >
+
+
+
+    
+
+    
+      
+
+    
+
+    
+
+    
+      <link rel="canonical" href="https://sugatagh.github.io/dsml/projects/electron-energy-flux-prediction/">
+    
+
+    <meta property="og:title" content="Electron Energy Flux Prediction" />
+<meta property="og:description" content="Regression with Deep Learning" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://sugatagh.github.io/dsml/projects/electron-energy-flux-prediction/" /><meta property="article:section" content="projects" />
+<meta property="article:published_time" content="2022-04-30T06:13:00+05:30" />
+<meta property="article:modified_time" content="2022-04-30T06:13:00+05:30" />
+
+<meta itemprop="name" content="Electron Energy Flux Prediction">
+<meta itemprop="description" content="Regression with Deep Learning"><meta itemprop="datePublished" content="2022-04-30T06:13:00+05:30" />
+<meta itemprop="dateModified" content="2022-04-30T06:13:00+05:30" />
+<meta itemprop="wordCount" content="2534">
+<meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/><meta name="twitter:title" content="Electron Energy Flux Prediction"/>
+<meta name="twitter:description" content="Regression with Deep Learning"/>
+
+	<style>
+.has-mathjax {
+    visibility: hidden;
+}
+</style>
+
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+<script>
+window.MathJax = {
+  startup: {
+    pageReady: () => {
+      return MathJax.startup.defaultPageReady().then(() => {
+        for (let element of document.getElementsByClassName("has-mathjax")) {
+            element.style.visibility = "visible"
+        }
+      });
+    }
+  }
+};
+</script>
+  </head>
+
+  <body class="ma0 avenir bg-near-white">
+
+    
+   
+  
+
+  
+  <header class="cover bg-top" style="background-image: url('https://sugatagh.github.io/dsml/images/bg-projects/bg-eefp-1.jpg');">
+    <div class="bg-black-60">
+      <nav class="pv3 ph3 ph4-ns" role="navigation">
+  <div class="flex-l justify-between items-center center">
+    <a href="https://sugatagh.github.io/dsml/" class="f3 fw2 hover-white no-underline white-90 dib">
+      
+        Sugata Ghosh, PhD
+      
+    </a>
+    <div class="flex-l items-center">
+      
+
+      
+        <ul class="pl0 mr3">
+          
+          <li class="list f5 f4-ns fw4 dib pr3">
+            <a class="hover-white no-underline white-90" href="https://sugatagh.github.io/dsml/about/" title="About page">
+              About
+            </a>
+          </li>
+          
+          <li class="list f5 f4-ns fw4 dib pr3">
+            <a class="hover-white no-underline white-90" href="https://sugatagh.github.io/dsml/overview/" title="Overview page">
+              Overview
+            </a>
+          </li>
+          
+          <li class="list f5 f4-ns fw4 dib pr3">
+            <a class="hover-white no-underline white-90" href="https://sugatagh.github.io/dsml/certifications/" title="Certifications page">
+              Certifications
+            </a>
+          </li>
+          
+          <li class="list f5 f4-ns fw4 dib pr3">
+            <a class="hover-white no-underline white-90" href="https://sugatagh.github.io/dsml/projects/" title="Projects page">
+              Projects
+            </a>
+          </li>
+          
+          <li class="list f5 f4-ns fw4 dib pr3">
+            <a class="hover-white no-underline white-90" href="https://sugatagh.github.io/dsml/notes/" title="Notes page">
+              Notes
+            </a>
+          </li>
+          
+          <li class="list f5 f4-ns fw4 dib pr3">
+            <a class="hover-white no-underline white-90" href="https://sugatagh.github.io/dsml/cv/" title="CV page">
+              CV
+            </a>
+          </li>
+          
+          <li class="list f5 f4-ns fw4 dib pr3">
+            <a class="hover-white no-underline white-90" href="https://sugatagh.github.io/dsml/contact/" title="Contact page">
+              Contact
+            </a>
+          </li>
+          
+        </ul>
+      
+      
+<div class="ananke-socials">
+  
+    
+    <a href="https://www.linkedin.com/in/sugataghosh/" target="_blank" rel="noopener" class="linkedin ananke-social-link link-transition stackoverflow link dib z-999 pt3 pt0-l mr1" title="LinkedIn link" aria-label="follow on LinkedIn——Opens in a new window">
+      
+        <span class="icon"><svg style="enable-background:new 0 0 65 65;" version="1.1" viewBox="0 0 65 65"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <path d="M50.837,48.137V36.425c0-6.275-3.35-9.195-7.816-9.195  c-3.604,0-5.219,1.983-6.119,3.374V27.71h-6.79c0.09,1.917,0,20.427,0,20.427h6.79V36.729c0-0.609,0.044-1.219,0.224-1.655  c0.49-1.22,1.607-2.483,3.482-2.483c2.458,0,3.44,1.873,3.44,4.618v10.929H50.837z M22.959,24.922c2.367,0,3.842-1.57,3.842-3.531  c-0.044-2.003-1.475-3.528-3.797-3.528s-3.841,1.524-3.841,3.528c0,1.961,1.474,3.531,3.753,3.531H22.959z M34,64  C17.432,64,4,50.568,4,34C4,17.431,17.432,4,34,4s30,13.431,30,30C64,50.568,50.568,64,34,64z M26.354,48.137V27.71h-6.789v20.427  H26.354z" style="fill-rule:evenodd;clip-rule:evenodd;"/>
+</svg>
+</span>
+      
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;"/>
+</svg>
+</span></a>
+  
+    
+    <a href="https://twitter.com/sugatagh" target="_blank" rel="noopener" class="twitter ananke-social-link link-transition stackoverflow link dib z-999 pt3 pt0-l mr1" title="Twitter link" aria-label="follow on Twitter——Opens in a new window">
+      
+        <span class="icon"><svg style="enable-background:new 0 0 67 67;" version="1.1" viewBox="0 0 67 67"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M37.167,22.283c-2.619,0.953-4.274,3.411-4.086,6.101  l0.063,1.038l-1.048-0.127c-3.813-0.487-7.145-2.139-9.974-4.915l-1.383-1.377l-0.356,1.017c-0.754,2.267-0.272,4.661,1.299,6.271  c0.838,0.89,0.649,1.017-0.796,0.487c-0.503-0.169-0.943-0.296-0.985-0.233c-0.146,0.149,0.356,2.076,0.754,2.839  c0.545,1.06,1.655,2.097,2.871,2.712l1.027,0.487l-1.215,0.021c-1.173,0-1.215,0.021-1.089,0.467  c0.419,1.377,2.074,2.839,3.918,3.475l1.299,0.444l-1.131,0.678c-1.676,0.976-3.646,1.526-5.616,1.568  C19.775,43.256,19,43.341,19,43.405c0,0.211,2.557,1.397,4.044,1.864c4.463,1.377,9.765,0.783,13.746-1.568  c2.829-1.673,5.657-5,6.978-8.221c0.713-1.716,1.425-4.851,1.425-6.354c0-0.975,0.063-1.102,1.236-2.267  c0.692-0.678,1.341-1.419,1.467-1.631c0.21-0.403,0.188-0.403-0.88-0.043c-1.781,0.636-2.033,0.551-1.152-0.402  c0.649-0.678,1.425-1.907,1.425-2.267c0-0.063-0.314,0.042-0.671,0.233c-0.377,0.212-1.215,0.53-1.844,0.72l-1.131,0.361l-1.027-0.7  c-0.566-0.381-1.361-0.805-1.781-0.932C39.766,21.902,38.131,21.944,37.167,22.283z M33,64C16.432,64,3,50.569,3,34S16.432,4,33,4  s30,13.431,30,30S49.568,64,33,64z" style="fill-rule:evenodd;clip-rule:evenodd;"/></svg>
+</span>
+      
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;"/>
+</svg>
+</span></a>
+  
+    
+    <a href="https://github.com/sugatagh" target="_blank" rel="noopener" class="github ananke-social-link link-transition stackoverflow link dib z-999 pt3 pt0-l mr1" title="GitHub link" aria-label="follow on GitHub——Opens in a new window">
+      
+        <span class="icon"><svg style="enable-background:new 0 0 512 512;" version="1.1" viewBox="0 0 512 512"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+  <path d="M256,32C132.3,32,32,134.8,32,261.7c0,101.5,64.2,187.5,153.2,217.9c11.2,2.1,15.3-5,15.3-11.1   c0-5.5-0.2-19.9-0.3-39.1c-62.3,13.9-75.5-30.8-75.5-30.8c-10.2-26.5-24.9-33.6-24.9-33.6c-20.3-14.3,1.5-14,1.5-14   c22.5,1.6,34.3,23.7,34.3,23.7c20,35.1,52.4,25,65.2,19.1c2-14.8,7.8-25,14.2-30.7c-49.7-5.8-102-25.5-102-113.5   c0-25.1,8.7-45.6,23-61.6c-2.3-5.8-10-29.2,2.2-60.8c0,0,18.8-6.2,61.6,23.5c17.9-5.1,37-7.6,56.1-7.7c19,0.1,38.2,2.6,56.1,7.7   c42.8-29.7,61.5-23.5,61.5-23.5c12.2,31.6,4.5,55,2.2,60.8c14.3,16.1,23,36.6,23,61.6c0,88.2-52.4,107.6-102.3,113.3   c8,7.1,15.2,21.1,15.2,42.5c0,30.7-0.3,55.5-0.3,63c0,6.1,4,13.3,15.4,11C415.9,449.1,480,363.1,480,261.7   C480,134.8,379.7,32,256,32z"/>
+</svg>
+</span>
+      
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;"/>
+</svg>
+</span></a>
+  
+    
+    <a href="https://www.kaggle.com/sugataghosh" target="_blank" rel="noopener" class="Kaggle ananke-social-link link-transition stackoverflow link dib z-999 pt3 pt0-l mr1" title="Kaggle link" aria-label="follow on Kaggle——Opens in a new window">
+      
+        Kaggle
+      
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;"/>
+</svg>
+</span></a>
+  
+</div>
+
+    </div>
+  </div>
+</nav>
+
+      <div class="tc-l pv6 ph3 ph4-ns">
+        
+          <div class="f2 f1-l fw2 white-90 mb0 lh-title">Electron Energy Flux Prediction</div>
+          
+            <div class="fw1 f5 f3-l white-80 measure-wide-l center lh-copy mt3 mb4">
+              Regression with Deep Learning
+            </div>
+          
+        
+      </div>
+    </div>
+  </header>
+
+
+
+    <main class="pb7" role="main">
+      
+  
+  <article class="flex-l flex-wrap justify-between mw8 center ph3">
+    <header class="mt4 w-100">
+      <aside class="instapaper_ignoref b helvetica tracked ttu">
+          
+        Projects
+      </aside>
+      
+
+
+
+
+
+
+
+
+
+
+  <div id="sharing" class="mt3 ananke-socials">
+    
+      
+      <a href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https://sugatagh.github.io/dsml/projects/electron-energy-flux-prediction/&amp;title=Electron%20Energy%20Flux%20Prediction" class="ananke-social-link linkedin no-underline" aria-label="share on LinkedIn">
+        
+        <span class="icon"> <svg style="enable-background:new 0 0 65 65;" version="1.1" viewBox="0 0 65 65"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <path d="M50.837,48.137V36.425c0-6.275-3.35-9.195-7.816-9.195  c-3.604,0-5.219,1.983-6.119,3.374V27.71h-6.79c0.09,1.917,0,20.427,0,20.427h6.79V36.729c0-0.609,0.044-1.219,0.224-1.655  c0.49-1.22,1.607-2.483,3.482-2.483c2.458,0,3.44,1.873,3.44,4.618v10.929H50.837z M22.959,24.922c2.367,0,3.842-1.57,3.842-3.531  c-0.044-2.003-1.475-3.528-3.797-3.528s-3.841,1.524-3.841,3.528c0,1.961,1.474,3.531,3.753,3.531H22.959z M34,64  C17.432,64,4,50.568,4,34C4,17.431,17.432,4,34,4s30,13.431,30,30C64,50.568,50.568,64,34,64z M26.354,48.137V27.71h-6.789v20.427  H26.354z" style="fill-rule:evenodd;clip-rule:evenodd;"/>
+</svg>
+</span>
+        
+      </a>
+    
+      
+      <a href="https://twitter.com/intent/tweet?url=https://sugatagh.github.io/dsml/projects/electron-energy-flux-prediction/&amp;text=Electron%20Energy%20Flux%20Prediction" class="ananke-social-link twitter no-underline" aria-label="share on Twitter">
+        
+        <span class="icon"> <svg style="enable-background:new 0 0 67 67;" version="1.1" viewBox="0 0 67 67"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M37.167,22.283c-2.619,0.953-4.274,3.411-4.086,6.101  l0.063,1.038l-1.048-0.127c-3.813-0.487-7.145-2.139-9.974-4.915l-1.383-1.377l-0.356,1.017c-0.754,2.267-0.272,4.661,1.299,6.271  c0.838,0.89,0.649,1.017-0.796,0.487c-0.503-0.169-0.943-0.296-0.985-0.233c-0.146,0.149,0.356,2.076,0.754,2.839  c0.545,1.06,1.655,2.097,2.871,2.712l1.027,0.487l-1.215,0.021c-1.173,0-1.215,0.021-1.089,0.467  c0.419,1.377,2.074,2.839,3.918,3.475l1.299,0.444l-1.131,0.678c-1.676,0.976-3.646,1.526-5.616,1.568  C19.775,43.256,19,43.341,19,43.405c0,0.211,2.557,1.397,4.044,1.864c4.463,1.377,9.765,0.783,13.746-1.568  c2.829-1.673,5.657-5,6.978-8.221c0.713-1.716,1.425-4.851,1.425-6.354c0-0.975,0.063-1.102,1.236-2.267  c0.692-0.678,1.341-1.419,1.467-1.631c0.21-0.403,0.188-0.403-0.88-0.043c-1.781,0.636-2.033,0.551-1.152-0.402  c0.649-0.678,1.425-1.907,1.425-2.267c0-0.063-0.314,0.042-0.671,0.233c-0.377,0.212-1.215,0.53-1.844,0.72l-1.131,0.361l-1.027-0.7  c-0.566-0.381-1.361-0.805-1.781-0.932C39.766,21.902,38.131,21.944,37.167,22.283z M33,64C16.432,64,3,50.569,3,34S16.432,4,33,4  s30,13.431,30,30S49.568,64,33,64z" style="fill-rule:evenodd;clip-rule:evenodd;"/></svg>
+</span>
+        
+      </a>
+    
+  </div>
+
+
+      <h1 class="f1 athelas mt3 mb1">Electron Energy Flux Prediction</h1>
+      
+      
+      
+      <time class="f6 mv4 dib tracked" datetime="2022-04-30T06:13:00+05:30">April 30, 2022</time>
+      
+
+      
+      
+    </header>
+    <div class="nested-copy-line-height lh-copy serif f4 nested-links mid-gray pr4-l w-two-thirds-l"><p>In McGranaghan et al. (2021), the authors considered the problem of modeling electron particle precipitation from the magnetosphere to the ionosphere. They attempted to address the problem through a new particle precipitation database, using machine learning tools to extract useful information from it. The new database contains 51 satellite years of Defense Meteorological Satellite Program (DMSP) observations. Based on this, we aim to predict the continuous target variable <em>electron total energy flux</em>.</p>
+<p><a href="https://github.com/sugatagh/Electron-Energy-Flux-Prediction-using-Deep-Learning">GitHub repository</a></p>
+<h3 id="-contents">○ Contents</h3>
+<ul>
+<li><a href="#-overview">Overview</a></li>
+<li><a href="#-introduction">Introduction</a></li>
+<li><a href="#-exploratory-data-analysis">Exploratory Data Analysis</a></li>
+<li><a href="#-data-preprocessing">Data Preprocessing</a></li>
+<li><a href="#-baseline-neural-network">Baseline Neural Network</a></li>
+<li><a href="#-hyperparameter-tuning">Hyperparameter Tuning</a></li>
+<li><a href="#-prediction-and-evaluation">Prediction and Evaluation</a></li>
+<li><a href="#-acknowledgements">Acknowledgements</a></li>
+<li><a href="#-references">References</a></li>
+</ul>
+<h3 id="-overview">○ Overview</h3>
+<ul>
+<li>In <a href="https://doi.org/10.1029/2020SW002684">McGranaghan et al. (2021)</a>, the authors have considered the problem of modeling <em>electron particle precipitation</em> from the <a href="https://en.wikipedia.org/wiki/Magnetosphere">magnetosphere</a> to the <a href="https://en.wikipedia.org/wiki/Ionosphere">ionosphere</a>. They attempted to address it through a new database, using <a href="https://en.wikipedia.org/wiki/Machine_learning">machine learning</a> tools to extract useful information from it.</li>
+<li>Based on that database, we aim to predict <em>electron total energy flux</em>, which is a <a href="https://en.wikipedia.org/wiki/Continuous_or_discrete_variable#Continuous_variable">continuous variable</a>.</li>
+<li>A detailed <a href="https://en.wikipedia.org/wiki/Exploratory_data_analysis">exploratory data analysis</a> on the dataset is carried out. In particular, we observe that there are clear groups among the feature variables. We investigate the group-wise correlation structure through averaging the pairwise correlation coefficients.</li>
+<li>We use the insights obtained from EDA in the <a href="https://en.wikipedia.org/wiki/Data_Preprocessing">data preprocessing</a> stages, which consists of <a href="https://en.wikipedia.org/wiki/Feature_engineering">feature extraction</a>, <a href="https://en.wikipedia.org/wiki/Data_transformation_(statistics)">data transformation</a>, <a href="https://en.wikipedia.org/wiki/Feature_scaling">feature scaling</a>, and <a href="https://en.wikipedia.org/wiki/Principal_component_analysis">principal component analysis</a>.</li>
+<li>We build a <a href="https://en.wikipedia.org/wiki/Neural_network">neural network</a> and <a href="https://en.wikipedia.org/wiki/Hyperparameter_optimization">tune</a> it to predict <em>electron total energy flux</em>.</li>
+<li>We employ the <a href="https://en.wikipedia.org/wiki/Root-mean-square_deviation">root mean square error</a> (RMSE), <a href="https://en.wikipedia.org/wiki/Mean_absolute_error">mean absolute error</a> (MAE), and <a href="https://en.wikipedia.org/wiki/Coefficient_of_determination">coefficient of determination</a> <span class="has-mathjax">(\(R^2\))</span>
+ metrics to evaluate the models. Performance summary of the final model:</li>
+</ul>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/eefp/eefp-nn-ht-model-performance-df.png"/>
+</figure>
+
+<h3 id="-introduction">○ Introduction</h3>
+<ul>
+<li><a href="#data">Data</a></li>
+<li><a href="#project-objective">Project Objective</a></li>
+<li><a href="#evaluation-metric">Evaluation Metric</a></li>
+</ul>
+<h4 id="data">Data</h4>
+<p><a href="https://www.kaggle.com/datasets/saurabhshahane/dmsp-particle-precipitation-aiready-data">The dataset</a> accompanies <a href="https://doi.org/10.1029/2020SW002684">this paper</a> published in the <a href="https://agupubs.onlinelibrary.wiley.com/journal/15427390">AGU Space Weather Journal</a> and is used to produce new machine learning models of particle precipitation from the magnetosphere to the ionosphere. The authors have attempted to make these data ready to be used in artificial intelligence or machine learning explorations, following a community definition of <em>AI-ready</em> provided at <a href="https://github.com/rmcgranaghan/data_science_tools_and_resources/wiki/Curated-Reference%7CChallenge-Data-Sets">this repository</a>. The dataset contains <span class="has-mathjax">\(1945789\)</span>
+ observations, each containing <span class="has-mathjax">\(74\)</span>
+ variables.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/eefp/eefp-data.png"/>
+</figure>
+
+<h4 id="project-objective">Project Objective</h4>
+<p>The goal is to predict <code>ELE_TOTAL_ENERGY_FLUX</code>, which is a continuous variable, based on the features available in the dataset.</p>
+<h4 id="evaluation-metric">Evaluation Metric</h4>
+<p>We use the trained models to predict on the test dataset and evaluate the models in terms of root mean square error (RMSE), mean absolute error (MAE), and coefficient of determination <span class="has-mathjax">(\(R^2\)).</span>
+</p>
+<h3 id="-exploratory-data-analysis">○ Exploratory Data Analysis</h3>
+<ul>
+<li><a href="#dataset-synopsis">Dataset Synopsis</a></li>
+<li><a href="#univariate-analysis">Univariate Analysis</a></li>
+<li><a href="#multivariate-analysis">Multivariate Analysis</a></li>
+</ul>
+<h4 id="dataset-synopsis">Dataset Synopsis</h4>
+<ul>
+<li>Number of observations: <span class="has-mathjax">\(1945789\)</span>
+</li>
+<li>Number of columns: <span class="has-mathjax">\(74\)</span>
+</li>
+<li>Number of integer columns: <span class="has-mathjax">\(0\)</span>
+</li>
+<li>Number of float columns: <span class="has-mathjax">\(73\)</span>
+</li>
+<li>Number of object columns: <span class="has-mathjax">\(1\)</span>
+</li>
+<li>Number of duplicate observations: <span class="has-mathjax">\(0\)</span>
+</li>
+<li>Constant columns: None</li>
+<li>Number of columns with missing values: <span class="has-mathjax">\(0\)</span>
+</li>
+<li>Memory Usage: <span class="has-mathjax">\(1098.54\)</span>
+ MB</li>
+</ul>
+<h4 id="univariate-analysis">Univariate Analysis</h4>
+<p>We visualize the distribution of the continuous target variable <code>ELE_TOTAL_ENERGY_FLUX</code> through histogram and observe that it is extremely skewed in linear scale. So, we set <code>log_scale = True</code> in <a href="https://seaborn.pydata.org/generated/seaborn.histplot.html">seaborn histplot</a> and visualize the distribution on <a href="https://en.wikipedia.org/wiki/Logarithmic_scale">logarithmic scale</a>.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/eefp/eefp-eda-target.png"/>
+</figure>
+
+<p><em>Observations</em></p>
+<ul>
+<li>The target variable has extremely left-skewed distribution, which suggests applying log-transformation <span class="has-mathjax">\(y \mapsto \log{y}\)</span>
+ on it</li>
+<li>Under logarithmic scale, the distribution appears to be bimodal</li>
+</ul>
+<p>Next, we visualize the distributions of the numerical features.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/eefp/eefp-eda-numerical-features.png"/>
+</figure>
+
+<p><em>Observations</em></p>
+<ul>
+<li><strong>Extremely skewed columns:</strong> <code>ELE_AVG_ENERGY</code></li>
+<li><strong>Moderately skewed columns:</strong> <code>ELE_TOTAL_ENERGY_FLUX_STD</code>, <code>ELE_AVG_ENERGY_STD</code>, <code>F107</code>, <code>AE</code>, <code>AU</code>, <code>F107_6hr</code>, <code>AE_6hr</code>, <code>AU_6hr</code>, <code>psw_6hr</code>, <code>F107_5hr</code>, <code>AE_5hr</code>, <code>AU_5hr</code>, <code>PC_5hr</code>, <code>psw_5hr</code>, <code>F107_3hr</code>, <code>AE_3hr</code>, <code>AU_3hr</code>, <code>psw_3hr</code>, <code>F107_1hr</code>, <code>AE_1hr</code>, <code>AU_1hr</code>, <code>psw_1hr</code>, <code>F107_45min</code>, <code>AE_45min</code>, <code>AU_45min</code>, <code>psw_45min</code>, <code>F107_30min</code>, <code>AE_30min</code>, <code>AU_30min</code>, <code>psw_30min</code>, <code>F107_15min</code>, <code>AE_15min</code>, <code>AU_15min</code>, <code>psw_15min</code>, <code>F107_10min</code>, <code>AE_10min</code>, <code>AU_10min</code>, <code>psw_10min</code>, <code>F107_5min</code>, <code>AE_5min</code>, <code>AU_5min</code>, <code>psw_5min</code></li>
+<li><strong>Extremely leptokurtic columns:</strong> <code>PC_6hr</code>, <code>PC_5hr</code>, <code>PC_3hr</code>, <code>PC_1hr</code></li>
+<li><strong>Moderately skewed columns taking negative values:</strong> <code>AL</code>, <code>psw</code>, <code>AL_6hr</code>, <code>AL_5hr</code>, <code>AL_3hr</code>, <code>AL_1hr</code>, <code>AL_45min</code>, <code>AL_30min</code>, <code>AL_15min</code>, <code>AL_10min</code>, <code>AL_5min</code></li>
+<li><strong>Columns with zero-inflated distribution:</strong> <code>borovsky</code>, <code>newell</code>, <code>borovsky_45min</code>, <code>newell_45min</code>, <code>borovsky_30min</code>, <code>newell_30min</code>, <code>borovsky_15min</code>, <code>newell_15min</code>, <code>borovsky_10min</code>, <code>newell_10min</code>, <code>borovsky_5min</code>, <code>newell_5min</code></li>
+</ul>
+<h4 id="multivariate-analysis">Multivariate Analysis</h4>
+<p>Barring the <code>object</code> type variable <code>Datetimes</code>, all the features are of the <code>float</code> datatype. We begin with investigating the pairwise <a href="https://en.wikipedia.org/wiki/Correlation_coefficient">correlation coefficients</a> for the numerical feature variables.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/eefp/eefp-eda-corr-coeff-df.png"/>
+</figure>
+
+<p>We present a histogram of the pairwise correlation coefficient values to give an overall picture of the extention of the correlation among the numerical features in the dataset.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/eefp/eefp-eda-corr-coeff-histogram.png"/>
+</figure>
+
+<p><em>Observations</em></p>
+<ul>
+<li>In total there are <span class="has-mathjax">\(\binom{152}{2} = 11476\)</span>
+ pairs of numerical features</li>
+<li>No significant correlation <span class="has-mathjax">\((\left\vert r \right\vert < 0.1):\)</span>
+ <span class="has-mathjax">\(6061\)</span>
+ pairs</li>
+<li>Weak correlation <span class="has-mathjax">\((0.1 \leq \left\vert r \right\vert < 0.3):\)</span>
+ <span class="has-mathjax">\(3195\)</span>
+ pairs</li>
+<li>Moderate correlation <span class="has-mathjax">\((0.3 \leq \left\vert r \right\vert < 0.7):\)</span>
+ <span class="has-mathjax">\(1653\)</span>
+ pairs</li>
+<li>Strong correlation <span class="has-mathjax">\((0.7 \leq \left\vert r \right\vert < 0.9):\)</span>
+ <span class="has-mathjax">\(222\)</span>
+ pairs</li>
+<li>Extremely strong correlation <span class="has-mathjax">\((0.9 \leq \left\vert r \right\vert < 0.99):\)</span>
+ <span class="has-mathjax">\(238\)</span>
+ pairs</li>
+<li>Almost linear relationship <span class="has-mathjax">\((0.99 \leq \left\vert r \right\vert \leq 1):\)</span>
+ <span class="has-mathjax">\(107\)</span>
+ pairs</li>
+</ul>
+<p>We observe that there are clear groups among the feature variables, as indicated by their names starting with certain common strings. For example, the features <code>Bz</code>, <code>Bz_6hr</code>, <code>Bz_3hr</code>, <code>Bz_1hr</code>, <code>Bz_45min</code>, <code>Bz_30min</code>, and <code>Bz_10min</code> appears to be related in some sense. We consider these different groups of features and investigate the group-wise correlation structure through averaging the pairwise correlation coefficients.</p>
+<p>To elaborate, let us take a group <span class="has-mathjax">\(G_1\)</span>
+ of the features <span class="has-mathjax">\(X_1, X_2, \cdots, X_m\).</span>
+ We can now define the mean of <em>within-group correlation coefficient</em> as
+<div class="has-mathjax">
+
+\[\text{mean}(r_\text{within}) := \frac{1}{\binom{m}{2}} \sum_{i=1}^m \sum_{j=1;\,j \neq i}^m \text{cov}(X_i, X_j). \]
+
+</div>
+</p>
+<p>We define the variance of <em>within-group correlation coefficient</em> as
+<div class="has-mathjax">
+
+\[\text{var}(r_\text{within}) := \frac{1}{\binom{m}{2}} \sum_{i=1}^m \sum_{j=1;\,j \neq i}^m \big\{\text{cov}(X_i, X_j) - \text{mean}(r_\text{within})\big\}^2. \]
+
+</div>
+</p>
+<p>Now, let us take another group <span class="has-mathjax">\(G_2\)</span>
+ of the features <span class="has-mathjax">\(Y_1, Y_2, \cdots, Y_n\).</span>
+ Note that the group sizes of <span class="has-mathjax">\(G_1\)</span>
+ and <span class="has-mathjax">\(G_2\)</span>
+ do not necessarily have to be equal. We define the mean of <em>between-group correlation coefficient</em> as
+<div class="has-mathjax">
+
+\[\text{mean}(r_\text{between}) := \frac{1}{mn} \sum_{i=1}^m \sum_{j=1}^n \text{cov}(X_i, Y_j). \]
+
+</div>
+</p>
+<p>We define the variance of <em>between-group correlation coefficient</em> as
+<div class="has-mathjax">
+
+\[\text{var}(r_\text{between}) := \frac{1}{mn} \sum_{i=1}^m \sum_{j=1}^n \big\{\text{cov}(X_i, Y_j) - \text{mean}(r_\text{between})\big\}^2. \]
+
+</div>
+</p>
+<p>These measures prove to be useful in the group-wise analysis of the correlation structure among numerical features. We begin with forming different groups of features.</p>
+<pre tabindex="0"><code>group_list = [col.split(&#34;_&#34;)[0] for col in data.columns if &#39;_6hr&#39; in col]
+group_dict = {}
+for item in group_list:
+    group_dict[item] = [col for col in data.columns if item in col]
+group_dict[&#39;AL&#39;].remove(&#39;ELE_TOTAL_ENERGY_FLUX&#39;)
+</code></pre><p>We illustrate the correlation structure among the groups through average pairwise correlation coefficients with a heatmap.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/eefp/eefp-eda-corr-coeff-grouped-heatmap.png"/>
+</figure>
+
+<p>Note that the diagonal elements of the group-wise correlation matrix is not necessarily equal to <span class="has-mathjax">\(1\),</span>
+ unlike the case of usual correlation matrices. This is because, in this scenario, the diagonal elements represent the average pairwise correlation coefficient of a group of features, instead of the correlation coefficient of a feature with itself.</p>
+<p>To illustrate how this <em>grouped heatmap</em> works, we give an in-depth view of the top-left square, which shows the average correlation coefficient within the <code>Bz</code>-group.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/eefp/eefp-eda-corr-coeff-bz-bz.png"/>
+</figure>
+
+<p><em>Observations from the grouped heatmap</em></p>
+<ul>
+<li>
+<p>The diagonal squares show that all the groups have moderate to high average correlation among its features (taken as pairs). We shall take in-depth look into each of the groups.</p>
+</li>
+<li>
+<p>The non-diagonal squares show that the average correlation between different groups varies from extremely negative to moderately positive. Some squares with strong (positive or negative) correlation, which we may want to look into, are given in <code>first group</code> <span class="has-mathjax">\(\times\)</span>
+ <code>second group</code> format:</p>
+<ul>
+<li><code>vsw-group</code> <span class="has-mathjax">\(\times\)</span>
+ <code>vx-group</code></li>
+<li><code>AE-group</code> <span class="has-mathjax">\(\times\)</span>
+ <code>AL-group</code></li>
+<li><code>AE-group</code> <span class="has-mathjax">\(\times\)</span>
+ <code>AU-group</code></li>
+<li><code>AL-group</code> <span class="has-mathjax">\(\times\)</span>
+ <code>AU-group</code></li>
+<li><code>AE-group</code> <span class="has-mathjax">\(\times\)</span>
+ <code>newell-group</code></li>
+<li><code>AE-group</code> <span class="has-mathjax">\(\times\)</span>
+ <code>PC-group</code></li>
+<li><code>Bz-group</code> <span class="has-mathjax">\(\times\)</span>
+ <code>newell-group</code></li>
+<li><code>AU-group</code> <span class="has-mathjax">\(\times\)</span>
+ <code>newell-group</code></li>
+<li><code>AL-group</code> <span class="has-mathjax">\(\times\)</span>
+ <code>PC-group</code></li>
+<li><code>AL-group</code> <span class="has-mathjax">\(\times\)</span>
+ <code>newell-group</code></li>
+<li><code>SymH-group</code> <span class="has-mathjax">\(\times\)</span>
+ <code>vsw-group</code></li>
+<li><code>SymH-group</code> <span class="has-mathjax">\(\times\)</span>
+ <code>vx-group</code></li>
+<li><code>PC-group</code> <span class="has-mathjax">\(\times\)</span>
+ <code>newell-group</code></li>
+<li><code>AU-group</code> <span class="has-mathjax">\(\times\)</span>
+ <code>PC-group</code></li>
+<li><code>borovsky-group</code> <span class="has-mathjax">\(\times\)</span>
+ <code>newell-group</code></li>
+<li><code>Bz-group</code> <span class="has-mathjax">\(\times\)</span>
+ <code>borovsky-group</code></li>
+<li><code>AL-group</code> <span class="has-mathjax">\(\times\)</span>
+ <code>SymH-group</code></li>
+</ul>
+</li>
+</ul>
+<p>The detailed visualizations for correlation structure within groups and between groups are available in <a href="https://github.com/sugatagh/Electron-Energy-Flux-Prediction-using-Deep-Learning/blob/main/Notebook/eefp-part-1-eda.ipynb">this notebook</a>.</p>
+<h3 id="-data-preprocessing">○ Data Preprocessing</h3>
+<ul>
+<li><a href="#feature-extraction-from-datetimes">Feature Extraction from <code>Datetimes</code></a></li>
+<li><a href="#log-transformation-of-the-target">Log-transformation of the Target</a></li>
+<li><a href="#feature-scaling">Feature Scaling</a></li>
+<li><a href="#principle-component-analysis-pca">Principle Component Analysis (PCA)</a></li>
+</ul>
+<p>The preprocessing of data is carried out in four stages. We postpone the <a href="https://en.wikipedia.org/wiki/Training,_validation,_and_test_data_sets">train-test split</a> until the end of the second stage, as the first two stages have no scope of <a href="https://en.wikipedia.org/wiki/Leakage_(machine_learning)">data leakage</a>.</p>
+<h4 id="feature-extraction-from-datetimes">Feature Extraction from <code>Datetimes</code></h4>
+<p>A typical value of the <code>object</code> type feature variable <code>Datetimes</code> looks like <code>1987-01-12 12:57:00</code>. Clearly, it contains information on</p>
+<ul>
+<li>Year</li>
+<li>Month</li>
+<li>Day</li>
+<li>Hour</li>
+<li>Minute</li>
+<li>Second</li>
+</ul>
+<p>We separate out these information as new features and subsequently drop the original <code>Datetimes</code> column from the dataset. A snapshot of the new features is given as follows:</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/eefp/eefp-preprocessing-feature-extraction-df.png"/>
+</figure>
+
+<p>Next, we give statistical description of the new features.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/eefp/eefp-preprocessing-feature-extraction-description.png"/>
+</figure>
+
+<p>We drop the constant column <code>second</code> from the dataset.</p>
+<h4 id="log-transformation-of-the-target">Log-transformation of the Target</h4>
+<p>We observed in the exploratory data analysis that the target variable <code>ELE_TOTAL_ENERGY_FLUX</code> has an extremely left-skewed distribution. Thus, we <a href="https://en.wikipedia.org/wiki/Data_transformation_(statistics)#Common_cases">transform the target</a> by applying the map <span class="has-mathjax">\(y \mapsto \log{y}\).</span>
+</p>
+<p><strong>Train-Test Split.</strong> We split the dataset into <a href="https://en.wikipedia.org/wiki/Training,_validation,_and_test_data_sets#Training_data_set">training set</a> and <a href="https://en.wikipedia.org/wiki/Training,_validation,_and_test_data_sets#Test_data_set">test set</a> in <span class="has-mathjax">\(80 : 20\)</span>
+ ratio. The training set contains <span class="has-mathjax">\(1556631\)</span>
+ observations and the test set contains <span class="has-mathjax">\(389158\)</span>
+ observations, each having <span class="has-mathjax">\(77\)</span>
+ variables.</p>
+<p>The distributions of the log-transformed target variable in the training set and test set are shown in the next diagram. The two distributions appear to be similar.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/eefp/eefp-preprocessing-train-test-split.png"/>
+</figure>
+
+<h4 id="feature-scaling">Feature Scaling</h4>
+<p>It may be natural for one feature variable to have a greater impact on classification procedure than another. But often this is generated artificially by the difference of range of values that the features take. The <a href="https://en.wikipedia.org/wiki/Unit_of_measurement">unit of measurement</a> in which the features are measured can be one a possible reason for such occurrence.</p>
+<p>This necessitates the practitioner to scale the features appropriately before feeding the data to machine learning algorithms. For this purpose, the <a href="https://en.wikipedia.org/wiki/Feature_scaling#Rescaling_(min-max_normalization)">min-max normalization</a> transforms the features in the following way:
+<div class="has-mathjax">
+
+\[x \mapsto \frac{x - \min{\left(x\right)}}{\max{\left(x\right)} - \min{\left(x\right)}}\]
+
+</div>
+</p>
+<p>The next function implements this using the <code>MinMaxScaler</code> class from the <code>scikit-learn</code> library. To keep the transformation the same, we use the minimum and maximum values of the training columns to scale the corresponding columns in both the training set and the test set. Using the minimum and maximum values of the test columns for both datasets would have led to data leakage.</p>
+<pre tabindex="0"><code>def scaler(X_train, X_test):
+    scaling = MinMaxScaler().fit(X_train)
+    X_train_scaled = scaling.transform(X_train)
+    X_test_scaled = scaling.transform(X_test)
+    return X_train_scaled, X_test_scaled
+</code></pre><h4 id="principle-component-analysis-pca">Principle Component Analysis (PCA)</h4>
+<p>We import the <code>PCA</code> class from the <code>scikit-learn</code> library and fit it on the training features. We set the argument <code>n_components</code> (the number of components to keep) to <span class="has-mathjax">\(20\).</span>
+ The number of components kept and the ratio of variance explained by the retained components are summarized below.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/eefp/eefp-preprocessing-pca-summary.png"/>
+</figure>
+
+<p>We plot the cumulative explained variance ratio over the number of components.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/eefp/eefp-preprocessing-pca-lineplot.png"/>
+</figure>
+
+<p>A snapshot of the correlation structure of components and features is given as follows.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/eefp/eefp-preprocessing-pca-correlation.png"/>
+</figure>
+
+<p>Next, we PCA-transform the training set features and give a snapshot of the transformed data.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/eefp/eefp-preprocessing-pca-training-set.png"/>
+</figure>
+
+<p>Similarly, we PCA-transform the test set features and give a snapshot of the transformed data.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/eefp/eefp-preprocessing-pca-test-set.png"/>
+</figure>
+
+<h3 id="-baseline-neural-network">○ Baseline Neural Network</h3>
+<ul>
+<li><a href="#model-creation">Model Creation</a></li>
+<li><a href="#model-compilation">Model Compilation</a></li>
+<li><a href="#model-fitting">Model Fitting</a></li>
+<li><a href="#model-evaluation">Model Evaluation</a></li>
+</ul>
+<h4 id="model-creation">Model Creation</h4>
+<p>We add <a href="https://en.wikipedia.org/wiki/Layer_(deep_learning)#Layer_Types">dense layers</a>, with appropriate number of units and <a href="https://en.wikipedia.org/wiki/Activation_function">activation function</a>, to a <a href="https://www.tensorflow.org/guide/keras/sequential_model">sequential model</a>.</p>
+<pre tabindex="0"><code>model = Sequential()
+model.add(Dense(units = 128, input_dim = len(X_train.columns), activation = &#39;relu&#39;))
+model.add(Dense(units = 64, activation = &#39;relu&#39;))
+model.add(Dense(units = 32, activation = &#39;relu&#39;))
+model.add(Dense(units = 16, activation = &#39;relu&#39;))
+model.add(Dense(units = 4, activation = &#39;relu&#39;))
+model.add(Dense(units = 1, activation = &#39;linear&#39;))
+</code></pre><p>A summary of the model is given below.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/eefp/eefp-nn-baseline-model-summary.png"/>
+</figure>
+
+<h4 id="model-compilation">Model Compilation</h4>
+<p>For model compilation, we employ the <a href="https://arxiv.org/abs/1412.6980">Adam</a> optimizer.</p>
+<pre tabindex="0"><code>adam_opt = Adam(learning_rate = 0.001, beta_1 = 0.9, beta_2 = 0.999, epsilon = 1e-07, amsgrad = False)
+</code></pre><p>An alternative choice is the <a href="https://en.wikipedia.org/wiki/Stochastic_gradient_descent">stochastic gradient descent</a> optimizer, which can be used for experimentation.</p>
+<pre tabindex="0"><code>sgd_opt = SGD(learning_rate = 0.01, momentum = 0.9, nesterov = False)
+</code></pre><p>We compile the model with <a href="https://en.wikipedia.org/wiki/Mean_squared_error">mean squared error</a> loss and Adam optimizer.</p>
+<pre tabindex="0"><code>model.compile(loss = &#39;mean_squared_error&#39;, optimizer = adam_opt)
+</code></pre><h4 id="model-fitting">Model Fitting</h4>
+<p>Next, we fit the model for <span class="has-mathjax">\(120\)</span>
+ epochs on the training set, with <span class="has-mathjax">\(32\)</span>
+ samples in each batch of training. Specifically, we set aside the last <span class="has-mathjax">\(20\%\)</span>
+ observations from the training set to constitute the validation set. The rest constitutes the effective training set. In each epoch, the model is trained over the effective training set and is evaluated on the validation set.</p>
+<pre tabindex="0"><code>history = model.fit(
+    X_train,
+    y_train,
+    epochs = 120,
+    batch_size = 32,
+    validation_split = 0.2
+)
+</code></pre><p>We present the model loss (mean squared error) values for both the effective training set and the validation set in the last fifteen epochs.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/eefp/eefp-nn-baseline-model-fit-end.png"/>
+</figure>
+
+<p>We plot the model loss for both the effective training set and the validation set against the epochs.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/eefp/eefp-nn-baseline-model-loss.png"/>
+</figure>
+
+<h4 id="model-evaluation">Model Evaluation</h4>
+<p>We use the fitted model to predict on the training set and the test set. The error distribution for prediction of <code>ELE_TOTAL_ENERGY_FLUX_LOG</code> in the test set is shown below.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/eefp/eefp-nn-baseline-model-error-distribution.png"/>
+</figure>
+
+<p>We summarize the baseline model performance through the evaluation metrics RMSE, MAE, and <span class="has-mathjax">\(R^2\).</span>
+</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/eefp/eefp-nn-baseline-model-performance-df.png"/>
+</figure>
+
+<h3 id="-hyperparameter-tuning">○ Hyperparameter Tuning</h3>
+<ul>
+<li><a href="#model-builder">Model Builder</a></li>
+<li><a href="#keras-tuner">Keras Tuner</a></li>
+<li><a href="#tuner-search">Tuner Search</a></li>
+<li><a href="#tuned-model-fitting">Tuned Model Fitting</a></li>
+</ul>
+<p>In this project, we tune the number of units in the first dense layer and the learning rate for the optimizer using the <a href="https://keras.io/keras_tuner/">KerasTuner</a> library.</p>
+<h4 id="model-builder">Model Builder</h4>
+<p>The next function builds a model, with specified set of values for the hyperparameters to be optimized.</p>
+<pre tabindex="0"><code>def model_builder(hp):
+    model = Sequential()
+    model.add(Flatten(input_shape = (X_train.shape[1],)))
+
+    hp_units = hp.Int(&#39;units&#39;, min_value = 128, max_value = 512, step = 128)
+    model.add(Dense(units = hp_units, activation = &#39;relu&#39;))
+    model.add(Dense(units = 64, activation = &#39;relu&#39;))
+    model.add(Dense(units = 32, activation = &#39;relu&#39;))
+    model.add(Dense(units = 16, activation = &#39;relu&#39;))
+    model.add(Dense(units = 4, activation = &#39;relu&#39;))
+    model.add(Dense(units = 1, activation = &#39;linear&#39;))
+
+    hp_learning_rate = hp.Choice(&#39;learning_rate&#39;, values = [0.01, 0.001, 0.0001])
+    model.compile(loss = &#39;mean_squared_error&#39;, optimizer = Adam(learning_rate = hp_learning_rate))
+
+    return model
+</code></pre><h4 id="keras-tuner">Keras Tuner</h4>
+<p>We now make the tuner using the <code>Hyperband</code> function, setting the <code>objective</code> as validation loss.</p>
+<pre tabindex="0"><code>tuner = kt.Hyperband(model_builder, objective = &#39;val_loss&#39;, max_epochs = 120, factor = 2, directory = &#39;dir_1&#39;)
+</code></pre><p>We summarize the search space for the tuner.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/eefp/eefp-nn-ht-tuner-search-space-summary.png"/>
+</figure>
+
+<h4 id="tuner-search">Tuner Search</h4>
+<p>We implement the tuner using the <code>search</code> function.</p>
+<pre tabindex="0"><code>tuner.search(X_train, y_train, epochs = 120, validation_split = 0.2)
+</code></pre><figure><img src="https://sugatagh.github.io/dsml/images/images-projects/eefp/eefp-nn-ht-tuner-search-complete.png"/>
+</figure>
+
+<p>We retrieve the optimal values of the hyperparameters to be tuned using the <code>get_best_hyperparameters</code> function.</p>
+<pre tabindex="0"><code>hp_tuned = tuner.get_best_hyperparameters()[0]
+</code></pre><p>Next, we build the model with optimal hyperparameter values.</p>
+<pre tabindex="0"><code>model_tuned = tuner.hypermodel.build(hp_tuned)
+</code></pre><p>A summary of the tuned model is given below.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/eefp/eefp-nn-ht-model-summary.png"/>
+</figure>
+
+<h4 id="tuned-model-fitting">Tuned Model Fitting</h4>
+<p>We fit the model for <span class="has-mathjax">\(120\)</span>
+ epochs. Specifically, we set aside <span class="has-mathjax">\(20\%\)</span>
+ training samples as validation data through the argument <code>validation_split</code>. We train the model on the rest of the training observations (effective training set) and evaluate it on the validation data.</p>
+<p>On the effective training set (first <span class="has-mathjax">\(80\%\)</span>
+ observations from the original training set) and evaluate it on the validation set (last <span class="has-mathjax">\(20\%\)</span>
+ samples from the original training set).</p>
+<pre tabindex="0"><code>history_tuned = model_tuned.fit(X_train, y_train, epochs = 120, validation_split = 0.2)
+</code></pre><p>We present the model loss for both the effective training set and the validation set in the last fifteen epochs.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/eefp/eefp-nn-ht-model-fit-end.png"/>
+</figure>
+
+<p>We visualize the model loss for both the effective training set and the validation set against the epochs.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/eefp/eefp-nn-ht-model-loss.png"/>
+</figure>
+
+<h3 id="-prediction-and-evaluation">○ Prediction and Evaluation</h3>
+<p>We use the fitted tuned model to predict on the training set and the test set. The error distribution for prediction of <code>ELE_TOTAL_ENERGY_FLUX_LOG</code> (by the tuned model) in the test set is shown below.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/eefp/eefp-nn-ht-model-error-distribution.png"/>
+</figure>
+
+<p>We summarize the hyperparameter-tuned model performance below.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/eefp/eefp-nn-ht-model-performance-df.png"/>
+</figure>
+
+<p>Comparing with the baseline model performance, we observe that the model obtained after tuning hyperparameters performs slightly better.</p>
+<h3 id="-acknowledgements">○ Acknowledgements</h3>
+<ul>
+<li><a href="https://doi.org/10.1029/2020SW002684">Toward a Next Generation Particle Precipitation Model: Mesoscale Prediction Through Machine Learning (a Case Study and Framework for Progress)</a></li>
+<li><a href="https://www.kaggle.com/datasets/saurabhshahane/dmsp-particle-precipitation-aiready-data">DMSP Particle Precipitation AI-ready Data</a></li>
+</ul>
+<h3 id="-references">○ References</h3>
+<ul>
+<li><a href="https://en.wikipedia.org/wiki/Activation_function">Activation function</a></li>
+<li><a href="https://arxiv.org/abs/1412.6980">Adam optimizer</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Coefficient_of_determination">Coefficient of determination</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Continuous_or_discrete_variable#Continuous_variable">Continuous variable</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Correlation_coefficient">Correlation coefficient</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Leakage_(machine_learning)">Data leakage</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Data_Preprocessing">Data preprocessing</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Data_transformation_(statistics)">Data transformation</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Exploratory_data_analysis">Exploratory data analysis</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Feature_scaling">Feature scaling</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Hyperparameter_optimization">Hyperparameter optimization</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Ionosphere">Ionosphere</a></li>
+<li><a href="https://keras.io/keras_tuner/">KerasTuner</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Layer_(deep_learning)#Layer_Types">Layer types</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Logarithmic_scale">Logarithmic scale</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Machine_learning">Machine learning</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Magnetosphere">Magnetosphere</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Mean_absolute_error">Mean absolute error</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Mean_squared_error">Mean squared error</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Feature_scaling#Rescaling_(min-max_normalization)">Min-max normalization</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Neural_network">Neural network</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Root-mean-square_deviation">Root mean square deviation</a></li>
+<li><a href="https://seaborn.pydata.org/generated/seaborn.histplot.html">Seaborn histplot</a></li>
+<li><a href="https://www.tensorflow.org/guide/keras/sequential_model">Sequential model</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Stochastic_gradient_descent">Stochastic gradient descent</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Training,_validation,_and_test_data_sets#Test_data_set">Test set</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Training,_validation,_and_test_data_sets#Training_data_set">Training set</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Training,_validation,_and_test_data_sets">Train-test split</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Unit_of_measurement">Unit of measurement</a></li>
+</ul>
+<ul class="pa0">
+  
+</ul>
+<div class="mt6 instapaper_ignoref">
+      
+      
+      </div>
+    </div>
+
+    <aside class="w-30-l mt6-l">
+
+
+
+
+</aside>
+
+  </article>
+
+    </main>
+    <footer class="bg-black bottom-0 w-100 pa3" role="contentinfo">
+  <div class="flex justify-between">
+  <a class="f4 fw4 hover-white no-underline white-70 dn dib-ns pv2 ph3" href="https://sugatagh.github.io/dsml/" >
+    &copy;  Sugata Ghosh, PhD 2024 
+  </a>
+    <div>
+<div class="ananke-socials">
+  
+    
+    <a href="https://www.linkedin.com/in/sugataghosh/" target="_blank" rel="noopener" class="linkedin ananke-social-link link-transition stackoverflow link dib z-999 pt3 pt0-l mr1" title="LinkedIn link" aria-label="follow on LinkedIn——Opens in a new window">
+      
+        <span class="icon"><svg style="enable-background:new 0 0 65 65;" version="1.1" viewBox="0 0 65 65"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <path d="M50.837,48.137V36.425c0-6.275-3.35-9.195-7.816-9.195  c-3.604,0-5.219,1.983-6.119,3.374V27.71h-6.79c0.09,1.917,0,20.427,0,20.427h6.79V36.729c0-0.609,0.044-1.219,0.224-1.655  c0.49-1.22,1.607-2.483,3.482-2.483c2.458,0,3.44,1.873,3.44,4.618v10.929H50.837z M22.959,24.922c2.367,0,3.842-1.57,3.842-3.531  c-0.044-2.003-1.475-3.528-3.797-3.528s-3.841,1.524-3.841,3.528c0,1.961,1.474,3.531,3.753,3.531H22.959z M34,64  C17.432,64,4,50.568,4,34C4,17.431,17.432,4,34,4s30,13.431,30,30C64,50.568,50.568,64,34,64z M26.354,48.137V27.71h-6.789v20.427  H26.354z" style="fill-rule:evenodd;clip-rule:evenodd;"/>
+</svg>
+</span>
+      
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;"/>
+</svg>
+</span></a>
+  
+    
+    <a href="https://twitter.com/sugatagh" target="_blank" rel="noopener" class="twitter ananke-social-link link-transition stackoverflow link dib z-999 pt3 pt0-l mr1" title="Twitter link" aria-label="follow on Twitter——Opens in a new window">
+      
+        <span class="icon"><svg style="enable-background:new 0 0 67 67;" version="1.1" viewBox="0 0 67 67"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M37.167,22.283c-2.619,0.953-4.274,3.411-4.086,6.101  l0.063,1.038l-1.048-0.127c-3.813-0.487-7.145-2.139-9.974-4.915l-1.383-1.377l-0.356,1.017c-0.754,2.267-0.272,4.661,1.299,6.271  c0.838,0.89,0.649,1.017-0.796,0.487c-0.503-0.169-0.943-0.296-0.985-0.233c-0.146,0.149,0.356,2.076,0.754,2.839  c0.545,1.06,1.655,2.097,2.871,2.712l1.027,0.487l-1.215,0.021c-1.173,0-1.215,0.021-1.089,0.467  c0.419,1.377,2.074,2.839,3.918,3.475l1.299,0.444l-1.131,0.678c-1.676,0.976-3.646,1.526-5.616,1.568  C19.775,43.256,19,43.341,19,43.405c0,0.211,2.557,1.397,4.044,1.864c4.463,1.377,9.765,0.783,13.746-1.568  c2.829-1.673,5.657-5,6.978-8.221c0.713-1.716,1.425-4.851,1.425-6.354c0-0.975,0.063-1.102,1.236-2.267  c0.692-0.678,1.341-1.419,1.467-1.631c0.21-0.403,0.188-0.403-0.88-0.043c-1.781,0.636-2.033,0.551-1.152-0.402  c0.649-0.678,1.425-1.907,1.425-2.267c0-0.063-0.314,0.042-0.671,0.233c-0.377,0.212-1.215,0.53-1.844,0.72l-1.131,0.361l-1.027-0.7  c-0.566-0.381-1.361-0.805-1.781-0.932C39.766,21.902,38.131,21.944,37.167,22.283z M33,64C16.432,64,3,50.569,3,34S16.432,4,33,4  s30,13.431,30,30S49.568,64,33,64z" style="fill-rule:evenodd;clip-rule:evenodd;"/></svg>
+</span>
+      
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;"/>
+</svg>
+</span></a>
+  
+    
+    <a href="https://github.com/sugatagh" target="_blank" rel="noopener" class="github ananke-social-link link-transition stackoverflow link dib z-999 pt3 pt0-l mr1" title="GitHub link" aria-label="follow on GitHub——Opens in a new window">
+      
+        <span class="icon"><svg style="enable-background:new 0 0 512 512;" version="1.1" viewBox="0 0 512 512"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+  <path d="M256,32C132.3,32,32,134.8,32,261.7c0,101.5,64.2,187.5,153.2,217.9c11.2,2.1,15.3-5,15.3-11.1   c0-5.5-0.2-19.9-0.3-39.1c-62.3,13.9-75.5-30.8-75.5-30.8c-10.2-26.5-24.9-33.6-24.9-33.6c-20.3-14.3,1.5-14,1.5-14   c22.5,1.6,34.3,23.7,34.3,23.7c20,35.1,52.4,25,65.2,19.1c2-14.8,7.8-25,14.2-30.7c-49.7-5.8-102-25.5-102-113.5   c0-25.1,8.7-45.6,23-61.6c-2.3-5.8-10-29.2,2.2-60.8c0,0,18.8-6.2,61.6,23.5c17.9-5.1,37-7.6,56.1-7.7c19,0.1,38.2,2.6,56.1,7.7   c42.8-29.7,61.5-23.5,61.5-23.5c12.2,31.6,4.5,55,2.2,60.8c14.3,16.1,23,36.6,23,61.6c0,88.2-52.4,107.6-102.3,113.3   c8,7.1,15.2,21.1,15.2,42.5c0,30.7-0.3,55.5-0.3,63c0,6.1,4,13.3,15.4,11C415.9,449.1,480,363.1,480,261.7   C480,134.8,379.7,32,256,32z"/>
+</svg>
+</span>
+      
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;"/>
+</svg>
+</span></a>
+  
+    
+    <a href="https://www.kaggle.com/sugataghosh" target="_blank" rel="noopener" class="Kaggle ananke-social-link link-transition stackoverflow link dib z-999 pt3 pt0-l mr1" title="Kaggle link" aria-label="follow on Kaggle——Opens in a new window">
+      
+        Kaggle
+      
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;"/>
+</svg>
+</span></a>
+  
+</div>
+</div>
+  </div>
+</footer>
+
+  </body>
+</html>

@@ -1,0 +1,1422 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    
+    <title>Credit Card Fraud Detection | Sugata Ghosh, PhD</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1">
+    <meta name="description" content="Imbalanced Classification with Resampling Approaches">
+    <meta name="generator" content="Hugo 0.121.2">
+    
+    
+    
+    
+      <meta name="robots" content="noindex, nofollow">
+    
+
+    
+<link rel="stylesheet" href="https://sugatagh.github.io/dsml/ananke/css/main.min.css" >
+
+
+
+    
+
+    
+      
+
+    
+
+    
+
+    
+      <link rel="canonical" href="https://sugatagh.github.io/dsml/projects/credit-card-fraud-detection/">
+    
+
+    <meta property="og:title" content="Credit Card Fraud Detection" />
+<meta property="og:description" content="Imbalanced Classification with Resampling Approaches" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://sugatagh.github.io/dsml/projects/credit-card-fraud-detection/" /><meta property="article:section" content="projects" />
+<meta property="article:published_time" content="2021-08-08T01:53:00+05:30" />
+<meta property="article:modified_time" content="2021-08-08T01:53:00+05:30" />
+
+<meta itemprop="name" content="Credit Card Fraud Detection">
+<meta itemprop="description" content="Imbalanced Classification with Resampling Approaches"><meta itemprop="datePublished" content="2021-08-08T01:53:00+05:30" />
+<meta itemprop="dateModified" content="2021-08-08T01:53:00+05:30" />
+<meta itemprop="wordCount" content="3269">
+<meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/><meta name="twitter:title" content="Credit Card Fraud Detection"/>
+<meta name="twitter:description" content="Imbalanced Classification with Resampling Approaches"/>
+
+	<style>
+.has-mathjax {
+    visibility: hidden;
+}
+</style>
+
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+<script>
+window.MathJax = {
+  startup: {
+    pageReady: () => {
+      return MathJax.startup.defaultPageReady().then(() => {
+        for (let element of document.getElementsByClassName("has-mathjax")) {
+            element.style.visibility = "visible"
+        }
+      });
+    }
+  }
+};
+</script>
+  </head>
+
+  <body class="ma0 avenir bg-near-white">
+
+    
+   
+  
+
+  
+  <header class="cover bg-top" style="background-image: url('https://sugatagh.github.io/dsml/images/bg-projects/bg-ccfd-4.jpg');">
+    <div class="bg-black-60">
+      <nav class="pv3 ph3 ph4-ns" role="navigation">
+  <div class="flex-l justify-between items-center center">
+    <a href="https://sugatagh.github.io/dsml/" class="f3 fw2 hover-white no-underline white-90 dib">
+      
+        Sugata Ghosh, PhD
+      
+    </a>
+    <div class="flex-l items-center">
+      
+
+      
+        <ul class="pl0 mr3">
+          
+          <li class="list f5 f4-ns fw4 dib pr3">
+            <a class="hover-white no-underline white-90" href="https://sugatagh.github.io/dsml/about/" title="About page">
+              About
+            </a>
+          </li>
+          
+          <li class="list f5 f4-ns fw4 dib pr3">
+            <a class="hover-white no-underline white-90" href="https://sugatagh.github.io/dsml/overview/" title="Overview page">
+              Overview
+            </a>
+          </li>
+          
+          <li class="list f5 f4-ns fw4 dib pr3">
+            <a class="hover-white no-underline white-90" href="https://sugatagh.github.io/dsml/certifications/" title="Certifications page">
+              Certifications
+            </a>
+          </li>
+          
+          <li class="list f5 f4-ns fw4 dib pr3">
+            <a class="hover-white no-underline white-90" href="https://sugatagh.github.io/dsml/projects/" title="Projects page">
+              Projects
+            </a>
+          </li>
+          
+          <li class="list f5 f4-ns fw4 dib pr3">
+            <a class="hover-white no-underline white-90" href="https://sugatagh.github.io/dsml/notes/" title="Notes page">
+              Notes
+            </a>
+          </li>
+          
+          <li class="list f5 f4-ns fw4 dib pr3">
+            <a class="hover-white no-underline white-90" href="https://sugatagh.github.io/dsml/cv/" title="CV page">
+              CV
+            </a>
+          </li>
+          
+          <li class="list f5 f4-ns fw4 dib pr3">
+            <a class="hover-white no-underline white-90" href="https://sugatagh.github.io/dsml/contact/" title="Contact page">
+              Contact
+            </a>
+          </li>
+          
+        </ul>
+      
+      
+<div class="ananke-socials">
+  
+    
+    <a href="https://www.linkedin.com/in/sugataghosh/" target="_blank" rel="noopener" class="linkedin ananke-social-link link-transition stackoverflow link dib z-999 pt3 pt0-l mr1" title="LinkedIn link" aria-label="follow on LinkedIn——Opens in a new window">
+      
+        <span class="icon"><svg style="enable-background:new 0 0 65 65;" version="1.1" viewBox="0 0 65 65"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <path d="M50.837,48.137V36.425c0-6.275-3.35-9.195-7.816-9.195  c-3.604,0-5.219,1.983-6.119,3.374V27.71h-6.79c0.09,1.917,0,20.427,0,20.427h6.79V36.729c0-0.609,0.044-1.219,0.224-1.655  c0.49-1.22,1.607-2.483,3.482-2.483c2.458,0,3.44,1.873,3.44,4.618v10.929H50.837z M22.959,24.922c2.367,0,3.842-1.57,3.842-3.531  c-0.044-2.003-1.475-3.528-3.797-3.528s-3.841,1.524-3.841,3.528c0,1.961,1.474,3.531,3.753,3.531H22.959z M34,64  C17.432,64,4,50.568,4,34C4,17.431,17.432,4,34,4s30,13.431,30,30C64,50.568,50.568,64,34,64z M26.354,48.137V27.71h-6.789v20.427  H26.354z" style="fill-rule:evenodd;clip-rule:evenodd;"/>
+</svg>
+</span>
+      
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;"/>
+</svg>
+</span></a>
+  
+    
+    <a href="https://twitter.com/sugatagh" target="_blank" rel="noopener" class="twitter ananke-social-link link-transition stackoverflow link dib z-999 pt3 pt0-l mr1" title="Twitter link" aria-label="follow on Twitter——Opens in a new window">
+      
+        <span class="icon"><svg style="enable-background:new 0 0 67 67;" version="1.1" viewBox="0 0 67 67"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M37.167,22.283c-2.619,0.953-4.274,3.411-4.086,6.101  l0.063,1.038l-1.048-0.127c-3.813-0.487-7.145-2.139-9.974-4.915l-1.383-1.377l-0.356,1.017c-0.754,2.267-0.272,4.661,1.299,6.271  c0.838,0.89,0.649,1.017-0.796,0.487c-0.503-0.169-0.943-0.296-0.985-0.233c-0.146,0.149,0.356,2.076,0.754,2.839  c0.545,1.06,1.655,2.097,2.871,2.712l1.027,0.487l-1.215,0.021c-1.173,0-1.215,0.021-1.089,0.467  c0.419,1.377,2.074,2.839,3.918,3.475l1.299,0.444l-1.131,0.678c-1.676,0.976-3.646,1.526-5.616,1.568  C19.775,43.256,19,43.341,19,43.405c0,0.211,2.557,1.397,4.044,1.864c4.463,1.377,9.765,0.783,13.746-1.568  c2.829-1.673,5.657-5,6.978-8.221c0.713-1.716,1.425-4.851,1.425-6.354c0-0.975,0.063-1.102,1.236-2.267  c0.692-0.678,1.341-1.419,1.467-1.631c0.21-0.403,0.188-0.403-0.88-0.043c-1.781,0.636-2.033,0.551-1.152-0.402  c0.649-0.678,1.425-1.907,1.425-2.267c0-0.063-0.314,0.042-0.671,0.233c-0.377,0.212-1.215,0.53-1.844,0.72l-1.131,0.361l-1.027-0.7  c-0.566-0.381-1.361-0.805-1.781-0.932C39.766,21.902,38.131,21.944,37.167,22.283z M33,64C16.432,64,3,50.569,3,34S16.432,4,33,4  s30,13.431,30,30S49.568,64,33,64z" style="fill-rule:evenodd;clip-rule:evenodd;"/></svg>
+</span>
+      
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;"/>
+</svg>
+</span></a>
+  
+    
+    <a href="https://github.com/sugatagh" target="_blank" rel="noopener" class="github ananke-social-link link-transition stackoverflow link dib z-999 pt3 pt0-l mr1" title="GitHub link" aria-label="follow on GitHub——Opens in a new window">
+      
+        <span class="icon"><svg style="enable-background:new 0 0 512 512;" version="1.1" viewBox="0 0 512 512"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+  <path d="M256,32C132.3,32,32,134.8,32,261.7c0,101.5,64.2,187.5,153.2,217.9c11.2,2.1,15.3-5,15.3-11.1   c0-5.5-0.2-19.9-0.3-39.1c-62.3,13.9-75.5-30.8-75.5-30.8c-10.2-26.5-24.9-33.6-24.9-33.6c-20.3-14.3,1.5-14,1.5-14   c22.5,1.6,34.3,23.7,34.3,23.7c20,35.1,52.4,25,65.2,19.1c2-14.8,7.8-25,14.2-30.7c-49.7-5.8-102-25.5-102-113.5   c0-25.1,8.7-45.6,23-61.6c-2.3-5.8-10-29.2,2.2-60.8c0,0,18.8-6.2,61.6,23.5c17.9-5.1,37-7.6,56.1-7.7c19,0.1,38.2,2.6,56.1,7.7   c42.8-29.7,61.5-23.5,61.5-23.5c12.2,31.6,4.5,55,2.2,60.8c14.3,16.1,23,36.6,23,61.6c0,88.2-52.4,107.6-102.3,113.3   c8,7.1,15.2,21.1,15.2,42.5c0,30.7-0.3,55.5-0.3,63c0,6.1,4,13.3,15.4,11C415.9,449.1,480,363.1,480,261.7   C480,134.8,379.7,32,256,32z"/>
+</svg>
+</span>
+      
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;"/>
+</svg>
+</span></a>
+  
+    
+    <a href="https://www.kaggle.com/sugataghosh" target="_blank" rel="noopener" class="Kaggle ananke-social-link link-transition stackoverflow link dib z-999 pt3 pt0-l mr1" title="Kaggle link" aria-label="follow on Kaggle——Opens in a new window">
+      
+        Kaggle
+      
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;"/>
+</svg>
+</span></a>
+  
+</div>
+
+    </div>
+  </div>
+</nav>
+
+      <div class="tc-l pv6 ph3 ph4-ns">
+        
+          <div class="f2 f1-l fw2 white-90 mb0 lh-title">Credit Card Fraud Detection</div>
+          
+            <div class="fw1 f5 f3-l white-80 measure-wide-l center lh-copy mt3 mb4">
+              Imbalanced Classification with Resampling Approaches
+            </div>
+          
+        
+      </div>
+    </div>
+  </header>
+
+
+
+    <main class="pb7" role="main">
+      
+  
+  <article class="flex-l flex-wrap justify-between mw8 center ph3">
+    <header class="mt4 w-100">
+      <aside class="instapaper_ignoref b helvetica tracked ttu">
+          
+        Projects
+      </aside>
+      
+
+
+
+
+
+
+
+
+
+
+  <div id="sharing" class="mt3 ananke-socials">
+    
+      
+      <a href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https://sugatagh.github.io/dsml/projects/credit-card-fraud-detection/&amp;title=Credit%20Card%20Fraud%20Detection" class="ananke-social-link linkedin no-underline" aria-label="share on LinkedIn">
+        
+        <span class="icon"> <svg style="enable-background:new 0 0 65 65;" version="1.1" viewBox="0 0 65 65"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <path d="M50.837,48.137V36.425c0-6.275-3.35-9.195-7.816-9.195  c-3.604,0-5.219,1.983-6.119,3.374V27.71h-6.79c0.09,1.917,0,20.427,0,20.427h6.79V36.729c0-0.609,0.044-1.219,0.224-1.655  c0.49-1.22,1.607-2.483,3.482-2.483c2.458,0,3.44,1.873,3.44,4.618v10.929H50.837z M22.959,24.922c2.367,0,3.842-1.57,3.842-3.531  c-0.044-2.003-1.475-3.528-3.797-3.528s-3.841,1.524-3.841,3.528c0,1.961,1.474,3.531,3.753,3.531H22.959z M34,64  C17.432,64,4,50.568,4,34C4,17.431,17.432,4,34,4s30,13.431,30,30C64,50.568,50.568,64,34,64z M26.354,48.137V27.71h-6.789v20.427  H26.354z" style="fill-rule:evenodd;clip-rule:evenodd;"/>
+</svg>
+</span>
+        
+      </a>
+    
+      
+      <a href="https://twitter.com/intent/tweet?url=https://sugatagh.github.io/dsml/projects/credit-card-fraud-detection/&amp;text=Credit%20Card%20Fraud%20Detection" class="ananke-social-link twitter no-underline" aria-label="share on Twitter">
+        
+        <span class="icon"> <svg style="enable-background:new 0 0 67 67;" version="1.1" viewBox="0 0 67 67"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M37.167,22.283c-2.619,0.953-4.274,3.411-4.086,6.101  l0.063,1.038l-1.048-0.127c-3.813-0.487-7.145-2.139-9.974-4.915l-1.383-1.377l-0.356,1.017c-0.754,2.267-0.272,4.661,1.299,6.271  c0.838,0.89,0.649,1.017-0.796,0.487c-0.503-0.169-0.943-0.296-0.985-0.233c-0.146,0.149,0.356,2.076,0.754,2.839  c0.545,1.06,1.655,2.097,2.871,2.712l1.027,0.487l-1.215,0.021c-1.173,0-1.215,0.021-1.089,0.467  c0.419,1.377,2.074,2.839,3.918,3.475l1.299,0.444l-1.131,0.678c-1.676,0.976-3.646,1.526-5.616,1.568  C19.775,43.256,19,43.341,19,43.405c0,0.211,2.557,1.397,4.044,1.864c4.463,1.377,9.765,0.783,13.746-1.568  c2.829-1.673,5.657-5,6.978-8.221c0.713-1.716,1.425-4.851,1.425-6.354c0-0.975,0.063-1.102,1.236-2.267  c0.692-0.678,1.341-1.419,1.467-1.631c0.21-0.403,0.188-0.403-0.88-0.043c-1.781,0.636-2.033,0.551-1.152-0.402  c0.649-0.678,1.425-1.907,1.425-2.267c0-0.063-0.314,0.042-0.671,0.233c-0.377,0.212-1.215,0.53-1.844,0.72l-1.131,0.361l-1.027-0.7  c-0.566-0.381-1.361-0.805-1.781-0.932C39.766,21.902,38.131,21.944,37.167,22.283z M33,64C16.432,64,3,50.569,3,34S16.432,4,33,4  s30,13.431,30,30S49.568,64,33,64z" style="fill-rule:evenodd;clip-rule:evenodd;"/></svg>
+</span>
+        
+      </a>
+    
+  </div>
+
+
+      <h1 class="f1 athelas mt3 mb1">Credit Card Fraud Detection</h1>
+      
+      
+      
+      <time class="f6 mv4 dib tracked" datetime="2021-08-08T01:53:00+05:30">August 8, 2021</time>
+      
+
+      
+      
+    </header>
+    <div class="nested-copy-line-height lh-copy serif f4 nested-links mid-gray pr4-l w-two-thirds-l"><p>The detection of a fraudulent credit card transaction can be helped by a number of attributes regarding the particular transaction. In this work, we build a number of classification models to predict whether a credit card transaction is authentic or fraudulent based on the data regarding time, amount, and a set of PCA-transformed features. Apart from the unaltered training set, we use different resampled training sets (with both classes represented equally) to counter the class imbalance issue.</p>
+<p><a href="https://github.com/sugatagh/Credit-Card-Fraud-Detection">GitHub repository</a></p>
+<h3 id="-contents">○ Contents</h3>
+<ul>
+<li><a href="#-overview">Overview</a></li>
+<li><a href="#-introduction">Introduction</a></li>
+<li><a href="#-exploratory-data-analysis">Exploratory Data Analysis</a></li>
+<li><a href="#-train-test-split">Train-Test Split</a></li>
+<li><a href="#-resampling">Resampling</a></li>
+<li><a href="#-feature-scaling">Feature Scaling</a></li>
+<li><a href="#-baseline-models">Baseline Models</a></li>
+<li><a href="#-conclusion">Conclusion</a></li>
+<li><a href="#-acknowledgements">Acknowledgements</a></li>
+<li><a href="#-references">References</a></li>
+</ul>
+<h3 id="-overview">○ Overview</h3>
+<ul>
+<li>Detection of a fraudulent <a href="https://en.wikipedia.org/wiki/Credit_card">credit card</a> transaction can be helped by a number of factors such as the time and amount of the transaction.</li>
+<li>In this project, we build <a href="https://en.wikipedia.org/wiki/Statistical_classification">classification</a> models to predict whether a credit card transaction is <em>authentic</em> or <em>fraudulent</em>, based on the data regarding time, amount and a set of <a href="https://en.wikipedia.org/wiki/Principal_component_analysis">PCA-transformed</a> features for a large number of transactions.</li>
+<li>A detailed <a href="https://en.wikipedia.org/wiki/Exploratory_data_analysis">exploratory data analysis</a> on the dataset is carried out.</li>
+<li>We observe that the data is imbalanced with respect to the target variable. After <a href="https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.train_test_split.html">splitting the data</a> into <a href="https://en.wikipedia.org/wiki/Training,_validation,_and_test_data_sets#Training_data_set">training set</a> and <a href="https://en.wikipedia.org/wiki/Training,_validation,_and_test_data_sets#Test_data_set">test set</a>, we consider three <a href="https://en.wikipedia.org/wiki/Oversampling_and_undersampling_in_data_analysis#Undersampling_techniques_for_classification_problems">undersampling</a> and three <a href="https://en.wikipedia.org/wiki/Oversampling_and_undersampling_in_data_analysis#Oversampling_techniques_for_classification_problems">oversampling</a> techniques to balance the training set.</li>
+<li>We <a href="https://en.wikipedia.org/wiki/Feature_scaling">scale the features</a> appropriately through a modified version of the <a href="https://en.wikipedia.org/wiki/Feature_scaling#Rescaling_(min-max_normalization)">min-max normalization</a>.</li>
+<li>We employ a number of classifiers, namely <a href="https://en.wikipedia.org/wiki/Logistic_regression">logistic regression</a>, <a href="https://en.wikipedia.org/wiki/K-nearest_neighbors_algorithm"><span class="has-mathjax">\(k\)-nearest</span>
+ neighbors classifier</a>, <a href="https://en.wikipedia.org/wiki/Decision_tree">decision tree</a>, <a href="https://en.wikipedia.org/wiki/Support_vector_machine">support vector machine</a> with linear kernel, <a href="https://en.wikipedia.org/wiki/Naive_Bayes_classifier">naive Bayes classifier</a>, <a href="https://en.wikipedia.org/wiki/Random_forest">random forest</a>, <a href="https://en.wikipedia.org/wiki/Linear_discriminant_analysis">linear discriminant analysis</a>, <a href="https://en.wikipedia.org/wiki/Stochastic_gradient_descent">stochastic gradient descent</a>, and <a href="https://en.wikipedia.org/wiki/Ridge_regression">ridge classifier</a>.</li>
+<li>The performance of these classifiers, trained separately on the unaltered training set as well as the training set obtained from each of the six resampling approaches, are evaluated through a number of <a href="https://en.wikipedia.org/wiki/Evaluation_of_binary_classifiers">evaluation metrics</a>. Considering the nature of the problem, we use <a href="https://en.wikipedia.org/wiki/F-score"><span class="has-mathjax">\(F_2\)-score</span>
+</a> as the primary metric to evaluate the models.</li>
+<li>The random forest algorithm applied on the training set obtained after oversampling the minority class (fraudulent transactions) via <a href="https://en.wikipedia.org/wiki/Oversampling_and_undersampling_in_data_analysis#SMOTE">synthetic minority over-sampling technique</a> (SMOTE) appears to perform best, in terms of <span class="has-mathjax">\(F_2\)-score,</span>
+ on the test set. It achieves a test <span class="has-mathjax">\(F_2\)-score</span>
+ of <span class="has-mathjax">\(0.880783\).</span>
+</li>
+<li>The best model with the optimal resampling scheme, stated above, has the following <a href="https://en.wikipedia.org/wiki/Confusion_matrix">confusion matrix</a>, depicting its performance on the test set.</li>
+</ul>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-rf-smote-confusion-matrix.png"/>
+</figure>
+
+<h3 id="-introduction">○ Introduction</h3>
+<ul>
+<li><a href="#data">Data</a></li>
+<li><a href="#project-objective">Project Objective</a></li>
+<li><a href="#evaluation-metric">Evaluation Metric</a></li>
+</ul>
+<p>The ability to detect fraudulent transactions is of critical importance to all credit card companies. In this project, we classify credit card transactions as <em>authentic</em> or <em>fraudulent</em> based on the data regarding time, amount and a set of PCA-transformed features for a large number of transactions. We explore the data extensively and employ different techniques to build classification models, which are compared through various evaluation metrics.</p>
+<h4 id="data">Data</h4>
+<p>The <a href="https://www.kaggle.com/datasets/mlg-ulb/creditcardfraud">dataset</a> contains information on the transactions made using credit cards by European cardholders in two particular days of September, <span class="has-mathjax">\(2013\).</span>
+ It presents a total of <span class="has-mathjax">\(284807\)</span>
+ transactions, of which <span class="has-mathjax">\(492\)</span>
+ were fraudulent.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-data.png"/>
+</figure>
+
+<p>For a particular transaction, the feature <code>Time</code> represents the time (in seconds) elapsed between the transaction and the very first transaction, <code>Amount</code> represents the amount of the transaction and <code>Class</code> represents the status of the transaction with respect to authenticity. The class of an authentic (resp. fraudulent) transaction is taken to be <span class="has-mathjax">\(0\)</span>
+ (resp.  <span class="has-mathjax">\(1\)).</span>
+ Rest of the variables (V<span class="has-mathjax">\(1\)</span>
+ to V<span class="has-mathjax">\(28\))</span>
+ are obtained from PCA-transformation on original features that are not available due to confidentiality.</p>
+<h4 id="project-objective">Project Objective</h4>
+<p>The aim of the project is to build models based on relevant data regarding a credit card transaction, such as time, amount, and a set of PCA-transformed features, to classify the transactions into the following two classes:</p>
+<ul>
+<li>Authentic transaction</li>
+<li>Fraudulent transaction</li>
+</ul>
+<p>Thus, it is a <a href="https://en.wikipedia.org/wiki/Binary_classification#Statistical_binary_classification">binary classification</a> problem.</p>
+<h4 id="evaluation-metric">Evaluation Metric</h4>
+<p>Let us denote</p>
+<ul>
+<li><strong>TP</strong>: Number of true positives</li>
+<li><strong>TN</strong>: Number of true negatives</li>
+<li><strong>FP</strong>: Number of false positives</li>
+<li><strong>FN</strong>: Number of false negatives</li>
+</ul>
+<p>We shall see in the next section that the data is highly imbalanced with respect to the target variable <code>Class</code>. For this reason, we do not give much importance to the <a href="https://en.wikipedia.org/wiki/Accuracy_and_precision#In_binary_classification">accuracy</a> metric, given as
+<div class="has-mathjax">
+
+\[\text{Accuracy} = \frac{\text{TP} + \text{TN}}{\text{TP} + \text{TN} + \text{FP} + \text{FN}},\]
+
+</div>
+</p>
+<p>in this project as it produces misleading conclusion when the classes are not balanced. <a href="https://en.wikipedia.org/wiki/Precision_and_recall">Precision</a> and <a href="https://en.wikipedia.org/wiki/Precision_and_recall">recall</a> are universally accepted metrics to capture the performance of a model, when restricted respectively to the <strong>predicted positive class</strong> and the <strong>actual positive class</strong>. These metrics are defined as
+<div class="has-mathjax">
+
+\[\text{Precision} = \frac{\text{TP}}{\text{TP} + \text{FP}}\]
+
+</div>
+</p>
+<div class="has-mathjax">
+
+\[\text{Recall} = \frac{\text{TP}}{\text{TP} + \text{FN}}\]
+
+</div>
+
+<p>The <a href="https://en.wikipedia.org/wiki/F-score"><span class="has-mathjax">\(F_1\)-score</span>
+</a> provides a balanced measuring stick by considering the <a href="https://en.wikipedia.org/wiki/Harmonic_mean">harmonic mean</a> of the above two metrics.
+<div class="has-mathjax">
+
+\[F_1\text{-score} = \frac{2 \times \text{Precision} \times \text{Recall}}{\text{Precision} + \text{Recall}}\]
+
+</div>
+</p>
+<p>For its equal emphasis on both precision and recall, <span class="has-mathjax">\(F_1\)-score</span>
+ is one of the decent metrics for evaluating the models in this project. The weightage between precision and recall in this metric can be parametrized, leading to the generalized notion of <a href="https://en.wikipedia.org/wiki/F-score"><span class="has-mathjax">\(F_{\beta}\)-score</span>
+</a>, given as
+<div class="has-mathjax">
+
+\[F_{\beta}\text{-Score} = \frac{\left(1 + \beta^2\right) \times \text{Precision} \times \text{Recall}}{\left(\beta^2 \times \text{Precision}\right) + \text{Recall}},\]
+
+</div>
+
+where <span class="has-mathjax">\(\beta\)</span>
+ is a positive real factor, chosen such that recall is considered <span class="has-mathjax">\(\beta\)</span>
+ times as important as precision.</p>
+<p>Another good choice of evaluation metric, in particular for imbalanced dataset, is <a href="https://en.wikipedia.org/wiki/Phi_coefficient">Matthews Correlation Coefficient</a> (MCC), given as
+<div class="has-mathjax">
+
+\[\text{MCC} = \frac{(\text{TP} \times \text{TN}) − (\text{FP} \times \text{FN})}{\sqrt{(\text{TP} + \text{FP}) \times (\text{TP} + \text{FN}) \times (\text{TN} + \text{FP}) \times (\text{TN} + \text{FN})}}\]
+
+</div>
+</p>
+<p>The MCC metric is symmetric with respect to class, i.e. if one relabels the positive class as <em>negative</em> and the negative class as <em>positive</em>, the metric remains the same. In the problem at hand, however, the positive class is more critical than the negative class. Thus, such relabeling should change the metric used for evaluation.</p>
+<p>To elaborate, in the context of this particular problem, <a href="https://en.wikipedia.org/wiki/False_positives_and_false_negatives">false negative</a> (a fraudulent transaction being classified as authentic) is more dangerous than <a href="https://en.wikipedia.org/wiki/False_positives_and_false_negatives">false positive</a> (an authentic transaction being classified as fraudulent) as in the former case, the fraudster can cause further financial damage, while in the latter case the bank can cross-verify the authenticity of the transaction from the card-user after taking necessary steps to secure the card.</p>
+<p>Considering this fact, we give recall twice as more importance as precision and choose <span class="has-mathjax">\(F_2\)-score</span>
+ as the primary metric to evaluate the models in this project. It is obtained by setting <span class="has-mathjax">\(\beta = 2\)</span>
+ in <span class="has-mathjax">\(F_{\beta}\)-score.</span>
+</p>
+<h3 id="-exploratory-data-analysis">○ Exploratory Data Analysis</h3>
+<ul>
+<li><a href="#visualizing-individual-features">Visualizing individual features</a></li>
+<li><a href="#relationships-among-the-features">Relationships among the features</a></li>
+</ul>
+<h4 id="visualizing-individual-features">Visualizing individual features</h4>
+<p>First we analyze the feature which is the main object of the study: the target variable <code>Class</code>, which indicates if a particular transaction is <em>authentic</em> or <em>fraudulent</em>.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-eda-class.png"/>
+</figure>
+
+<p>It is evident that the data is extremely imbalanced in terms of the target variable <code>Class</code>. It turns out that the negative class (authentic transactions) is the majority class and the positive class (fraudulent transactions) is the minority class. To be specific, the positive class accounts for only <span class="has-mathjax">\(0.173\%\)</span>
+ of all transactions.</p>
+<p>Next, we analyze the frequency of transactions made over time elapsed starting from the first transaction.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-eda-time.png"/>
+</figure>
+
+<p>We observe that the number of transactions are particularly high in certain time intervals and low in between. Next, we analyze the same, focusing only on the fraudulent transactions.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-eda-time-fraudulent.png"/>
+</figure>
+
+<p>Next, we visualize the distribution of transaction amount. It is seen from the data that this feature is positively skewed to a great extent. Hence, we use <a href="https://en.wikipedia.org/wiki/Logarithmic_scale">logarithmic scale</a> in the <span class="has-mathjax">\(y\)-axis</span>
+ to produce a nondegenerate visualization of the same.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-eda-transaction.png"/>
+</figure>
+
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-eda-transaction-log-scale.png"/>
+</figure>
+
+<p>The high positive skewness even after taking the logarithmic scale motivates us to map the amount data using <a href="https://en.wikipedia.org/wiki/Logarithm">log transformation</a>.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-eda-transaction-log-transformation.png"/>
+</figure>
+
+<p>Since this gives a more symmetric output, we are motivated to work with this transformed amount data, from which the original amount data can easily be converted back to.</p>
+<p>Next, we visualize the distributions of the log-transformed amount of authentic and fraudulent transactions.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-eda-transaction-log-transformation-class.png"/>
+</figure>
+
+<p>It is clear from the plots that most of the large-amount transactions are authentic, which maybe caused by the extra security measures given to high-amount transactions in form of multiple passwords and OTPs.</p>
+<p>For visualizations of the distributions of the PCA-transformed variables V<span class="has-mathjax">\(1\)</span>
+ to V<span class="has-mathjax">\(28\),</span>
+ see <a href="https://www.kaggle.com/code/sugataghosh/credit-card-fraud-detection-part-1-eda">this notebook</a>.</p>
+<h4 id="relationships-among-the-features">Relationships among the features</h4>
+<p>First, we analyze how the amount of transaction behaves with respect to time.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-eda-time-amount.png"/>
+</figure>
+
+<p>We split up the scatterplot into two different subplots, one for authentic transactions and the other for fraudulent transactions.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-eda-time-amount-class.png"/>
+</figure>
+
+<p>Note that <code>facet_col=False</code> corresponds to the authentic transactions and <code>facet_col=True</code> corresponds to the fraudulent transactions. We zoom into the second subplot a bit to get a clearer picture.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-eda-time-amount-fraudulent.png"/>
+</figure>
+
+<p>We compute the correlation coefficient between <code>Time</code> and <code>Amount</code>. The two features appear to be approximately uncorrelated, which is echoed even when the authentic transactions and the fraudulent transactions are considered separately.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-eda-time-amount-correlation.png"/>
+</figure>
+
+<p>In <a href="https://www.kaggle.com/code/sugataghosh/credit-card-fraud-detection-part-1-eda">this notebook</a>, we take the analysis further by examining bivariate scatterplots and linear relationships between certain pairs of feature variables, which exhibit contrasting correlation structures for authentic and fraudulent transactions.</p>
+<h3 id="-train-test-split">○ Train-Test Split</h3>
+<p>First, we separate out the target variable from the features using the following function.</p>
+<pre tabindex="0"><code>def predictor_target_split(data, target):
+    X = data.drop(target, axis = 1)
+    y = data[target]
+    return X, y
+</code></pre><p>We split the dataset into training set and test set in <span class="has-mathjax">\(80 : 20\)</span>
+ ratio.</p>
+<pre tabindex="0"><code>X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2, random_state = 25)
+</code></pre><figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-frequency-comparison-training-set.png"/>
+</figure>
+
+<p>The fraudulent transactions make up for only <span class="has-mathjax">\(0.167\%\)</span>
+ of the training set. Thus we run into the risk of training models with a representative sample of fraudulent transactions of extremely small size.</p>
+<h3 id="-resampling">○ Resampling</h3>
+<ul>
+<li><a href="#random-under-sampling">Random under-sampling</a></li>
+<li><a href="#random-over-sampling">Random over-sampling</a></li>
+<li><a href="#random-under-sampling-with-imbalanced-learn-library">Random under-sampling with imbalanced-learn library</a></li>
+<li><a href="#random-over-sampling-with-imbalanced-learn-library">Random over-sampling with imbalanced-learn library</a></li>
+<li><a href="#synthetic-minority-over-sampling-technique-smote">Synthetic minority over-sampling technique (SMOTE)</a></li>
+<li><a href="#under-sampling-via-nearmiss">Under-sampling via NearMiss</a></li>
+</ul>
+<p>We start with two basic approaches based on <a href="https://en.wikipedia.org/wiki/Simple_random_sample">random sampling</a>. First, we define a function to split the dataset by the target variable <code>Class</code>.</p>
+<pre tabindex="0"><code>def split_by_target(data):
+    authentic = data[data[&#39;Class&#39;] == 0]
+    fraudulent = data[data[&#39;Class&#39;] == 1]
+    return authentic, fraudulent
+</code></pre><h4 id="random-under-sampling">Random under-sampling</h4>
+<p>Here the number of authentic observations is more than the number of fraudulent observations. In <a href="https://en.wikipedia.org/wiki/Oversampling_and_undersampling_in_data_analysis#Random_undersampling">random under-sampling</a> (RUS), we under-sample the class of authentic observations so that the size of the two classes become equal.</p>
+<pre tabindex="0"><code>def rus(X_train, y_train):
+    train = pd.concat([X_train, y_train], axis = 1)
+    authentic, fraudulent = split_by_target(train)
+    authentic_rus = authentic.sample(len(fraudulent))
+    train_rus = pd.concat([authentic_rus, fraudulent], axis = 0)
+    X_train_rus, y_train_rus = predictor_target_split(train_rus, &#39;Class&#39;)
+    return X_train_rus, y_train_rus
+</code></pre><h4 id="random-over-sampling">Random over-sampling</h4>
+<p>In <a href="https://en.wikipedia.org/wiki/Oversampling_and_undersampling_in_data_analysis#Random_oversampling">random over-sampling</a> (ROS), we over-sample the class of fraudulent observations so that the size of the two classes become equal. Note that by setting <code>replace = True</code>, we employ <em>sampling with replacement</em>, so that a single observation can be sampled more than once.</p>
+<pre tabindex="0"><code>def ros(X_train, y_train):
+    train = pd.concat([X_train, y_train], axis = 1)
+    authentic, fraudulent = split_by_target(train)
+    fraudulent_ros = authentic.sample(len(authentic), replace = True)
+    train_ros = pd.concat([authentic, fraudulent_ros], axis = 0)
+    X_train_ros, y_train_ros = predictor_target_split(train_ros, &#39;Class&#39;)
+    return X_train_ros, y_train_ros
+</code></pre><p>The next methods make use of the <a href="https://imbalanced-learn.org/stable/">imbalanced-learn</a> library, imported as <code>imblearn</code>. It is an open source, MIT-licensed library relying on the <a href="https://scikit-learn.org/stable/">scikit-learn</a> library, imported as <code>sklearn</code>. It provides tools for dealing with classification with imbalanced classes.</p>
+<p>To implement these methods, we import the relevant class from the imbalanced-learn library. We then fit an instance of the class (object) on the training set and resample it to obtain the desired version of the training set with both the authentic transactions and the fraudulent transactions represented equally.</p>
+<h4 id="random-under-sampling-with-imbalanced-learn-library">Random under-sampling with imbalanced-learn library</h4>
+<p>The following function implements <a href="https://imbalanced-learn.org/stable/under_sampling.html#controlled-under-sampling-techniques">random under-sampling with imbalanced-learn library</a> (RUS-IL).</p>
+<pre tabindex="0"><code>def rusil(X_train, y_train):
+    rusil_ = RandomUnderSampler(random_state = 40, replacement = True)
+    X_train_rusil, y_train_rusil = rusil_.fit_resample(X_train, y_train)
+
+    X_train_rusil = pd.DataFrame(X_train_rusil, columns = X_train.columns)
+    y_train_rusil = pd.DataFrame(y_train_rusil, columns = [&#39;Class&#39;])
+    train_rusil = pd.concat([X_train_rusil, y_train_rusil], axis = 1)
+    X_train_rusil, y_train_rusil = predictor_target_split(train_rusil, &#39;Class&#39;)
+
+    return X_train_rusil, y_train_rusil
+</code></pre><h4 id="random-over-sampling-with-imbalanced-learn-library">Random over-sampling with imbalanced-learn library</h4>
+<p>The next function implements <a href="https://imbalanced-learn.org/stable/over_sampling.html#naive-random-over-sampling">random over-sampling with imbalanced-learn library</a> (ROS-IL).</p>
+<pre tabindex="0"><code>def rosil(X_train, y_train):
+    rosil_ = RandomOverSampler(random_state = 40)
+    X_train_rosil, y_train_rosil = rosil_.fit_resample(X_train, y_train)
+
+    X_train_rosil = pd.DataFrame(X_train_rosil, columns = X_train.columns)
+    y_train_rosil = pd.DataFrame(y_train_rosil, columns = [&#39;Class&#39;])
+    train_rosil = pd.concat([X_train_rosil, y_train_rosil], axis = 1)
+    X_train_rosil, y_train_rosil = predictor_target_split(train_rosil, &#39;Class&#39;)
+
+    return X_train_rosil, y_train_rosil
+</code></pre><h4 id="synthetic-minority-over-sampling-technique-smote">Synthetic minority over-sampling technique (SMOTE)</h4>
+<p>The following function implements synthetic minority over-sampling technique (SMOTE).</p>
+<pre tabindex="0"><code>def smote(X_train, y_train):
+    smote_ = SMOTE()
+    X_train_smote, y_train_smote = smote_.fit_resample(X_train, y_train)
+
+    X_train_smote = pd.DataFrame(X_train_smote, columns = X_train.columns)
+    y_train_smote = pd.DataFrame(y_train_smote, columns = [&#39;Class&#39;])
+    train_smote = pd.concat([X_train_smote, y_train_smote], axis = 1)
+    X_train_smote, y_train_smote = predictor_target_split(train_smote, &#39;Class&#39;)
+
+    return X_train_smote, y_train_smote
+</code></pre><h4 id="under-sampling-via-nearmiss">Under-sampling via NearMiss</h4>
+<p>The next function implements <a href="https://imbalanced-learn.org/stable/references/generated/imblearn.under_sampling.NearMiss.html">under-sampling via NearMiss</a> (NM).</p>
+<pre tabindex="0"><code>def nm(X_train, y_train):
+    nm_ = NearMiss()
+    X_train_nm, y_train_nm = nm_.fit_resample(X_train, y_train)
+
+    X_train_nm = pd.DataFrame(X_train_nm, columns = X_train.columns)
+    y_train_nm = pd.DataFrame(y_train_nm, columns = [&#39;Class&#39;])
+    train_nm = pd.concat([X_train_nm, y_train_nm], axis = 1)
+    X_train_nm, y_train_nm = predictor_target_split(train_nm, &#39;Class&#39;)
+
+    return X_train_nm, y_train_nm
+</code></pre><h3 id="-feature-scaling">○ Feature Scaling</h3>
+<p>It may be natural for one of the features to contribute to the classification process more than another. But often this is caused artificially by the difference of range of values that the features take (often due to the <a href="https://en.wikipedia.org/wiki/Unit_of_measurement">units</a> in which the features are measured). Many algorithms, especially the tree-based ones like decision tree and random forest, as well as graphical model-based <a href="https://en.wikipedia.org/wiki/Statistical_classification">classifiers</a> like linear discriminant analysis and naive Bayes classifier, are invariant to scaling and hence indifferent to feature scaling. On the other hand, algorithms based on distances or similarities, such as <span class="has-mathjax">\(k\)-nearest neighbours</span>
+ classifier, support vector machine, and stochastic gradient descent, are sensitive to scaling. This necessitates the practitioner to scale the features appropriately before feeding the data to such classifiers. For this purpose, the min-max normalization transforms the features in the following way:
+<div class="has-mathjax">
+
+\[x \mapsto \frac{x - \min{\left(x\right)}}{\max{\left(x\right)} - \min{\left(x\right)}}\]
+
+</div>
+</p>
+<p>In this project, we modify the scaling so that the feature values are mapped to the range <span class="has-mathjax">\([-1, 1].\)</span>
+ This is done by mapping the above quantity by <span class="has-mathjax">\(y \mapsto 2y - 1.\)</span>
+ We implement this using the <code>MinMaxScaler</code> class from the <code>scikit-learn</code> library, setting the <code>feature_range</code> argument to <span class="has-mathjax">\((-1, 1).\)</span>
+</p>
+<p>To keep the transformation the same, we use the minimum and maximum values of the training columns only for both DataFrames. Using the minimum and maximum values of the test columns for both sets would have led to <a href="https://en.wikipedia.org/wiki/Leakage_(machine_learning)">data leakage</a>. Specifically, we use <span class="has-mathjax">\(\min{\left(x\right)}\)</span>
+ and <span class="has-mathjax">\(\max{\left(x\right)}\)</span>
+ for a particular feature from the training set to rescale the feature for both the training set and the test set.</p>
+<pre tabindex="0"><code>def scaler(X_train, X_test):
+    scaling = MinMaxScaler(feature_range = (-1, 1)).fit(X_train)
+    X_train_scaled = scaling.transform(X_train)
+    X_test_scaled = scaling.transform(X_test)
+    return X_train_scaled, X_test_scaled
+</code></pre><h3 id="-baseline-models">○ Baseline Models</h3>
+<ul>
+<li><a href="#logistic-regression">Logistic Regression</a></li>
+<li><a href="#k-nearest-neighbors">k-Nearest Neighbors</a></li>
+<li><a href="#decision-tree">Decision Tree</a></li>
+<li><a href="#support-vector-machine">Support Vector Machine</a></li>
+<li><a href="#naive-bayes">Naive Bayes</a></li>
+<li><a href="#random-forest">Random Forest</a></li>
+<li><a href="#linear-discriminant-analysis">Linear Discriminant Analysis</a></li>
+<li><a href="#stochastic-gradient-descent">Stochastic Gradient Descent</a></li>
+<li><a href="#ridge-classifier">Ridge Classifier</a></li>
+<li><a href="#summary-of-the-baseline-models">Summary of the Baseline Models</a></li>
+</ul>
+<p>We consider a number of <a href="https://en.wikipedia.org/wiki/Binary_classification#Statistical_binary_classification">binary classifiers</a> and train each of them on the original training set as well as the training sets obtained from different resampling approaches. In each case, the confusion matrix depicting the test set performance is reported. The computed values of several relevant evaluation metrics are summarized in tabulated form. Additionally, we compare the resampling approaches for each classifier visually.</p>
+<p>For the sake of brevity, we omit the code snippets for computation of confusion matrix, evaluation metrics, and visualization of classes. The codes can be found in <a href="https://www.kaggle.com/code/sugataghosh/credit-card-fraud-detection-part-2-modeling">this notebook</a>.</p>
+<h4 id="logistic-regression">Logistic Regression</h4>
+<ul>
+<li>Unaltered training set</li>
+</ul>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-lr-unaltered.png"/>
+</figure>
+
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-lr-unaltered-eval.png"/>
+</figure>
+
+<p>Logistic regression model on unaltered training set performs very well on the negative class (authentic transactions). However, it does not work so well with the critical positive class (fraudulent transactions) as it misclassifies more than one-third of the transactions in that class.</p>
+<ul>
+<li>Random under-sampling</li>
+</ul>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-lr-rus.png"/>
+</figure>
+
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-lr-rus-eval.png"/>
+</figure>
+
+<p>Note that the resampling approach immediately brings down the proportion of misclassified observations in the positive class, though at the expense of a slight increase in the same in the negative class.</p>
+<ul>
+<li>Random over-sampling</li>
+</ul>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-lr-ros.png"/>
+</figure>
+
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-lr-ros-eval.png"/>
+</figure>
+
+<ul>
+<li>Random under-sampling with imbalanced-learn library</li>
+</ul>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-lr-rus-imblearn.png"/>
+</figure>
+
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-lr-rus-imblearn-eval.png"/>
+</figure>
+
+<ul>
+<li>Random over-sampling with imbalanced-learn library</li>
+</ul>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-lr-ros-imblearn.png"/>
+</figure>
+
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-lr-ros-imblearn-eval.png"/>
+</figure>
+
+<ul>
+<li>Synthetic minority over-sampling technique (SMOTE)</li>
+</ul>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-lr-smote.png"/>
+</figure>
+
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-lr-smote-eval.png"/>
+</figure>
+
+<ul>
+<li>Under-sampling via NearMiss</li>
+</ul>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-lr-nm.png"/>
+</figure>
+
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-lr-nm-eval.png"/>
+</figure>
+
+<ul>
+<li>Numerical summary</li>
+</ul>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-lr-summary-numerical.png"/>
+</figure>
+
+<ul>
+<li>Visual summary</li>
+</ul>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-lr-summary-visual.png"/>
+</figure>
+
+<h4 id="k-nearest-neighbors">k-Nearest Neighbors</h4>
+<ul>
+<li>Unaltered training set</li>
+</ul>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-knn-unaltered.png"/>
+</figure>
+
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-knn-unaltered-eval.png"/>
+</figure>
+
+<ul>
+<li>Random under-sampling</li>
+</ul>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-knn-rus.png"/>
+</figure>
+
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-knn-rus-eval.png"/>
+</figure>
+
+<ul>
+<li>Random over-sampling</li>
+</ul>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-knn-ros.png"/>
+</figure>
+
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-knn-ros-eval.png"/>
+</figure>
+
+<ul>
+<li>Random under-sampling with imbalanced-learn library</li>
+</ul>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-knn-rus-imblearn.png"/>
+</figure>
+
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-knn-rus-imblearn-eval.png"/>
+</figure>
+
+<ul>
+<li>Random over-sampling with imbalanced-learn library</li>
+</ul>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-knn-ros-imblearn.png"/>
+</figure>
+
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-knn-ros-imblearn-eval.png"/>
+</figure>
+
+<ul>
+<li>Synthetic minority over-sampling technique (SMOTE)</li>
+</ul>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-knn-smote.png"/>
+</figure>
+
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-knn-smote-eval.png"/>
+</figure>
+
+<ul>
+<li>Under-sampling via NearMiss</li>
+</ul>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-knn-nm.png"/>
+</figure>
+
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-knn-nm-eval.png"/>
+</figure>
+
+<ul>
+<li>Numerical summary</li>
+</ul>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-knn-summary-numerical.png"/>
+</figure>
+
+<ul>
+<li>Visual summary</li>
+</ul>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-knn-summary-visual.png"/>
+</figure>
+
+<p>A potential issue with KNN classification model, which is relevant in this project, is that they are affected by the <a href="https://en.wikipedia.org/wiki/Curse_of_dimensionality">curse of dimensionality</a> as well as the presence of <a href="https://en.wikipedia.org/wiki/Outlier">outliers</a> in the feature variables. Despite that, it performs fairly well when applied to the unaltered (imbalanced) training set.</p>
+<h4 id="decision-tree">Decision Tree</h4>
+<ul>
+<li>Unaltered training set</li>
+</ul>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-dt-unaltered.png"/>
+</figure>
+
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-dt-unaltered-eval.png"/>
+</figure>
+
+<ul>
+<li>Random under-sampling</li>
+</ul>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-dt-rus.png"/>
+</figure>
+
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-dt-rus-eval.png"/>
+</figure>
+
+<ul>
+<li>Random over-sampling</li>
+</ul>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-dt-ros.png"/>
+</figure>
+
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-dt-ros-eval.png"/>
+</figure>
+
+<ul>
+<li>Random under-sampling with imbalanced-learn library</li>
+</ul>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-dt-rus-imblearn.png"/>
+</figure>
+
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-dt-rus-imblearn-eval.png"/>
+</figure>
+
+<ul>
+<li>Random over-sampling with imbalanced-learn library</li>
+</ul>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-dt-ros-imblearn.png"/>
+</figure>
+
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-dt-ros-imblearn-eval.png"/>
+</figure>
+
+<ul>
+<li>Synthetic minority over-sampling technique (SMOTE)</li>
+</ul>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-dt-smote.png"/>
+</figure>
+
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-dt-smote-eval.png"/>
+</figure>
+
+<ul>
+<li>Under-sampling via NearMiss</li>
+</ul>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-dt-nm.png"/>
+</figure>
+
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-dt-nm-eval.png"/>
+</figure>
+
+<ul>
+<li>Numerical summary</li>
+</ul>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-dt-summary-numerical.png"/>
+</figure>
+
+<ul>
+<li>Visual summary</li>
+</ul>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-dt-summary-visual.png"/>
+</figure>
+
+<h4 id="support-vector-machine">Support Vector Machine</h4>
+<ul>
+<li>Unaltered training set</li>
+</ul>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-svm-unaltered.png"/>
+</figure>
+
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-svm-unaltered-eval.png"/>
+</figure>
+
+<ul>
+<li>Random under-sampling</li>
+</ul>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-svm-rus.png"/>
+</figure>
+
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-svm-rus-eval.png"/>
+</figure>
+
+<ul>
+<li>Random over-sampling</li>
+</ul>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-svm-ros.png"/>
+</figure>
+
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-svm-ros-eval.png"/>
+</figure>
+
+<ul>
+<li>Random under-sampling with imbalanced-learn library</li>
+</ul>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-svm-rus-imblearn.png"/>
+</figure>
+
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-svm-rus-imblearn-eval.png"/>
+</figure>
+
+<ul>
+<li>Random over-sampling with imbalanced-learn library</li>
+</ul>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-svm-ros-imblearn.png"/>
+</figure>
+
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-svm-ros-imblearn-eval.png"/>
+</figure>
+
+<ul>
+<li>Synthetic minority over-sampling technique (SMOTE)</li>
+</ul>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-svm-smote.png"/>
+</figure>
+
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-svm-smote-eval.png"/>
+</figure>
+
+<ul>
+<li>Under-sampling via NearMiss</li>
+</ul>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-svm-nm.png"/>
+</figure>
+
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-svm-nm-eval.png"/>
+</figure>
+
+<ul>
+<li>Numerical summary</li>
+</ul>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-svm-summary-numerical.png"/>
+</figure>
+
+<ul>
+<li>Visual summary</li>
+</ul>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-svm-summary-visual.png"/>
+</figure>
+
+<h4 id="naive-bayes">Naive Bayes</h4>
+<ul>
+<li>Unaltered training set</li>
+</ul>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-nb-unaltered.png"/>
+</figure>
+
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-nb-unaltered-eval.png"/>
+</figure>
+
+<ul>
+<li>Random under-sampling</li>
+</ul>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-nb-rus.png"/>
+</figure>
+
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-nb-rus-eval.png"/>
+</figure>
+
+<ul>
+<li>Random over-sampling</li>
+</ul>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-nb-ros.png"/>
+</figure>
+
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-nb-ros-eval.png"/>
+</figure>
+
+<ul>
+<li>Random under-sampling with imbalanced-learn library</li>
+</ul>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-nb-rus-imblearn.png"/>
+</figure>
+
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-nb-rus-imblearn-eval.png"/>
+</figure>
+
+<ul>
+<li>Random over-sampling with imbalanced-learn library</li>
+</ul>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-nb-ros-imblearn.png"/>
+</figure>
+
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-nb-ros-imblearn-eval.png"/>
+</figure>
+
+<ul>
+<li>Synthetic minority over-sampling technique (SMOTE)</li>
+</ul>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-nb-smote.png"/>
+</figure>
+
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-nb-smote-eval.png"/>
+</figure>
+
+<ul>
+<li>Under-sampling via NearMiss</li>
+</ul>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-nb-nm.png"/>
+</figure>
+
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-nb-nm-eval.png"/>
+</figure>
+
+<ul>
+<li>Numerical summary</li>
+</ul>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-nb-summary-numerical.png"/>
+</figure>
+
+<ul>
+<li>Visual summary</li>
+</ul>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-nb-summary-visual.png"/>
+</figure>
+
+<h4 id="random-forest">Random Forest</h4>
+<p>The Random Forest classifier employs multiple decision trees, thereby avoiding the reliance upon feature selection of a singular decision tree.</p>
+<ul>
+<li>Unaltered training set</li>
+</ul>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-rf-unaltered.png"/>
+</figure>
+
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-rf-unaltered-eval.png"/>
+</figure>
+
+<ul>
+<li>Random under-sampling</li>
+</ul>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-rf-rus.png"/>
+</figure>
+
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-rf-rus-eval.png"/>
+</figure>
+
+<ul>
+<li>Random over-sampling</li>
+</ul>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-rf-ros.png"/>
+</figure>
+
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-rf-ros-eval.png"/>
+</figure>
+
+<ul>
+<li>Random under-sampling with imbalanced-learn library</li>
+</ul>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-rf-rus-imblearn.png"/>
+</figure>
+
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-rf-rus-imblearn-eval.png"/>
+</figure>
+
+<ul>
+<li>Random over-sampling with imbalanced-learn library</li>
+</ul>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-rf-ros-imblearn.png"/>
+</figure>
+
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-rf-ros-imblearn-eval.png"/>
+</figure>
+
+<ul>
+<li>Synthetic minority over-sampling technique (SMOTE)</li>
+</ul>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-rf-smote.png"/>
+</figure>
+
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-rf-smote-eval.png"/>
+</figure>
+
+<ul>
+<li>Under-sampling via NearMiss</li>
+</ul>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-rf-nm.png"/>
+</figure>
+
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-rf-nm-eval.png"/>
+</figure>
+
+<ul>
+<li>Numerical summary</li>
+</ul>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-rf-summary-numerical.png"/>
+</figure>
+
+<ul>
+<li>Visual summary</li>
+</ul>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-rf-summary-visual.png"/>
+</figure>
+
+<h4 id="linear-discriminant-analysis">Linear Discriminant Analysis</h4>
+<ul>
+<li>Unaltered training set</li>
+</ul>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-lda-unaltered.png"/>
+</figure>
+
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-lda-unaltered-eval.png"/>
+</figure>
+
+<ul>
+<li>Random under-sampling</li>
+</ul>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-lda-rus.png"/>
+</figure>
+
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-lda-rus-eval.png"/>
+</figure>
+
+<ul>
+<li>Random over-sampling</li>
+</ul>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-lda-ros.png"/>
+</figure>
+
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-lda-ros-eval.png"/>
+</figure>
+
+<ul>
+<li>Random under-sampling with imbalanced-learn library</li>
+</ul>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-lda-rus-imblearn.png"/>
+</figure>
+
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-lda-rus-imblearn-eval.png"/>
+</figure>
+
+<ul>
+<li>Random over-sampling with imbalanced-learn library</li>
+</ul>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-lda-ros-imblearn.png"/>
+</figure>
+
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-lda-ros-imblearn-eval.png"/>
+</figure>
+
+<ul>
+<li>Synthetic minority over-sampling technique (SMOTE)</li>
+</ul>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-lda-smote.png"/>
+</figure>
+
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-lda-smote-eval.png"/>
+</figure>
+
+<ul>
+<li>Under-sampling via NearMiss</li>
+</ul>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-lda-nm.png"/>
+</figure>
+
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-lda-nm-eval.png"/>
+</figure>
+
+<ul>
+<li>Numerical summary</li>
+</ul>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-lda-summary-numerical.png"/>
+</figure>
+
+<ul>
+<li>Visual summary</li>
+</ul>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-lda-summary-visual.png"/>
+</figure>
+
+<h4 id="stochastic-gradient-descent">Stochastic Gradient Descent</h4>
+<ul>
+<li>Unaltered training set</li>
+</ul>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-sgd-unaltered.png"/>
+</figure>
+
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-sgd-unaltered-eval.png"/>
+</figure>
+
+<ul>
+<li>Random under-sampling</li>
+</ul>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-sgd-rus.png"/>
+</figure>
+
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-sgd-rus-eval.png"/>
+</figure>
+
+<ul>
+<li>Random over-sampling</li>
+</ul>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-sgd-ros.png"/>
+</figure>
+
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-sgd-ros-eval.png"/>
+</figure>
+
+<ul>
+<li>Random under-sampling with imbalanced-learn library</li>
+</ul>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-sgd-rus-imblearn.png"/>
+</figure>
+
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-sgd-rus-imblearn-eval.png"/>
+</figure>
+
+<ul>
+<li>Random over-sampling with imbalanced-learn library</li>
+</ul>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-sgd-ros-imblearn.png"/>
+</figure>
+
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-sgd-ros-imblearn-eval.png"/>
+</figure>
+
+<ul>
+<li>Synthetic minority over-sampling technique (SMOTE)</li>
+</ul>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-sgd-smote.png"/>
+</figure>
+
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-sgd-smote-eval.png"/>
+</figure>
+
+<ul>
+<li>Under-sampling via NearMiss</li>
+</ul>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-sgd-nm.png"/>
+</figure>
+
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-sgd-nm-eval.png"/>
+</figure>
+
+<ul>
+<li>Numerical summary</li>
+</ul>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-sgd-summary-numerical.png"/>
+</figure>
+
+<ul>
+<li>Visual summary</li>
+</ul>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-sgd-summary-visual.png"/>
+</figure>
+
+<h4 id="ridge-classifier">Ridge Classifier</h4>
+<ul>
+<li>Unaltered training set</li>
+</ul>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-ridge-unaltered.png"/>
+</figure>
+
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-ridge-unaltered-eval.png"/>
+</figure>
+
+<ul>
+<li>Random under-sampling</li>
+</ul>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-ridge-rus.png"/>
+</figure>
+
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-ridge-rus-eval.png"/>
+</figure>
+
+<ul>
+<li>Random over-sampling</li>
+</ul>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-ridge-ros.png"/>
+</figure>
+
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-ridge-ros-eval.png"/>
+</figure>
+
+<ul>
+<li>Random under-sampling with imbalanced-learn library</li>
+</ul>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-ridge-rus-imblearn.png"/>
+</figure>
+
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-ridge-rus-imblearn-eval.png"/>
+</figure>
+
+<ul>
+<li>Random over-sampling with imbalanced-learn library</li>
+</ul>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-ridge-ros-imblearn.png"/>
+</figure>
+
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-ridge-ros-imblearn-eval.png"/>
+</figure>
+
+<ul>
+<li>Synthetic minority over-sampling technique (SMOTE)</li>
+</ul>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-ridge-smote.png"/>
+</figure>
+
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-ridge-smote-eval.png"/>
+</figure>
+
+<ul>
+<li>Under-sampling via NearMiss</li>
+</ul>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-ridge-nm.png"/>
+</figure>
+
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-ridge-nm-eval.png"/>
+</figure>
+
+<h4 id="summary-of-the-baseline-models">Summary of the Baseline Models</h4>
+<ul>
+<li>Numerical summary</li>
+</ul>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-ridge-summary-numerical.png"/>
+</figure>
+
+<ul>
+<li>Visual summary</li>
+</ul>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-ridge-summary-visual.png"/>
+</figure>
+
+<h3 id="-conclusion">○ Conclusion</h3>
+<p>For each classifier, we choose the resampling approach which gives the highest <span class="has-mathjax">\(F_2\)-score.</span>
+ The next table summarizes the test set performance of different classifiers, acting on the chosen resampled (or unaltered) dataset, ranked by <span class="has-mathjax">\(F_2\)-score.</span>
+ Additionally, we report MCC and recall.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-modeling-summary-numerical.png"/>
+</figure>
+
+<p>The <strong>Random Forest</strong> algorithm applied on the training set obtained after oversampling the minority class (fraudulent transactions) via <strong>SMOTE</strong> appears to perform best, in terms of <span class="has-mathjax">\(F_2\)-score,</span>
+ for the problem at hand. We restate the confusion matrix, which depicts the test set performance of this model under the particular resampling approach.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ccfd/ccfd-rf-smote-confusion-matrix.png"/>
+</figure>
+
+<p>SMOTE is one of the best choices to oversample the minority class when the data is imbalanced. It is not surprising that Random Forest turns out to be one of the most suitable classifiers for the problem due to the following reasons:</p>
+<ul>
+<li>The algorithm works well in dealing with large datasets with high dimensions.</li>
+<li>It is less affected by the presence of outliers in feature variables compared to other algorithms.</li>
+<li>It does not make any distributional assumption on the feature variables.</li>
+<li>It handles collinearity (linear dependence among features) implicitly.</li>
+<li>It automatically ignores the features which are not useful, effectively doing feature selection on its own.</li>
+</ul>
+<p>Many other (classifier + resampling approach) combinations produce better test set performance on the critical positive class compared to (Random Forest + SMOTE). However, as a trade-off, the decrease in the performance on the negative class can be significant. For example, we refer to the confusion matrices depicting the test set performance of logistic regression, support vector machine, and stochastic gradient descent classifier acting on any of the resampled training set (but not the unaltered training set).</p>
+<h3 id="-acknowledgements">○ Acknowledgements</h3>
+<ul>
+<li><a href="https://www.kaggle.com/datasets/mlg-ulb/creditcardfraud">Credit Card Fraud Detection Dataset</a></li>
+</ul>
+<h3 id="-references">○ References</h3>
+<ul>
+<li><a href="https://en.wikipedia.org/wiki/Accuracy_and_precision#In_binary_classification">Accuracy</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Binary_classification#Statistical_binary_classification">Binary classification</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Statistical_classification">Classification</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Confusion_matrix">Confusion matrix</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Credit_card">Credit card</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Curse_of_dimensionality">Curse of dimensionality</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Leakage_(machine_learning)">Data leakage</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Decision_tree">Decision tree</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Evaluation_of_binary_classifiers">Evaluation metric</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Exploratory_data_analysis">Exploratory data analysis</a></li>
+<li><a href="https://en.wikipedia.org/wiki/False_positives_and_false_negatives">False negative</a></li>
+<li><a href="https://en.wikipedia.org/wiki/False_positives_and_false_negatives">False positive</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Feature_scaling">Feature scaling</a></li>
+<li><a href="https://en.wikipedia.org/wiki/F-score"><span class="has-mathjax">\(F\)-score</span>
+</a></li>
+<li><a href="https://imbalanced-learn.org/stable/">Imbalanced-learn library</a></li>
+<li><a href="https://en.wikipedia.org/wiki/K-nearest_neighbors_algorithm"><span class="has-mathjax">\(k\)-nearest</span>
+ neighbors algorithm</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Linear_discriminant_analysis">linear discriminant analysis</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Logarithm">Logarithm</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Logarithmic_scale">Logarithmic scale</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Logistic_regression">Logistic regression</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Phi_coefficient">Matthews correlation coefficient</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Feature_scaling#Rescaling_(min-max_normalization)">Min-max normalization</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Naive_Bayes_classifier">Naive Bayes classifier</a></li>
+<li><a href="https://imbalanced-learn.org/stable/references/generated/imblearn.under_sampling.NearMiss.html">NearMiss</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Outlier">Outlier</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Oversampling_and_undersampling_in_data_analysis#Oversampling_techniques_for_classification_problems">Oversampling</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Precision_and_recall">Precision</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Principal_component_analysis">Principal component analysis</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Random_forest">Random forest</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Simple_random_sample">Random sampling</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Oversampling_and_undersampling_in_data_analysis#Random_oversampling">Random over-sampling</a></li>
+<li><a href="https://imbalanced-learn.org/stable/over_sampling.html#naive-random-over-sampling">Random over-sampling with imbalanced-learn library</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Oversampling_and_undersampling_in_data_analysis#Random_undersampling">Random under-sampling</a></li>
+<li><a href="https://imbalanced-learn.org/stable/under_sampling.html#controlled-under-sampling-techniques">Random under-sampling with imbalanced-learn library</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Precision_and_recall">Recall</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Ridge_regression">Ridge classifier</a></li>
+<li><a href="https://scikit-learn.org/stable/">Scikit-learn library</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Stochastic_gradient_descent">Stochastic gradient descent</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Support_vector_machine">Support vector machine</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Oversampling_and_undersampling_in_data_analysis#SMOTE">Synthetic minority over-sampling technique</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Training,_validation,_and_test_data_sets#Test_data_set">Test set</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Training,_validation,_and_test_data_sets#Training_data_set">Training set</a></li>
+<li><a href="https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.train_test_split.html">Train-test split</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Oversampling_and_undersampling_in_data_analysis#Undersampling_techniques_for_classification_problems">Undersampling</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Unit_of_measurement">Unit of measurement</a></li>
+</ul>
+<ul class="pa0">
+  
+</ul>
+<div class="mt6 instapaper_ignoref">
+      
+      
+      </div>
+    </div>
+
+    <aside class="w-30-l mt6-l">
+
+
+
+
+</aside>
+
+  </article>
+
+    </main>
+    <footer class="bg-black bottom-0 w-100 pa3" role="contentinfo">
+  <div class="flex justify-between">
+  <a class="f4 fw4 hover-white no-underline white-70 dn dib-ns pv2 ph3" href="https://sugatagh.github.io/dsml/" >
+    &copy;  Sugata Ghosh, PhD 2024 
+  </a>
+    <div>
+<div class="ananke-socials">
+  
+    
+    <a href="https://www.linkedin.com/in/sugataghosh/" target="_blank" rel="noopener" class="linkedin ananke-social-link link-transition stackoverflow link dib z-999 pt3 pt0-l mr1" title="LinkedIn link" aria-label="follow on LinkedIn——Opens in a new window">
+      
+        <span class="icon"><svg style="enable-background:new 0 0 65 65;" version="1.1" viewBox="0 0 65 65"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <path d="M50.837,48.137V36.425c0-6.275-3.35-9.195-7.816-9.195  c-3.604,0-5.219,1.983-6.119,3.374V27.71h-6.79c0.09,1.917,0,20.427,0,20.427h6.79V36.729c0-0.609,0.044-1.219,0.224-1.655  c0.49-1.22,1.607-2.483,3.482-2.483c2.458,0,3.44,1.873,3.44,4.618v10.929H50.837z M22.959,24.922c2.367,0,3.842-1.57,3.842-3.531  c-0.044-2.003-1.475-3.528-3.797-3.528s-3.841,1.524-3.841,3.528c0,1.961,1.474,3.531,3.753,3.531H22.959z M34,64  C17.432,64,4,50.568,4,34C4,17.431,17.432,4,34,4s30,13.431,30,30C64,50.568,50.568,64,34,64z M26.354,48.137V27.71h-6.789v20.427  H26.354z" style="fill-rule:evenodd;clip-rule:evenodd;"/>
+</svg>
+</span>
+      
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;"/>
+</svg>
+</span></a>
+  
+    
+    <a href="https://twitter.com/sugatagh" target="_blank" rel="noopener" class="twitter ananke-social-link link-transition stackoverflow link dib z-999 pt3 pt0-l mr1" title="Twitter link" aria-label="follow on Twitter——Opens in a new window">
+      
+        <span class="icon"><svg style="enable-background:new 0 0 67 67;" version="1.1" viewBox="0 0 67 67"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M37.167,22.283c-2.619,0.953-4.274,3.411-4.086,6.101  l0.063,1.038l-1.048-0.127c-3.813-0.487-7.145-2.139-9.974-4.915l-1.383-1.377l-0.356,1.017c-0.754,2.267-0.272,4.661,1.299,6.271  c0.838,0.89,0.649,1.017-0.796,0.487c-0.503-0.169-0.943-0.296-0.985-0.233c-0.146,0.149,0.356,2.076,0.754,2.839  c0.545,1.06,1.655,2.097,2.871,2.712l1.027,0.487l-1.215,0.021c-1.173,0-1.215,0.021-1.089,0.467  c0.419,1.377,2.074,2.839,3.918,3.475l1.299,0.444l-1.131,0.678c-1.676,0.976-3.646,1.526-5.616,1.568  C19.775,43.256,19,43.341,19,43.405c0,0.211,2.557,1.397,4.044,1.864c4.463,1.377,9.765,0.783,13.746-1.568  c2.829-1.673,5.657-5,6.978-8.221c0.713-1.716,1.425-4.851,1.425-6.354c0-0.975,0.063-1.102,1.236-2.267  c0.692-0.678,1.341-1.419,1.467-1.631c0.21-0.403,0.188-0.403-0.88-0.043c-1.781,0.636-2.033,0.551-1.152-0.402  c0.649-0.678,1.425-1.907,1.425-2.267c0-0.063-0.314,0.042-0.671,0.233c-0.377,0.212-1.215,0.53-1.844,0.72l-1.131,0.361l-1.027-0.7  c-0.566-0.381-1.361-0.805-1.781-0.932C39.766,21.902,38.131,21.944,37.167,22.283z M33,64C16.432,64,3,50.569,3,34S16.432,4,33,4  s30,13.431,30,30S49.568,64,33,64z" style="fill-rule:evenodd;clip-rule:evenodd;"/></svg>
+</span>
+      
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;"/>
+</svg>
+</span></a>
+  
+    
+    <a href="https://github.com/sugatagh" target="_blank" rel="noopener" class="github ananke-social-link link-transition stackoverflow link dib z-999 pt3 pt0-l mr1" title="GitHub link" aria-label="follow on GitHub——Opens in a new window">
+      
+        <span class="icon"><svg style="enable-background:new 0 0 512 512;" version="1.1" viewBox="0 0 512 512"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+  <path d="M256,32C132.3,32,32,134.8,32,261.7c0,101.5,64.2,187.5,153.2,217.9c11.2,2.1,15.3-5,15.3-11.1   c0-5.5-0.2-19.9-0.3-39.1c-62.3,13.9-75.5-30.8-75.5-30.8c-10.2-26.5-24.9-33.6-24.9-33.6c-20.3-14.3,1.5-14,1.5-14   c22.5,1.6,34.3,23.7,34.3,23.7c20,35.1,52.4,25,65.2,19.1c2-14.8,7.8-25,14.2-30.7c-49.7-5.8-102-25.5-102-113.5   c0-25.1,8.7-45.6,23-61.6c-2.3-5.8-10-29.2,2.2-60.8c0,0,18.8-6.2,61.6,23.5c17.9-5.1,37-7.6,56.1-7.7c19,0.1,38.2,2.6,56.1,7.7   c42.8-29.7,61.5-23.5,61.5-23.5c12.2,31.6,4.5,55,2.2,60.8c14.3,16.1,23,36.6,23,61.6c0,88.2-52.4,107.6-102.3,113.3   c8,7.1,15.2,21.1,15.2,42.5c0,30.7-0.3,55.5-0.3,63c0,6.1,4,13.3,15.4,11C415.9,449.1,480,363.1,480,261.7   C480,134.8,379.7,32,256,32z"/>
+</svg>
+</span>
+      
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;"/>
+</svg>
+</span></a>
+  
+    
+    <a href="https://www.kaggle.com/sugataghosh" target="_blank" rel="noopener" class="Kaggle ananke-social-link link-transition stackoverflow link dib z-999 pt3 pt0-l mr1" title="Kaggle link" aria-label="follow on Kaggle——Opens in a new window">
+      
+        Kaggle
+      
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;"/>
+</svg>
+</span></a>
+  
+</div>
+</div>
+  </div>
+</footer>
+
+  </body>
+</html>

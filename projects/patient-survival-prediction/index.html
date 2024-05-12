@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    
+    <title>Patient Survival Prediction | Sugata Ghosh, PhD</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1">
+    <meta name="description" content="Binary Classification with Deep Learning">
+    <meta name="generator" content="Hugo 0.121.2">
+    
+    
+    
+    
+      <meta name="robots" content="noindex, nofollow">
+    
+
+    
+<link rel="stylesheet" href="https://sugatagh.github.io/dsml/ananke/css/main.min.css" >
+
+
+
+    
+
+    
+      
+
+    
+
+    
+
+    
+      <link rel="canonical" href="https://sugatagh.github.io/dsml/projects/patient-survival-prediction/">
+    
+
+    <meta property="og:title" content="Patient Survival Prediction" />
+<meta property="og:description" content="Binary Classification with Deep Learning" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://sugatagh.github.io/dsml/projects/patient-survival-prediction/" /><meta property="article:section" content="projects" />
+<meta property="article:published_time" content="2022-04-07T00:00:00+05:30" />
+<meta property="article:modified_time" content="2022-04-07T00:00:00+05:30" />
+
+<meta itemprop="name" content="Patient Survival Prediction">
+<meta itemprop="description" content="Binary Classification with Deep Learning"><meta itemprop="datePublished" content="2022-04-07T00:00:00+05:30" />
+<meta itemprop="dateModified" content="2022-04-07T00:00:00+05:30" />
+<meta itemprop="wordCount" content="2987">
+<meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/><meta name="twitter:title" content="Patient Survival Prediction"/>
+<meta name="twitter:description" content="Binary Classification with Deep Learning"/>
+
+	<style>
+.has-mathjax {
+    visibility: hidden;
+}
+</style>
+
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+<script>
+window.MathJax = {
+  startup: {
+    pageReady: () => {
+      return MathJax.startup.defaultPageReady().then(() => {
+        for (let element of document.getElementsByClassName("has-mathjax")) {
+            element.style.visibility = "visible"
+        }
+      });
+    }
+  }
+};
+</script>
+  </head>
+
+  <body class="ma0 avenir bg-near-white">
+
+    
+   
+  
+
+  
+  <header class="cover bg-top" style="background-image: url('https://sugatagh.github.io/dsml/images/bg-projects/bg-psp-2.jpg');">
+    <div class="bg-black-60">
+      <nav class="pv3 ph3 ph4-ns" role="navigation">
+  <div class="flex-l justify-between items-center center">
+    <a href="https://sugatagh.github.io/dsml/" class="f3 fw2 hover-white no-underline white-90 dib">
+      
+        Sugata Ghosh, PhD
+      
+    </a>
+    <div class="flex-l items-center">
+      
+
+      
+        <ul class="pl0 mr3">
+          
+          <li class="list f5 f4-ns fw4 dib pr3">
+            <a class="hover-white no-underline white-90" href="https://sugatagh.github.io/dsml/about/" title="About page">
+              About
+            </a>
+          </li>
+          
+          <li class="list f5 f4-ns fw4 dib pr3">
+            <a class="hover-white no-underline white-90" href="https://sugatagh.github.io/dsml/overview/" title="Overview page">
+              Overview
+            </a>
+          </li>
+          
+          <li class="list f5 f4-ns fw4 dib pr3">
+            <a class="hover-white no-underline white-90" href="https://sugatagh.github.io/dsml/certifications/" title="Certifications page">
+              Certifications
+            </a>
+          </li>
+          
+          <li class="list f5 f4-ns fw4 dib pr3">
+            <a class="hover-white no-underline white-90" href="https://sugatagh.github.io/dsml/projects/" title="Projects page">
+              Projects
+            </a>
+          </li>
+          
+          <li class="list f5 f4-ns fw4 dib pr3">
+            <a class="hover-white no-underline white-90" href="https://sugatagh.github.io/dsml/notes/" title="Notes page">
+              Notes
+            </a>
+          </li>
+          
+          <li class="list f5 f4-ns fw4 dib pr3">
+            <a class="hover-white no-underline white-90" href="https://sugatagh.github.io/dsml/cv/" title="CV page">
+              CV
+            </a>
+          </li>
+          
+          <li class="list f5 f4-ns fw4 dib pr3">
+            <a class="hover-white no-underline white-90" href="https://sugatagh.github.io/dsml/contact/" title="Contact page">
+              Contact
+            </a>
+          </li>
+          
+        </ul>
+      
+      
+<div class="ananke-socials">
+  
+    
+    <a href="https://www.linkedin.com/in/sugataghosh/" target="_blank" rel="noopener" class="linkedin ananke-social-link link-transition stackoverflow link dib z-999 pt3 pt0-l mr1" title="LinkedIn link" aria-label="follow on LinkedIn——Opens in a new window">
+      
+        <span class="icon"><svg style="enable-background:new 0 0 65 65;" version="1.1" viewBox="0 0 65 65"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <path d="M50.837,48.137V36.425c0-6.275-3.35-9.195-7.816-9.195  c-3.604,0-5.219,1.983-6.119,3.374V27.71h-6.79c0.09,1.917,0,20.427,0,20.427h6.79V36.729c0-0.609,0.044-1.219,0.224-1.655  c0.49-1.22,1.607-2.483,3.482-2.483c2.458,0,3.44,1.873,3.44,4.618v10.929H50.837z M22.959,24.922c2.367,0,3.842-1.57,3.842-3.531  c-0.044-2.003-1.475-3.528-3.797-3.528s-3.841,1.524-3.841,3.528c0,1.961,1.474,3.531,3.753,3.531H22.959z M34,64  C17.432,64,4,50.568,4,34C4,17.431,17.432,4,34,4s30,13.431,30,30C64,50.568,50.568,64,34,64z M26.354,48.137V27.71h-6.789v20.427  H26.354z" style="fill-rule:evenodd;clip-rule:evenodd;"/>
+</svg>
+</span>
+      
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;"/>
+</svg>
+</span></a>
+  
+    
+    <a href="https://twitter.com/sugatagh" target="_blank" rel="noopener" class="twitter ananke-social-link link-transition stackoverflow link dib z-999 pt3 pt0-l mr1" title="Twitter link" aria-label="follow on Twitter——Opens in a new window">
+      
+        <span class="icon"><svg style="enable-background:new 0 0 67 67;" version="1.1" viewBox="0 0 67 67"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M37.167,22.283c-2.619,0.953-4.274,3.411-4.086,6.101  l0.063,1.038l-1.048-0.127c-3.813-0.487-7.145-2.139-9.974-4.915l-1.383-1.377l-0.356,1.017c-0.754,2.267-0.272,4.661,1.299,6.271  c0.838,0.89,0.649,1.017-0.796,0.487c-0.503-0.169-0.943-0.296-0.985-0.233c-0.146,0.149,0.356,2.076,0.754,2.839  c0.545,1.06,1.655,2.097,2.871,2.712l1.027,0.487l-1.215,0.021c-1.173,0-1.215,0.021-1.089,0.467  c0.419,1.377,2.074,2.839,3.918,3.475l1.299,0.444l-1.131,0.678c-1.676,0.976-3.646,1.526-5.616,1.568  C19.775,43.256,19,43.341,19,43.405c0,0.211,2.557,1.397,4.044,1.864c4.463,1.377,9.765,0.783,13.746-1.568  c2.829-1.673,5.657-5,6.978-8.221c0.713-1.716,1.425-4.851,1.425-6.354c0-0.975,0.063-1.102,1.236-2.267  c0.692-0.678,1.341-1.419,1.467-1.631c0.21-0.403,0.188-0.403-0.88-0.043c-1.781,0.636-2.033,0.551-1.152-0.402  c0.649-0.678,1.425-1.907,1.425-2.267c0-0.063-0.314,0.042-0.671,0.233c-0.377,0.212-1.215,0.53-1.844,0.72l-1.131,0.361l-1.027-0.7  c-0.566-0.381-1.361-0.805-1.781-0.932C39.766,21.902,38.131,21.944,37.167,22.283z M33,64C16.432,64,3,50.569,3,34S16.432,4,33,4  s30,13.431,30,30S49.568,64,33,64z" style="fill-rule:evenodd;clip-rule:evenodd;"/></svg>
+</span>
+      
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;"/>
+</svg>
+</span></a>
+  
+    
+    <a href="https://github.com/sugatagh" target="_blank" rel="noopener" class="github ananke-social-link link-transition stackoverflow link dib z-999 pt3 pt0-l mr1" title="GitHub link" aria-label="follow on GitHub——Opens in a new window">
+      
+        <span class="icon"><svg style="enable-background:new 0 0 512 512;" version="1.1" viewBox="0 0 512 512"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+  <path d="M256,32C132.3,32,32,134.8,32,261.7c0,101.5,64.2,187.5,153.2,217.9c11.2,2.1,15.3-5,15.3-11.1   c0-5.5-0.2-19.9-0.3-39.1c-62.3,13.9-75.5-30.8-75.5-30.8c-10.2-26.5-24.9-33.6-24.9-33.6c-20.3-14.3,1.5-14,1.5-14   c22.5,1.6,34.3,23.7,34.3,23.7c20,35.1,52.4,25,65.2,19.1c2-14.8,7.8-25,14.2-30.7c-49.7-5.8-102-25.5-102-113.5   c0-25.1,8.7-45.6,23-61.6c-2.3-5.8-10-29.2,2.2-60.8c0,0,18.8-6.2,61.6,23.5c17.9-5.1,37-7.6,56.1-7.7c19,0.1,38.2,2.6,56.1,7.7   c42.8-29.7,61.5-23.5,61.5-23.5c12.2,31.6,4.5,55,2.2,60.8c14.3,16.1,23,36.6,23,61.6c0,88.2-52.4,107.6-102.3,113.3   c8,7.1,15.2,21.1,15.2,42.5c0,30.7-0.3,55.5-0.3,63c0,6.1,4,13.3,15.4,11C415.9,449.1,480,363.1,480,261.7   C480,134.8,379.7,32,256,32z"/>
+</svg>
+</span>
+      
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;"/>
+</svg>
+</span></a>
+  
+    
+    <a href="https://www.kaggle.com/sugataghosh" target="_blank" rel="noopener" class="Kaggle ananke-social-link link-transition stackoverflow link dib z-999 pt3 pt0-l mr1" title="Kaggle link" aria-label="follow on Kaggle——Opens in a new window">
+      
+        Kaggle
+      
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;"/>
+</svg>
+</span></a>
+  
+</div>
+
+    </div>
+  </div>
+</nav>
+
+      <div class="tc-l pv6 ph3 ph4-ns">
+        
+          <div class="f2 f1-l fw2 white-90 mb0 lh-title">Patient Survival Prediction</div>
+          
+            <div class="fw1 f5 f3-l white-80 measure-wide-l center lh-copy mt3 mb4">
+              Binary Classification with Deep Learning
+            </div>
+          
+        
+      </div>
+    </div>
+  </header>
+
+
+
+    <main class="pb7" role="main">
+      
+  
+  <article class="flex-l flex-wrap justify-between mw8 center ph3">
+    <header class="mt4 w-100">
+      <aside class="instapaper_ignoref b helvetica tracked ttu">
+          
+        Projects
+      </aside>
+      
+
+
+
+
+
+
+
+
+
+
+  <div id="sharing" class="mt3 ananke-socials">
+    
+      
+      <a href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https://sugatagh.github.io/dsml/projects/patient-survival-prediction/&amp;title=Patient%20Survival%20Prediction" class="ananke-social-link linkedin no-underline" aria-label="share on LinkedIn">
+        
+        <span class="icon"> <svg style="enable-background:new 0 0 65 65;" version="1.1" viewBox="0 0 65 65"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <path d="M50.837,48.137V36.425c0-6.275-3.35-9.195-7.816-9.195  c-3.604,0-5.219,1.983-6.119,3.374V27.71h-6.79c0.09,1.917,0,20.427,0,20.427h6.79V36.729c0-0.609,0.044-1.219,0.224-1.655  c0.49-1.22,1.607-2.483,3.482-2.483c2.458,0,3.44,1.873,3.44,4.618v10.929H50.837z M22.959,24.922c2.367,0,3.842-1.57,3.842-3.531  c-0.044-2.003-1.475-3.528-3.797-3.528s-3.841,1.524-3.841,3.528c0,1.961,1.474,3.531,3.753,3.531H22.959z M34,64  C17.432,64,4,50.568,4,34C4,17.431,17.432,4,34,4s30,13.431,30,30C64,50.568,50.568,64,34,64z M26.354,48.137V27.71h-6.789v20.427  H26.354z" style="fill-rule:evenodd;clip-rule:evenodd;"/>
+</svg>
+</span>
+        
+      </a>
+    
+      
+      <a href="https://twitter.com/intent/tweet?url=https://sugatagh.github.io/dsml/projects/patient-survival-prediction/&amp;text=Patient%20Survival%20Prediction" class="ananke-social-link twitter no-underline" aria-label="share on Twitter">
+        
+        <span class="icon"> <svg style="enable-background:new 0 0 67 67;" version="1.1" viewBox="0 0 67 67"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M37.167,22.283c-2.619,0.953-4.274,3.411-4.086,6.101  l0.063,1.038l-1.048-0.127c-3.813-0.487-7.145-2.139-9.974-4.915l-1.383-1.377l-0.356,1.017c-0.754,2.267-0.272,4.661,1.299,6.271  c0.838,0.89,0.649,1.017-0.796,0.487c-0.503-0.169-0.943-0.296-0.985-0.233c-0.146,0.149,0.356,2.076,0.754,2.839  c0.545,1.06,1.655,2.097,2.871,2.712l1.027,0.487l-1.215,0.021c-1.173,0-1.215,0.021-1.089,0.467  c0.419,1.377,2.074,2.839,3.918,3.475l1.299,0.444l-1.131,0.678c-1.676,0.976-3.646,1.526-5.616,1.568  C19.775,43.256,19,43.341,19,43.405c0,0.211,2.557,1.397,4.044,1.864c4.463,1.377,9.765,0.783,13.746-1.568  c2.829-1.673,5.657-5,6.978-8.221c0.713-1.716,1.425-4.851,1.425-6.354c0-0.975,0.063-1.102,1.236-2.267  c0.692-0.678,1.341-1.419,1.467-1.631c0.21-0.403,0.188-0.403-0.88-0.043c-1.781,0.636-2.033,0.551-1.152-0.402  c0.649-0.678,1.425-1.907,1.425-2.267c0-0.063-0.314,0.042-0.671,0.233c-0.377,0.212-1.215,0.53-1.844,0.72l-1.131,0.361l-1.027-0.7  c-0.566-0.381-1.361-0.805-1.781-0.932C39.766,21.902,38.131,21.944,37.167,22.283z M33,64C16.432,64,3,50.569,3,34S16.432,4,33,4  s30,13.431,30,30S49.568,64,33,64z" style="fill-rule:evenodd;clip-rule:evenodd;"/></svg>
+</span>
+        
+      </a>
+    
+  </div>
+
+
+      <h1 class="f1 athelas mt3 mb1">Patient Survival Prediction</h1>
+      
+      
+      
+      <time class="f6 mv4 dib tracked" datetime="2022-04-07T00:00:00+05:30">April 7, 2022</time>
+      
+
+      
+      
+    </header>
+    <div class="nested-copy-line-height lh-copy serif f4 nested-links mid-gray pr4-l w-two-thirds-l"><p>Deriving a quick understanding of the overall health of a patient is of paramount importance in emergency healthcare situations. Often, this understanding is hindered for many different reasons. In particular, the intensive care units in hospitals often lack a verified medical history of the incoming patients. The knowledge of medical records indicates the survival odds of a patient to a great extent. In this project, we predict whether a patient will survive or not based on various relevant medical information.</p>
+<p><a href="https://github.com/sugatagh/Patient-Survival-Prediction-using-Deep-Learning">GitHub repository</a></p>
+<h3 id="-contents">○ Contents</h3>
+<ul>
+<li><a href="#-overview">Overview</a></li>
+<li><a href="#-introduction">Introduction</a></li>
+<li><a href="#-exploratory-data-analysis">Exploratory Data Analysis</a></li>
+<li><a href="#-train-test-split">Train-Test Split</a></li>
+<li><a href="#-data-preprocessing">Data Preprocessing</a></li>
+<li><a href="#-baseline-neural-network">Baseline Neural Network</a></li>
+<li><a href="#-hyperparameter-tuning">Hyperparameter Tuning</a></li>
+<li><a href="#-prediction-and-evaluation">Prediction and Evaluation</a></li>
+<li><a href="#-acknowledgements">Acknowledgements</a></li>
+<li><a href="#-references">References</a></li>
+</ul>
+<h3 id="-overview">○ Overview</h3>
+<ul>
+<li>Information about the medical records of a patient plays a crucial role in determining his or her survival odds to a substantial extent.</li>
+<li>In this project, we aim to predict survival of a patient, which is a <a href="https://en.wikipedia.org/wiki/Binary_data">binary variable</a>, based on the relevant medical records.</li>
+<li>A detailed <a href="https://en.wikipedia.org/wiki/Exploratory_data_analysis">exploratory data analysis</a> on the dataset is carried out.</li>
+<li>We use the insights obtained from EDA in the <a href="https://en.wikipedia.org/wiki/Data_Preprocessing">data preprocessing</a> stages, which consists of <a href="https://en.wikipedia.org/wiki/Missing_data">missing data</a> <a href="https://en.wikipedia.org/wiki/Imputation_(statistics)">imputation</a>, <a href="https://en.wikipedia.org/wiki/Categorical_variable#Categorical_variables_and_regression">categorical data encoding</a>, and <a href="https://en.wikipedia.org/wiki/Feature_scaling">feature scaling</a>.</li>
+<li>We build a <a href="https://en.wikipedia.org/wiki/Neural_network">neural network</a> and <a href="https://en.wikipedia.org/wiki/Hyperparameter_optimization">tune</a> it to predict survival of a patient.</li>
+<li>The final model obtains a test <a href="https://en.wikipedia.org/wiki/Accuracy_and_precision#In_binary_classification">accuracy</a> of <span class="has-mathjax">\(0.923513\).</span>
+</li>
+</ul>
+<h3 id="-introduction">○ Introduction</h3>
+<ul>
+<li><a href="#data">Data</a></li>
+<li><a href="#project-objective">Project Objective</a></li>
+<li><a href="#evaluation-metric">Evaluation Metric</a></li>
+</ul>
+<p>Deriving a quick understanding of the overall health of a patient is of paramount importance in emergency healthcare situations. Often this understanding is hindered for many different reasons.</p>
+<p>A patient in distress or in an unresponsive state may not be able to inform the healthcare professionals about chronic conditions such as heart disease, diabetes or other injuries. In particular, the intensive care units in the hospitals often lack verified medical history of the incoming patients. Also, when a patient shifts from one medical support provider to another, the clinical records of the patient may take days to transfer, which delays the treatment process. The pandemic situations present the health workers with these issues at a much larger scale as the hospitals may get overloaded with patients in severe conditions.</p>
+<p>Knowledge about the medical records of a patient is crucial in the treatment process. It also plays a significant role in determining his or her survival odds to a substantial extent. We aim to build a predictive model of survival based on the relevant medical records.</p>
+<h4 id="data">Data</h4>
+<p>Source: <a href="https://journals.lww.com/ccmjournal/Citation/2019/01001/33__THE_GLOBAL_OPEN_SOURCE_SEVERITY_OF_ILLNESS.36.aspx">https://journals.lww.com/ccmjournal/Citation/2019/01001/33__THE_GLOBAL_OPEN_SOURCE_SEVERITY_OF_ILLNESS.36.aspx</a></p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/psp/psp-data.png"/>
+</figure>
+
+<p>The dataset contains <span class="has-mathjax">\(91713\)</span>
+ observations, each with <span class="has-mathjax">\(186\)</span>
+ attributes.</p>
+<h4 id="project-objective">Project Objective</h4>
+<p>The medical records of a patient play a significant role in determining his or her survival odds to a substantial extent. In this project, the objective is to predict whether a patient will survive or not, based on various relevant medical information. Thus, it is a <a href="https://en.wikipedia.org/wiki/Binary_classification#Statistical_binary_classification">binary classification</a> problem.</p>
+<h4 id="evaluation-metric">Evaluation Metric</h4>
+<p>Let us denote</p>
+<ul>
+<li><strong>TP</strong>: Number of true positives</li>
+<li><strong>TN</strong>: Number of true negatives</li>
+<li><strong>FP</strong>: Number of false positives</li>
+<li><strong>FN</strong>: Number of false negatives</li>
+</ul>
+<p>The accuracy metric is defined as the proportion of correct predictions. In terms of the notations mentioned above, it is given as
+<div class="has-mathjax">
+
+\[\text{Accuracy} = \frac{\text{TP} + \text{TN}}{\text{TP} + \text{TN} + \text{FP} + \text{FN}}\]
+
+</div>
+</p>
+<p>In this project, we use this metric to evaluate the models.</p>
+<h3 id="-exploratory-data-analysis">○ Exploratory Data Analysis</h3>
+<ul>
+<li><a href="#understanding-features">Understanding Features</a></li>
+<li><a href="#dataset-synopsis">Dataset Synopsis</a></li>
+<li><a href="#univariate-analysis">Univariate Analysis</a></li>
+<li><a href="#multivariate-analysis">Multivariate Analysis</a></li>
+</ul>
+<h4 id="understanding-features">Understanding Features</h4>
+<p><a href="https://github.com/sugatagh/Patient-Survival-Prediction-using-Deep-Learning/blob/main/Dataset/Data%20Dictionary.csv">This DataFrame</a> describes the attributes in <a href="https://github.com/sugatagh/Patient-Survival-Prediction-using-Deep-Learning/blob/main/Dataset/Dataset.csv">the original dataset</a> through a six-point summary:</p>
+<ul>
+<li>Category</li>
+<li>Variable Name</li>
+<li>Unit of Measure</li>
+<li>Data Type</li>
+<li>Description</li>
+<li>Example</li>
+</ul>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/psp/psp-data-dictionary.png"/>
+</figure>
+
+<h4 id="dataset-synopsis">Dataset Synopsis</h4>
+<ul>
+<li>Number of observations: <span class="has-mathjax">\(91713\)</span>
+</li>
+<li>Number of columns: <span class="has-mathjax">\(186\)</span>
+</li>
+<li>Number of integer columns: <span class="has-mathjax">\(8\)</span>
+</li>
+<li>Number of float columns: <span class="has-mathjax">\(170\)</span>
+</li>
+<li>Number of object columns: <span class="has-mathjax">\(8\)</span>
+</li>
+<li>Number of duplicate observations: <span class="has-mathjax">\(0\)</span>
+</li>
+<li>Number of duplicate columns: <span class="has-mathjax">\(3\)</span>
+</li>
+<li>Constant column: <code>readmission_status</code></li>
+<li>Number of columns with missing values: <span class="has-mathjax">\(175\)</span>
+</li>
+<li>Columns with over <span class="has-mathjax">\(90\%\)</span>
+ missing values: <code>h1_bilirubin_max</code>, <code>h1_bilirubin_min</code>, <code>h1_lactate_min</code>, <code>h1_lactate_max</code>, <code>h1_albumin_max</code></li>
+</ul>
+<p>The column <code>readmission_status</code> has the same value for every single observation and hence does not contribute to the task of classifying the observations. Thus, we remove this column.</p>
+<h4 id="univariate-analysis">Univariate Analysis</h4>
+<p>We begin by visualizing the frequency distribution of the target variable <code>hospital_death</code>, which is a binary variable indicating the survival status of a patient.
+<div class="has-mathjax">
+
+\begin{align*}
+&0 \mapsto \text{patient survived}\\
+&1 \mapsto \text{patient died}
+\end{align*}
+
+</div>
+</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/psp/psp-eda-hospital-death.png"/>
+</figure>
+
+<p>Next, we consider the predictor variables.</p>
+<p>We observe that many of the columns are almost constant in the sense that the values in these columns are identical for most observations. More objectively, we say that a particular column is <strong>almost constant</strong> with respect to a threshold value <span class="has-mathjax">\(p\)</span>
+ if the relative frequency of the <a href="https://en.wikipedia.org/wiki/Mode_(statistics)">mode</a> of the column is greater than <span class="has-mathjax">\(p\).</span>
+ The following function identifies the almost constant columns of an input DataFrame with respect to an input threshold value. If <code>show = True</code>, then it prints a series of these columns along with the relative frequency of the corresponding mode. Additionally, if <code>return_list = True</code>, then it returns a list of the almost constant columns.</p>
+<pre tabindex="0"><code>def almost_constant(df, threshold = 0.9, show = True, return_list = True):
+    rel_freq = []
+    for col in df.columns:
+        mode_rel_freq = max(df[col].value_counts(sort = True) / len(df[col]))
+        if mode_rel_freq &gt; threshold:
+            rel_freq.append((col, mode_rel_freq))
+    keys = [item[0] for item in rel_freq]
+    values = [item[1] for item in rel_freq]
+    series = pd.Series(data = values, index = keys).sort_values(ascending = False)
+    if show == True:
+        print(series.to_string())
+    if return_list == True:
+        return keys
+</code></pre><p>We set the threshold value at <span class="has-mathjax">\(0.9\)</span>
+ to find <span class="has-mathjax">\(10\)</span>
+ almost constant features.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/psp/psp-almost-constant.png"/>
+</figure>
+
+<p>Among these features, <code>icu_stay_type</code> is an object variable, taking values <code>admit</code>, <code>transfer</code> and <code>readmit</code>, while the rest are binary float variables, taking values <code>0.0</code> and <code>1.0</code>.</p>
+<ul>
+<li>Binary columns except <code>gender</code> and <code>hospital_death</code></li>
+</ul>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/psp/psp-eda-binary-columns-except-gender-and-hospital-death.png"/>
+</figure>
+
+<ul>
+<li><code>gender</code> and <code>icu_stay_type</code></li>
+</ul>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/psp/psp-eda-gender-and-icu-stay-type.png"/>
+</figure>
+
+<ul>
+<li>Columns with <span class="has-mathjax">\(4\)</span>
+ to <span class="has-mathjax">\(15\)</span>
+ distinct values</li>
+</ul>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/psp/psp-eda-4-15.png"/>
+</figure>
+
+<ul>
+<li>Non-float columns with more than <span class="has-mathjax">\(15\)</span>
+ distinct values</li>
+</ul>
+<p>Four non-float columns, namely <code>encounter_id</code>, <code>patient_id</code>, <code>hospital_id</code>, and <code>icu_id</code>, have more than <span class="has-mathjax">\(15\)</span>
+ distinct values.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/psp/psp-eda-greater-than-15-unique.png"/>
+</figure>
+
+<p>Among these, <code>encounter_id</code> and <code>patient_id</code> are unique for each observation, and hence do not contribute to the task of predicting the target variable. For this reason, we drop these two columns.</p>
+<p>We present countplot for <code>hospital_id</code>.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/psp/psp-eda-hospital-id.png"/>
+</figure>
+
+<p>Next, we present countplot for <code>icu_id</code>.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/psp/psp-eda-icu-id.png"/>
+</figure>
+
+<ul>
+<li>Float columns with more than <span class="has-mathjax">\(15\)</span>
+ distinct values</li>
+</ul>
+<p>We visualize the distributions of the float columns with more than <span class="has-mathjax">\(15\)</span>
+ distinct values.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/psp/psp-eda-float-greater-than-15-histogram.png"/>
+</figure>
+
+<h4 id="multivariate-analysis">Multivariate Analysis</h4>
+<ul>
+<li>Relationships among the predictor variables</li>
+</ul>
+<p>First, we consider the <a href="https://en.wikipedia.org/wiki/Correlation">correlation</a> structure among the numerical features. The color-coded correlation heatmap suggests that there are several pairs of features that are highly correlated. The image can be opened in a new tab and zoomed in for clarity.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/psp/psp-eda-correlation-heatmap.png"/>
+</figure>
+
+<p>We identify the pairs of features with absolute <a href="https://en.wikipedia.org/wiki/Correlation_coefficient">correlation coefficient</a> greater than <span class="has-mathjax">\(0.9\)</span>
+ (i.e., correlation coefficient <span class="has-mathjax">\(> 0.9\)</span>
+ or <span class="has-mathjax">\(< -0.9\)</span>
+) and present them along with their correlation coefficient.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/psp/psp-eda-correlation-pairs.png"/>
+</figure>
+
+<p>We observe that</p>
+<ol>
+<li>There are <span class="has-mathjax">\(94\)</span>
+ pairs of numerical features with correlation coefficient over <span class="has-mathjax">\(0.9\)</span>
+</li>
+<li>There are no pair of numerical features with correlation coefficient below <span class="has-mathjax">\(-0.9\)</span>
+</li>
+<li>Three pairs of numerical features have correlation coefficient exactly equal to <span class="has-mathjax">\(1\),</span>
+ i.e. there exists perfect linear relationship (with positive slope) between the variables in each of those pairs (this corresponds to the fact that there are <span class="has-mathjax">\(3\)</span>
+ duplicate columns in the dataset)</li>
+</ol>
+<ul>
+<li>Relationships of the target variable with the predictor variables</li>
+</ul>
+<p>We present contingency tables for the target variable <code>hospital_death</code> and each binary feature in <code>data</code>.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/psp/psp-eda-target-binary-contingency-table.png"/>
+</figure>
+
+<p>We present contingency tables for the target variable and each feature taking <span class="has-mathjax">\(3\)</span>
+ to <span class="has-mathjax">\(15\)</span>
+ distinct values. As an example, we show the contingency table for the target variable and <code>ethnicity</code>. For the complete output, see <a href="https://github.com/sugatagh/Patient-Survival-Prediction-using-Deep-Learning/blob/main/Notebook/patient_survival_prediction.ipynb">this notebook</a>.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/psp/psp-eda-target-ethnicity-contingency-table.png"/>
+</figure>
+
+<p>Next, we present <a href="https://en.wikipedia.org/wiki/Kernel_density_estimation">kernel density estimate</a> plot of numerical features, having more than <span class="has-mathjax">\(15\)</span>
+ distinct values, for the two target classes.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/psp/psp-eda-target-float-more-than-15-histogram.png"/>
+</figure>
+
+<h3 id="-train-test-split">○ Train-Test Split</h3>
+<p>We split the dataset into <a href="https://en.wikipedia.org/wiki/Training,_validation,_and_test_data_sets#Training_data_set">training set</a> and <a href="https://en.wikipedia.org/wiki/Training,_validation,_and_test_data_sets#Test_data_set">test set</a> in <span class="has-mathjax">\(80:20\)</span>
+ ratio using the <code>train_test_split</code> function.</p>
+<p>The frequency distribution of the target variable in the training set and the test set is presented below.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/psp/psp-eda-hospital-death-training-set.png"/>
+</figure>
+
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/psp/psp-eda-hospital-death-test-set.png"/>
+</figure>
+
+<h3 id="-data-preprocessing">○ Data Preprocessing</h3>
+<ul>
+<li><a href="#missing-data-imputation">Missing Data Imputation</a></li>
+<li><a href="#categorical-data-encoding">Categorical Data Encoding</a></li>
+<li><a href="#feature-scaling">Feature Scaling</a></li>
+</ul>
+<h4 id="missing-data-imputation">Missing Data Imputation</h4>
+<p>First, we check the count of missing values for the target variable.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/psp/psp-missing-target-count.png"/>
+</figure>
+
+<p>Now, we move on to the predictor variables and identify the columns with more than <span class="has-mathjax">\(50\%\)</span>
+ missing values in the training set.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/psp/psp-missing-predictor-proportion.png"/>
+</figure>
+
+<p>We drop the <span class="has-mathjax">\(74\)</span>
+ features, which have over <span class="has-mathjax">\(50\%\)</span>
+ values missing in the training dataset, from the subsequent analysis.</p>
+<p><strong>Proportional imputation:</strong> With the goal of keeping the feature distributions same before and after imputation, we impute the missing values in a column in such a way so that the proportions of the existing unique values in the column remain roughly same as those were prior to the imputation. The next function implements the idea.</p>
+<pre tabindex="0"><code>def prop_imputer(data):
+    data_prop = data.copy(deep = True)
+    missing_cols = data_prop.isna().sum()[data_prop.isna().sum() != 0].index.tolist()
+    for col in missing_cols:
+        values_col = data_prop[col].value_counts(normalize = True).index.tolist()
+        probabilities_col = data_prop[col].value_counts(normalize = True).values.tolist()
+        data_prop[col] = data_prop[col].fillna(pd.Series(np.random.choice(values_col, p = probabilities_col, size = len(data))))
+    return data_prop
+</code></pre><p>We apply it on the training features and the test features.</p>
+<h4 id="categorical-data-encoding">Categorical Data Encoding</h4>
+<p>We present the categorical columns along with the respective number of unique values.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/psp/psp-categorical-count.png"/>
+</figure>
+
+<p>Categorical variables can be <strong>ordinal</strong> (ordered, e.g. very bad, bad, good, very good) or <strong>nominal</strong> (unordered, e.g. red, blue, yellow, green). We observe that all <span class="has-mathjax">\(8\)</span>
+ categorical features are nominal in nature, i.e. there is no notion of order in their realized values.</p>
+<p>The following function implements <a href="https://en.wikipedia.org/wiki/One-hot">one-hot</a> encoding to the selected columns (in an input list <code>cols</code>) of an input DataFrame <code>data</code> using the <code>get_dummies</code> function.</p>
+<pre tabindex="0"><code>def one_hot_encoder(data, cols, drop_first = False):
+    cols = [col for col in cols if col in data.columns]
+    data_ohe = pd.get_dummies(data, columns = cols, drop_first = drop_first)
+    return data_ohe
+</code></pre><p>We encode the categorical columns of both training set and test set using this function.</p>
+<p>For a categorical column with <span class="has-mathjax">\(k\)</span>
+ distinct values, the one-hot encoder produces <span class="has-mathjax">\(k\)</span>
+ new columns, one corresponding to each unique value. The original column is then dropped. As an example, we show the columns generated from the categorical column <code>gender</code> in the training set.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/psp/psp-categorical-ohe-gender.png"/>
+</figure>
+
+<p>Observe that <code>gender_F</code> and <code>gender_M</code> are related by <code>gender_F + gender_M = 1</code>. Hence, we will lose no information by dropping one between these two columns. This can be done (for each feature) by setting <code>drop_first = True</code>.</p>
+<p>The encoder now produces <span class="has-mathjax">\(k-1\)</span>
+ new columns for a categorical column with <span class="has-mathjax">\(k\)</span>
+ distinct values, as the first column is dropped. As before, the original column is also dropped. Under this scheme, we have only one column generated from the categorical column <code>gender</code> in the training set, with the first column <code>gender_F</code> being dropped.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/psp/psp-categorical-ohe-gender-drop-first.png"/>
+</figure>
+
+<p>To have a column corresponding to <code>nan</code> values, if they are present in the original column, one must set the <code>dummy_na</code> parameter of the <code>get_dummies</code> function to be <code>True</code>. By default it is set as <code>False</code>.</p>
+<h4 id="feature-scaling">Feature Scaling</h4>
+<p>It may be natural for one feature variable to have a greater impact on classification procedure than another. But often this is generated artificially by the difference of range of values that the features take. The <a href="https://en.wikipedia.org/wiki/Unit_of_measurement">unit of measurement</a> in which the features are measured can be one a possible reason for such occurrence.</p>
+<p>This necessitates the practitioner to scale the features appropriately before feeding the data to machine learning algorithms. For this purpose, the <a href="https://en.wikipedia.org/wiki/Feature_scaling#Rescaling_(min-max_normalization)">min-max normalization</a> transforms the features in the following way:
+<div class="has-mathjax">
+
+\[x \mapsto \frac{x - \min{\left(x\right)}}{\max{\left(x\right)} - \min{\left(x\right)}}\]
+
+</div>
+</p>
+<p>The next function implements this using the <code>MinMaxScaler</code> class from the <code>scikit-learn</code> library. To keep the transformation the same, we use the minimum and maximum values of the training columns only for both DataFrames. Using the minimum and maximum values of the test columns for both sets would have led to <a href="https://en.wikipedia.org/wiki/Leakage_(machine_learning)">data leakage</a>.</p>
+<p>Specifically, we use <span class="has-mathjax">\(\min{\left(x\right)}\)</span>
+ and <span class="has-mathjax">\(\max{\left(x\right)}\)</span>
+ for a particular feature from the training set to rescale the feature for both the training set and the test set.</p>
+<pre tabindex="0"><code>def scaler(X_train, X_test):
+    scaling = MinMaxScaler().fit(X_train)
+    X_train_scaled = scaling.transform(X_train)
+    X_test_scaled = scaling.transform(X_test)
+    return X_train_scaled, X_test_scaled
+</code></pre><h3 id="-baseline-neural-network">○ Baseline Neural Network</h3>
+<ul>
+<li><a href="#model-creation">Model Creation</a></li>
+<li><a href="#model-compilation">Model Compilation</a></li>
+<li><a href="#model-fitting">Model Fitting</a></li>
+<li><a href="#model-evaluation">Model Evaluation</a></li>
+</ul>
+<h4 id="model-creation">Model Creation</h4>
+<p>We begin by adding <a href="https://en.wikipedia.org/wiki/Layer_(deep_learning)#Layer_Types">dense layers</a>, with appropriate number of <a href="https://en.wikipedia.org/wiki/Artificial_neuron">units</a> and <a href="https://en.wikipedia.org/wiki/Activation_function">activation function</a>, to a <a href="https://www.tensorflow.org/guide/keras/sequential_model">sequential model</a>.</p>
+<pre tabindex="0"><code>model = Sequential()
+model.add(Dense(16, input_dim = len(X_train.columns), activation = &#39;relu&#39;))
+model.add(Dense(12, activation = &#39;relu&#39;))
+model.add(Dense(8, activation = &#39;relu&#39;))
+model.add(Dense(4, activation = &#39;relu&#39;))
+model.add(Dense(1, activation = &#39;sigmoid&#39;))
+</code></pre><p>A summary of the model is given below.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/psp/psp-nn-baseline-model-summary.png"/>
+</figure>
+
+<h4 id="model-compilation">Model Compilation</h4>
+<p>We compile the model with <a href="https://www.tensorflow.org/api_docs/python/tf/keras/metrics/binary_crossentropy">binary cross-entropy</a> loss and <a href="https://arxiv.org/abs/1412.6980">Adam</a> optimizer. The model is evaluated with the accuracy metric during training and testing.</p>
+<pre tabindex="0"><code>model.compile(
+    loss = &#39;binary_crossentropy&#39;,
+    optimizer = &#39;adam&#39;,
+    metrics = [&#39;accuracy&#39;]
+)
+</code></pre><h4 id="model-fitting">Model Fitting</h4>
+<p>We fit the model for <span class="has-mathjax">\(100\)</span>
+ epochs on the entirety of the training set, with <span class="has-mathjax">\(64\)</span>
+ samples in each batch of training.</p>
+<pre tabindex="0"><code>history = model.fit(
+    X_train, y_train,
+    validation_data = (X_test, y_test), # check the note below
+    epochs = 100,
+    batch_size = 64
+)
+</code></pre><hr>
+<p><strong>Note:</strong> <em>Feeding the test observations into <code>validation_data</code> can be dangerous in usual practice, as it risks data leakage. However, in this work, it does not happen, as we use the test set information neither in the training process nor in selecting any other parameters, such as the best epoch.</em></p>
+<p><em>In fact, we take the model instance after the final epoch as the baseline, irrespective of the behavior of the model loss along the way. The purpose of using the test observations here is only to visualize how the model performance on the test set evolves through the epochs.</em></p>
+<p><em>During the hyperparameter tuning process, though, the validation data become relevant in selecting the best model instance (through the choice of the best epoch), which will be used to predict and evaluate on the test set. Hence, using test observations in <code>validation_data</code> will invite data leakage. So, in the next section, we shall use a chunk of the training set through the <code>validation_split</code> parameter.</em></p>
+<hr>
+<p>We present the loss and the accuracy scores for both the training set and the test set in the last fifteen epochs.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/psp/psp-nn-baseline-model-fit-end.png"/>
+</figure>
+
+<p>We plot the model loss (binary cross-entropy) for both the training set and the test set against the epochs.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/psp/psp-nn-baseline-model-loss.png"/>
+</figure>
+
+<p>We note that, while the training loss expectedly declines over epochs, the test loss has a slow increasing trend after the initial decline. Next, we show how the training accuracy and the test accuracy evolve over epochs.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/psp/psp-nn-baseline-model-accuracy.png"/>
+</figure>
+
+<p>The result syncs with the behavior of the training loss and the test loss, as the training accuracy steadily increases over epochs and the test accuracy shows a slow declining trend.</p>
+<h4 id="model-evaluation">Model Evaluation</h4>
+<p>Now, we use the fitted model to predict on the test set and convert the predicted class probabilities to class labels.</p>
+<div class="has-mathjax">
+
+\begin{align*}
+&\text{probability} < 0.5 \mapsto y = 0\\
+&\text{probability} \geq 0.5 \mapsto y = 1
+\end{align*}
+
+</div>
+
+<p>The baseline neural network obtains a test accuracy of <span class="has-mathjax">\(0.925639\).</span>
+</p>
+<h3 id="-hyperparameter-tuning">○ Hyperparameter Tuning</h3>
+<ul>
+<li><a href="#model-builder">Model Builder</a></li>
+<li><a href="#keras-tuner">Keras Tuner</a></li>
+<li><a href="#early-stopping">Early Stopping</a></li>
+<li><a href="#tuner-search">Tuner Search</a></li>
+<li><a href="#tuned-model-fitting">Tuned Model Fitting</a></li>
+</ul>
+<p>In this project, we tune the number of units in the first dense layer and the learning rate for the optimizer using the <a href="https://keras.io/keras_tuner/">KerasTuner</a> library.</p>
+<h4 id="model-builder">Model Builder</h4>
+<p>The next function builds a model, with specified set of values for the hyperparameters to be optimized.</p>
+<pre tabindex="0"><code>def model_builder(ht):
+    model = Sequential()
+    model.add(keras.layers.Flatten(input_shape = (X_train.shape[1],)))
+
+    ht_units = ht.Int(&#39;units&#39;, min_value = 32, max_value = 512, step = 32)
+    model.add(keras.layers.Dense(units = ht_units, activation = &#39;relu&#39;))
+    model.add(keras.layers.Dense(12, activation = &#39;relu&#39;))
+    model.add(keras.layers.Dense(8, activation = &#39;relu&#39;))
+    model.add(keras.layers.Dense(4, activation = &#39;relu&#39;))
+    model.add(keras.layers.Dense(1, activation = &#39;sigmoid&#39;))
+
+    ht_learning_rate = ht.Choice(&#39;learning_rate&#39;, values = [0.01, 0.001, 0.0001])
+    model.compile(
+        loss = &#39;binary_crossentropy&#39;,
+        optimizer = Adam(learning_rate = ht_learning_rate),
+        metrics = [&#39;accuracy&#39;]
+    )
+
+    return model
+</code></pre><h4 id="keras-tuner">Keras Tuner</h4>
+<p>We now make the tuner using the <code>Hyperband</code> function, setting the <code>objective</code> as validation accuracy.</p>
+<pre tabindex="0"><code>tuner = kt.Hyperband(
+    model_builder,
+    objective = &#39;val_accuracy&#39;,
+    max_epochs = 10,
+    factor = 3,
+    directory = &#39;dir_1&#39;
+)
+</code></pre><h4 id="early-stopping">Early Stopping</h4>
+<p>We use the <a href="https://en.wikipedia.org/wiki/Early_stopping">early stopping</a> <a href="https://en.wikipedia.org/wiki/Callback_(computer_programming)">callback</a> to monitor the validation loss and stop the training once it stops improving by a specified margin for a specified number of epochs.</p>
+<pre tabindex="0"><code>stop_early = tf.keras.callbacks.EarlyStopping(
+    monitor = &#39;val_loss&#39;,
+    patience = 5
+)
+</code></pre><h4 id="tuner-search">Tuner Search</h4>
+<p>We implement the tuner using the <code>search</code> function, where we set the number of epochs to <span class="has-mathjax">\(50\)</span>
+ and incorporate the early stopping callback.</p>
+<pre tabindex="0"><code>tuner.search(
+    X_train, y_train,
+    epochs = 50,
+    validation_split = 0.2,
+    callbacks = [stop_early]
+)
+</code></pre><p>The hyperparameter optimization results are summarized as follows.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/psp/psp-nn-ht-keras-tuner.png"/>
+</figure>
+
+<h4 id="tuned-model-fitting">Tuned Model Fitting</h4>
+<p>We build the model with optimal hyperparameter values and fit it on the training set. Specifically, we set aside <span class="has-mathjax">\(20\%\)</span>
+ training observations as validation data through the argument <code>validation_split</code>. We train the model on the rest of the training observations and evaluate it on the validation data. Observing the initially decreasing and then slowly increasing pattern of validation loss in the baseline model, we lower the number of epochs to <span class="has-mathjax">\(50\).</span>
+</p>
+<pre tabindex="0"><code>best_hparams = tuner.get_best_hyperparameters(num_trials = 1)[0]
+model = tuner.hypermodel.build(best_hparams)
+history = model.fit(X_train, y_train, epochs = 50, validation_split = 0.2)
+</code></pre><p>We present the loss and the accuracy scores for both the training set (except the chunk of <span class="has-mathjax">\(20\%\)</span>
+ training observations set aside as validation set) and the validation set in an interval of fifteen epochs, highlighting the one giving the highest validation accuracy.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/psp/psp-nn-ht-model-fit-best.png"/>
+</figure>
+
+<p>We retrieve the epoch producing the highest validation accuracy and re-instantiate the model with the optimal hyperparameter values.</p>
+<pre tabindex="0"><code>val_accuracy_optimal = history.history[&#39;val_accuracy&#39;]
+best_epoch = val_accuracy_optimal.index(max(val_accuracy_optimal)) + 1
+model_tuned = tuner.hypermodel.build(best_hparams)
+</code></pre><p>We re-train the model on the training set after setting aside <span class="has-mathjax">\(20\%\)</span>
+ of the training observations to form the validation set, with the number of epochs set to <code>best_epoch</code>.</p>
+<pre tabindex="0"><code>model_tuned.fit(
+    X_train, y_train,
+    epochs = best_epoch,
+    validation_split = 0.2
+)
+</code></pre><p>Note that the final epoch does not necessarily produce the highest validation accuracy.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/psp/psp-nn-ht-model-tuned-fit.png"/>
+</figure>
+
+<h3 id="-prediction-and-evaluation">○ Prediction and Evaluation</h3>
+<p>We use the tuned model to predict on the test set and convert the predicted class probabilities to class labels.</p>
+<p>The tuned model obtains a test accuracy of <span class="has-mathjax">\(0.923513\).</span>
+ While the overall performance decreases slightly, it is observed that the performance on the critical positive class improves. See <a href="https://github.com/sugatagh/Patient-Survival-Prediction-using-Deep-Learning/blob/main/Notebook/patient_survival_prediction.ipynb">this notebook</a> for more details.</p>
+<h3 id="-acknowledgements">○ Acknowledgements</h3>
+<ul>
+<li><a href="https://journals.lww.com/ccmjournal/Citation/2019/01001/33__THE_GLOBAL_OPEN_SOURCE_SEVERITY_OF_ILLNESS.36.aspx">Global Open Source Severity of Illness Score (GOSSIS) dataset</a></li>
+<li><a href="https://www.tensorflow.org/tutorials/keras/keras_tuner">Introduction to the Keras Tuner</a></li>
+</ul>
+<h3 id="-references">○ References</h3>
+<ul>
+<li><a href="https://en.wikipedia.org/wiki/Accuracy_and_precision#In_binary_classification">Accuracy</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Activation_function">Activation function</a></li>
+<li><a href="https://arxiv.org/abs/1412.6980">Adam optimizer</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Artificial_neuron">Artificial neuron</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Binary_classification#Statistical_binary_classification">Binary classification</a></li>
+<li><a href="https://www.tensorflow.org/api_docs/python/tf/keras/metrics/binary_crossentropy">Binary cross-entropy</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Binary_data">Binary variable</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Callback_(computer_programming)">Callback</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Categorical_variable#Categorical_variables_and_regression">Categorical data encoding</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Correlation">Correlation</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Correlation_coefficient">Correlation coefficient</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Leakage_(machine_learning)">Data leakage</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Data_Preprocessing">Data preprocessing</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Layer_(deep_learning)#Layer_Types">Dense layer</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Early_stopping">Early stopping</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Exploratory_data_analysis">Exploratory data analysis</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Feature_scaling">Feature scaling</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Hyperparameter_optimization">Hyperparameter optimization</a></li>
+<li><a href="https://keras.io/keras_tuner/">KerasTuner</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Kernel_density_estimation">Kernel density estimation</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Feature_scaling#Rescaling_(min-max_normalization)">Min-max normalization</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Missing_data">Missing data</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Imputation_(statistics)">Imputation</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Mode_(statistics)">Mode</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Neural_network">Neural network</a></li>
+<li><a href="https://en.wikipedia.org/wiki/One-hot">One-hot</a></li>
+<li><a href="https://www.tensorflow.org/guide/keras/sequential_model">Sequential model</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Training,_validation,_and_test_data_sets#Test_data_set">Test set</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Training,_validation,_and_test_data_sets#Training_data_set">Training set</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Unit_of_measurement">Unit of measurement</a></li>
+</ul>
+<ul class="pa0">
+  
+</ul>
+<div class="mt6 instapaper_ignoref">
+      
+      
+      </div>
+    </div>
+
+    <aside class="w-30-l mt6-l">
+
+
+
+
+</aside>
+
+  </article>
+
+    </main>
+    <footer class="bg-black bottom-0 w-100 pa3" role="contentinfo">
+  <div class="flex justify-between">
+  <a class="f4 fw4 hover-white no-underline white-70 dn dib-ns pv2 ph3" href="https://sugatagh.github.io/dsml/" >
+    &copy;  Sugata Ghosh, PhD 2024 
+  </a>
+    <div>
+<div class="ananke-socials">
+  
+    
+    <a href="https://www.linkedin.com/in/sugataghosh/" target="_blank" rel="noopener" class="linkedin ananke-social-link link-transition stackoverflow link dib z-999 pt3 pt0-l mr1" title="LinkedIn link" aria-label="follow on LinkedIn——Opens in a new window">
+      
+        <span class="icon"><svg style="enable-background:new 0 0 65 65;" version="1.1" viewBox="0 0 65 65"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <path d="M50.837,48.137V36.425c0-6.275-3.35-9.195-7.816-9.195  c-3.604,0-5.219,1.983-6.119,3.374V27.71h-6.79c0.09,1.917,0,20.427,0,20.427h6.79V36.729c0-0.609,0.044-1.219,0.224-1.655  c0.49-1.22,1.607-2.483,3.482-2.483c2.458,0,3.44,1.873,3.44,4.618v10.929H50.837z M22.959,24.922c2.367,0,3.842-1.57,3.842-3.531  c-0.044-2.003-1.475-3.528-3.797-3.528s-3.841,1.524-3.841,3.528c0,1.961,1.474,3.531,3.753,3.531H22.959z M34,64  C17.432,64,4,50.568,4,34C4,17.431,17.432,4,34,4s30,13.431,30,30C64,50.568,50.568,64,34,64z M26.354,48.137V27.71h-6.789v20.427  H26.354z" style="fill-rule:evenodd;clip-rule:evenodd;"/>
+</svg>
+</span>
+      
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;"/>
+</svg>
+</span></a>
+  
+    
+    <a href="https://twitter.com/sugatagh" target="_blank" rel="noopener" class="twitter ananke-social-link link-transition stackoverflow link dib z-999 pt3 pt0-l mr1" title="Twitter link" aria-label="follow on Twitter——Opens in a new window">
+      
+        <span class="icon"><svg style="enable-background:new 0 0 67 67;" version="1.1" viewBox="0 0 67 67"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M37.167,22.283c-2.619,0.953-4.274,3.411-4.086,6.101  l0.063,1.038l-1.048-0.127c-3.813-0.487-7.145-2.139-9.974-4.915l-1.383-1.377l-0.356,1.017c-0.754,2.267-0.272,4.661,1.299,6.271  c0.838,0.89,0.649,1.017-0.796,0.487c-0.503-0.169-0.943-0.296-0.985-0.233c-0.146,0.149,0.356,2.076,0.754,2.839  c0.545,1.06,1.655,2.097,2.871,2.712l1.027,0.487l-1.215,0.021c-1.173,0-1.215,0.021-1.089,0.467  c0.419,1.377,2.074,2.839,3.918,3.475l1.299,0.444l-1.131,0.678c-1.676,0.976-3.646,1.526-5.616,1.568  C19.775,43.256,19,43.341,19,43.405c0,0.211,2.557,1.397,4.044,1.864c4.463,1.377,9.765,0.783,13.746-1.568  c2.829-1.673,5.657-5,6.978-8.221c0.713-1.716,1.425-4.851,1.425-6.354c0-0.975,0.063-1.102,1.236-2.267  c0.692-0.678,1.341-1.419,1.467-1.631c0.21-0.403,0.188-0.403-0.88-0.043c-1.781,0.636-2.033,0.551-1.152-0.402  c0.649-0.678,1.425-1.907,1.425-2.267c0-0.063-0.314,0.042-0.671,0.233c-0.377,0.212-1.215,0.53-1.844,0.72l-1.131,0.361l-1.027-0.7  c-0.566-0.381-1.361-0.805-1.781-0.932C39.766,21.902,38.131,21.944,37.167,22.283z M33,64C16.432,64,3,50.569,3,34S16.432,4,33,4  s30,13.431,30,30S49.568,64,33,64z" style="fill-rule:evenodd;clip-rule:evenodd;"/></svg>
+</span>
+      
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;"/>
+</svg>
+</span></a>
+  
+    
+    <a href="https://github.com/sugatagh" target="_blank" rel="noopener" class="github ananke-social-link link-transition stackoverflow link dib z-999 pt3 pt0-l mr1" title="GitHub link" aria-label="follow on GitHub——Opens in a new window">
+      
+        <span class="icon"><svg style="enable-background:new 0 0 512 512;" version="1.1" viewBox="0 0 512 512"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+  <path d="M256,32C132.3,32,32,134.8,32,261.7c0,101.5,64.2,187.5,153.2,217.9c11.2,2.1,15.3-5,15.3-11.1   c0-5.5-0.2-19.9-0.3-39.1c-62.3,13.9-75.5-30.8-75.5-30.8c-10.2-26.5-24.9-33.6-24.9-33.6c-20.3-14.3,1.5-14,1.5-14   c22.5,1.6,34.3,23.7,34.3,23.7c20,35.1,52.4,25,65.2,19.1c2-14.8,7.8-25,14.2-30.7c-49.7-5.8-102-25.5-102-113.5   c0-25.1,8.7-45.6,23-61.6c-2.3-5.8-10-29.2,2.2-60.8c0,0,18.8-6.2,61.6,23.5c17.9-5.1,37-7.6,56.1-7.7c19,0.1,38.2,2.6,56.1,7.7   c42.8-29.7,61.5-23.5,61.5-23.5c12.2,31.6,4.5,55,2.2,60.8c14.3,16.1,23,36.6,23,61.6c0,88.2-52.4,107.6-102.3,113.3   c8,7.1,15.2,21.1,15.2,42.5c0,30.7-0.3,55.5-0.3,63c0,6.1,4,13.3,15.4,11C415.9,449.1,480,363.1,480,261.7   C480,134.8,379.7,32,256,32z"/>
+</svg>
+</span>
+      
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;"/>
+</svg>
+</span></a>
+  
+    
+    <a href="https://www.kaggle.com/sugataghosh" target="_blank" rel="noopener" class="Kaggle ananke-social-link link-transition stackoverflow link dib z-999 pt3 pt0-l mr1" title="Kaggle link" aria-label="follow on Kaggle——Opens in a new window">
+      
+        Kaggle
+      
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;"/>
+</svg>
+</span></a>
+  
+</div>
+</div>
+  </div>
+</footer>
+
+  </body>
+</html>

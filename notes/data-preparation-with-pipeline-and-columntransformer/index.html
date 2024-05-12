@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    
+    <title>Data Preparation with Pipeline and ColumnTransformer | Sugata Ghosh, PhD</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1">
+    <meta name="description" content="One way to prepare data for the machine learning algorithms is to implement preprocessing and feature engineering steps one by one. A more convenient way is to create class objects for each step with fit and transform methods, combine these into a set of pipelines (for instance, one pipeline for float type columns, another for object type columns), and finally implement each pipeline on the desired set of columns. We can accomplish this using the Pipeline and ColumnTransformer classes from the scikit-learn library.">
+    <meta name="generator" content="Hugo 0.121.2">
+    
+    
+    
+    
+      <meta name="robots" content="noindex, nofollow">
+    
+
+    
+<link rel="stylesheet" href="https://sugatagh.github.io/dsml/ananke/css/main.min.css" >
+
+
+
+    
+
+    
+      
+
+    
+
+    
+
+    
+      <link rel="canonical" href="https://sugatagh.github.io/dsml/notes/data-preparation-with-pipeline-and-columntransformer/">
+    
+
+    <meta property="og:title" content="Data Preparation with Pipeline and ColumnTransformer" />
+<meta property="og:description" content="One way to prepare data for the machine learning algorithms is to implement preprocessing and feature engineering steps one by one. A more convenient way is to create class objects for each step with fit and transform methods, combine these into a set of pipelines (for instance, one pipeline for float type columns, another for object type columns), and finally implement each pipeline on the desired set of columns. We can accomplish this using the Pipeline and ColumnTransformer classes from the scikit-learn library." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://sugatagh.github.io/dsml/notes/data-preparation-with-pipeline-and-columntransformer/" /><meta property="article:section" content="notes" />
+<meta property="article:published_time" content="2024-04-18T00:00:00+05:30" />
+<meta property="article:modified_time" content="2024-04-18T00:00:00+05:30" />
+
+<meta itemprop="name" content="Data Preparation with Pipeline and ColumnTransformer">
+<meta itemprop="description" content="One way to prepare data for the machine learning algorithms is to implement preprocessing and feature engineering steps one by one. A more convenient way is to create class objects for each step with fit and transform methods, combine these into a set of pipelines (for instance, one pipeline for float type columns, another for object type columns), and finally implement each pipeline on the desired set of columns. We can accomplish this using the Pipeline and ColumnTransformer classes from the scikit-learn library."><meta itemprop="datePublished" content="2024-04-18T00:00:00+05:30" />
+<meta itemprop="dateModified" content="2024-04-18T00:00:00+05:30" />
+<meta itemprop="wordCount" content="1492">
+<meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/><meta name="twitter:title" content="Data Preparation with Pipeline and ColumnTransformer"/>
+<meta name="twitter:description" content="One way to prepare data for the machine learning algorithms is to implement preprocessing and feature engineering steps one by one. A more convenient way is to create class objects for each step with fit and transform methods, combine these into a set of pipelines (for instance, one pipeline for float type columns, another for object type columns), and finally implement each pipeline on the desired set of columns. We can accomplish this using the Pipeline and ColumnTransformer classes from the scikit-learn library."/>
+
+	<style>
+.has-mathjax {
+    visibility: hidden;
+}
+</style>
+
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+<script>
+window.MathJax = {
+  startup: {
+    pageReady: () => {
+      return MathJax.startup.defaultPageReady().then(() => {
+        for (let element of document.getElementsByClassName("has-mathjax")) {
+            element.style.visibility = "visible"
+        }
+      });
+    }
+  }
+};
+</script>
+  </head>
+
+  <body class="ma0 avenir bg-near-white">
+
+    
+   
+  
+
+  
+  <header class="cover bg-top" style="background-image: url('https://sugatagh.github.io/dsml/images/bg-notes/bg-tf-idf-10.jpg');">
+    <div class="bg-black-60">
+      <nav class="pv3 ph3 ph4-ns" role="navigation">
+  <div class="flex-l justify-between items-center center">
+    <a href="https://sugatagh.github.io/dsml/" class="f3 fw2 hover-white no-underline white-90 dib">
+      
+        Sugata Ghosh, PhD
+      
+    </a>
+    <div class="flex-l items-center">
+      
+
+      
+        <ul class="pl0 mr3">
+          
+          <li class="list f5 f4-ns fw4 dib pr3">
+            <a class="hover-white no-underline white-90" href="https://sugatagh.github.io/dsml/about/" title="About page">
+              About
+            </a>
+          </li>
+          
+          <li class="list f5 f4-ns fw4 dib pr3">
+            <a class="hover-white no-underline white-90" href="https://sugatagh.github.io/dsml/overview/" title="Overview page">
+              Overview
+            </a>
+          </li>
+          
+          <li class="list f5 f4-ns fw4 dib pr3">
+            <a class="hover-white no-underline white-90" href="https://sugatagh.github.io/dsml/certifications/" title="Certifications page">
+              Certifications
+            </a>
+          </li>
+          
+          <li class="list f5 f4-ns fw4 dib pr3">
+            <a class="hover-white no-underline white-90" href="https://sugatagh.github.io/dsml/projects/" title="Projects page">
+              Projects
+            </a>
+          </li>
+          
+          <li class="list f5 f4-ns fw4 dib pr3">
+            <a class="hover-white no-underline white-90" href="https://sugatagh.github.io/dsml/notes/" title="Notes page">
+              Notes
+            </a>
+          </li>
+          
+          <li class="list f5 f4-ns fw4 dib pr3">
+            <a class="hover-white no-underline white-90" href="https://sugatagh.github.io/dsml/cv/" title="CV page">
+              CV
+            </a>
+          </li>
+          
+          <li class="list f5 f4-ns fw4 dib pr3">
+            <a class="hover-white no-underline white-90" href="https://sugatagh.github.io/dsml/contact/" title="Contact page">
+              Contact
+            </a>
+          </li>
+          
+        </ul>
+      
+      
+<div class="ananke-socials">
+  
+    
+    <a href="https://www.linkedin.com/in/sugataghosh/" target="_blank" rel="noopener" class="linkedin ananke-social-link link-transition stackoverflow link dib z-999 pt3 pt0-l mr1" title="LinkedIn link" aria-label="follow on LinkedIn——Opens in a new window">
+      
+        <span class="icon"><svg style="enable-background:new 0 0 65 65;" version="1.1" viewBox="0 0 65 65"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <path d="M50.837,48.137V36.425c0-6.275-3.35-9.195-7.816-9.195  c-3.604,0-5.219,1.983-6.119,3.374V27.71h-6.79c0.09,1.917,0,20.427,0,20.427h6.79V36.729c0-0.609,0.044-1.219,0.224-1.655  c0.49-1.22,1.607-2.483,3.482-2.483c2.458,0,3.44,1.873,3.44,4.618v10.929H50.837z M22.959,24.922c2.367,0,3.842-1.57,3.842-3.531  c-0.044-2.003-1.475-3.528-3.797-3.528s-3.841,1.524-3.841,3.528c0,1.961,1.474,3.531,3.753,3.531H22.959z M34,64  C17.432,64,4,50.568,4,34C4,17.431,17.432,4,34,4s30,13.431,30,30C64,50.568,50.568,64,34,64z M26.354,48.137V27.71h-6.789v20.427  H26.354z" style="fill-rule:evenodd;clip-rule:evenodd;"/>
+</svg>
+</span>
+      
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;"/>
+</svg>
+</span></a>
+  
+    
+    <a href="https://twitter.com/sugatagh" target="_blank" rel="noopener" class="twitter ananke-social-link link-transition stackoverflow link dib z-999 pt3 pt0-l mr1" title="Twitter link" aria-label="follow on Twitter——Opens in a new window">
+      
+        <span class="icon"><svg style="enable-background:new 0 0 67 67;" version="1.1" viewBox="0 0 67 67"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M37.167,22.283c-2.619,0.953-4.274,3.411-4.086,6.101  l0.063,1.038l-1.048-0.127c-3.813-0.487-7.145-2.139-9.974-4.915l-1.383-1.377l-0.356,1.017c-0.754,2.267-0.272,4.661,1.299,6.271  c0.838,0.89,0.649,1.017-0.796,0.487c-0.503-0.169-0.943-0.296-0.985-0.233c-0.146,0.149,0.356,2.076,0.754,2.839  c0.545,1.06,1.655,2.097,2.871,2.712l1.027,0.487l-1.215,0.021c-1.173,0-1.215,0.021-1.089,0.467  c0.419,1.377,2.074,2.839,3.918,3.475l1.299,0.444l-1.131,0.678c-1.676,0.976-3.646,1.526-5.616,1.568  C19.775,43.256,19,43.341,19,43.405c0,0.211,2.557,1.397,4.044,1.864c4.463,1.377,9.765,0.783,13.746-1.568  c2.829-1.673,5.657-5,6.978-8.221c0.713-1.716,1.425-4.851,1.425-6.354c0-0.975,0.063-1.102,1.236-2.267  c0.692-0.678,1.341-1.419,1.467-1.631c0.21-0.403,0.188-0.403-0.88-0.043c-1.781,0.636-2.033,0.551-1.152-0.402  c0.649-0.678,1.425-1.907,1.425-2.267c0-0.063-0.314,0.042-0.671,0.233c-0.377,0.212-1.215,0.53-1.844,0.72l-1.131,0.361l-1.027-0.7  c-0.566-0.381-1.361-0.805-1.781-0.932C39.766,21.902,38.131,21.944,37.167,22.283z M33,64C16.432,64,3,50.569,3,34S16.432,4,33,4  s30,13.431,30,30S49.568,64,33,64z" style="fill-rule:evenodd;clip-rule:evenodd;"/></svg>
+</span>
+      
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;"/>
+</svg>
+</span></a>
+  
+    
+    <a href="https://github.com/sugatagh" target="_blank" rel="noopener" class="github ananke-social-link link-transition stackoverflow link dib z-999 pt3 pt0-l mr1" title="GitHub link" aria-label="follow on GitHub——Opens in a new window">
+      
+        <span class="icon"><svg style="enable-background:new 0 0 512 512;" version="1.1" viewBox="0 0 512 512"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+  <path d="M256,32C132.3,32,32,134.8,32,261.7c0,101.5,64.2,187.5,153.2,217.9c11.2,2.1,15.3-5,15.3-11.1   c0-5.5-0.2-19.9-0.3-39.1c-62.3,13.9-75.5-30.8-75.5-30.8c-10.2-26.5-24.9-33.6-24.9-33.6c-20.3-14.3,1.5-14,1.5-14   c22.5,1.6,34.3,23.7,34.3,23.7c20,35.1,52.4,25,65.2,19.1c2-14.8,7.8-25,14.2-30.7c-49.7-5.8-102-25.5-102-113.5   c0-25.1,8.7-45.6,23-61.6c-2.3-5.8-10-29.2,2.2-60.8c0,0,18.8-6.2,61.6,23.5c17.9-5.1,37-7.6,56.1-7.7c19,0.1,38.2,2.6,56.1,7.7   c42.8-29.7,61.5-23.5,61.5-23.5c12.2,31.6,4.5,55,2.2,60.8c14.3,16.1,23,36.6,23,61.6c0,88.2-52.4,107.6-102.3,113.3   c8,7.1,15.2,21.1,15.2,42.5c0,30.7-0.3,55.5-0.3,63c0,6.1,4,13.3,15.4,11C415.9,449.1,480,363.1,480,261.7   C480,134.8,379.7,32,256,32z"/>
+</svg>
+</span>
+      
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;"/>
+</svg>
+</span></a>
+  
+    
+    <a href="https://www.kaggle.com/sugataghosh" target="_blank" rel="noopener" class="Kaggle ananke-social-link link-transition stackoverflow link dib z-999 pt3 pt0-l mr1" title="Kaggle link" aria-label="follow on Kaggle——Opens in a new window">
+      
+        Kaggle
+      
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;"/>
+</svg>
+</span></a>
+  
+</div>
+
+    </div>
+  </div>
+</nav>
+
+      <div class="tc-l pv6 ph3 ph4-ns">
+        
+          <div class="f2 f1-l fw2 white-90 mb0 lh-title">Data Preparation with Pipeline and ColumnTransformer</div>
+          
+        
+      </div>
+    </div>
+  </header>
+
+
+
+    <main class="pb7" role="main">
+      
+  
+  <article class="flex-l flex-wrap justify-between mw8 center ph3">
+    <header class="mt4 w-100">
+      <aside class="instapaper_ignoref b helvetica tracked ttu">
+          
+        Notes
+      </aside>
+      
+
+
+
+
+
+
+
+
+
+
+  <div id="sharing" class="mt3 ananke-socials">
+    
+      
+      <a href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https://sugatagh.github.io/dsml/notes/data-preparation-with-pipeline-and-columntransformer/&amp;title=Data%20Preparation%20with%20Pipeline%20and%20ColumnTransformer" class="ananke-social-link linkedin no-underline" aria-label="share on LinkedIn">
+        
+        <span class="icon"> <svg style="enable-background:new 0 0 65 65;" version="1.1" viewBox="0 0 65 65"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <path d="M50.837,48.137V36.425c0-6.275-3.35-9.195-7.816-9.195  c-3.604,0-5.219,1.983-6.119,3.374V27.71h-6.79c0.09,1.917,0,20.427,0,20.427h6.79V36.729c0-0.609,0.044-1.219,0.224-1.655  c0.49-1.22,1.607-2.483,3.482-2.483c2.458,0,3.44,1.873,3.44,4.618v10.929H50.837z M22.959,24.922c2.367,0,3.842-1.57,3.842-3.531  c-0.044-2.003-1.475-3.528-3.797-3.528s-3.841,1.524-3.841,3.528c0,1.961,1.474,3.531,3.753,3.531H22.959z M34,64  C17.432,64,4,50.568,4,34C4,17.431,17.432,4,34,4s30,13.431,30,30C64,50.568,50.568,64,34,64z M26.354,48.137V27.71h-6.789v20.427  H26.354z" style="fill-rule:evenodd;clip-rule:evenodd;"/>
+</svg>
+</span>
+        
+      </a>
+    
+      
+      <a href="https://twitter.com/intent/tweet?url=https://sugatagh.github.io/dsml/notes/data-preparation-with-pipeline-and-columntransformer/&amp;text=Data%20Preparation%20with%20Pipeline%20and%20ColumnTransformer" class="ananke-social-link twitter no-underline" aria-label="share on Twitter">
+        
+        <span class="icon"> <svg style="enable-background:new 0 0 67 67;" version="1.1" viewBox="0 0 67 67"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M37.167,22.283c-2.619,0.953-4.274,3.411-4.086,6.101  l0.063,1.038l-1.048-0.127c-3.813-0.487-7.145-2.139-9.974-4.915l-1.383-1.377l-0.356,1.017c-0.754,2.267-0.272,4.661,1.299,6.271  c0.838,0.89,0.649,1.017-0.796,0.487c-0.503-0.169-0.943-0.296-0.985-0.233c-0.146,0.149,0.356,2.076,0.754,2.839  c0.545,1.06,1.655,2.097,2.871,2.712l1.027,0.487l-1.215,0.021c-1.173,0-1.215,0.021-1.089,0.467  c0.419,1.377,2.074,2.839,3.918,3.475l1.299,0.444l-1.131,0.678c-1.676,0.976-3.646,1.526-5.616,1.568  C19.775,43.256,19,43.341,19,43.405c0,0.211,2.557,1.397,4.044,1.864c4.463,1.377,9.765,0.783,13.746-1.568  c2.829-1.673,5.657-5,6.978-8.221c0.713-1.716,1.425-4.851,1.425-6.354c0-0.975,0.063-1.102,1.236-2.267  c0.692-0.678,1.341-1.419,1.467-1.631c0.21-0.403,0.188-0.403-0.88-0.043c-1.781,0.636-2.033,0.551-1.152-0.402  c0.649-0.678,1.425-1.907,1.425-2.267c0-0.063-0.314,0.042-0.671,0.233c-0.377,0.212-1.215,0.53-1.844,0.72l-1.131,0.361l-1.027-0.7  c-0.566-0.381-1.361-0.805-1.781-0.932C39.766,21.902,38.131,21.944,37.167,22.283z M33,64C16.432,64,3,50.569,3,34S16.432,4,33,4  s30,13.431,30,30S49.568,64,33,64z" style="fill-rule:evenodd;clip-rule:evenodd;"/></svg>
+</span>
+        
+      </a>
+    
+  </div>
+
+
+      <h1 class="f1 athelas mt3 mb1">Data Preparation with Pipeline and ColumnTransformer</h1>
+      
+      
+      
+      <time class="f6 mv4 dib tracked" datetime="2024-04-18T00:00:00+05:30">April 18, 2024</time>
+      
+
+      
+      
+    </header>
+    <div class="nested-copy-line-height lh-copy serif f4 nested-links mid-gray pr4-l w-two-thirds-l"><p>One way to prepare data for the machine learning algorithms is to implement preprocessing and feature engineering steps one by one. A more convenient way is to create class objects for each step with <code>fit</code> and <code>transform</code> methods, combine these into a set of pipelines (for instance, one pipeline for float type columns, another for object type columns), and finally implement each pipeline on the desired set of columns. We can accomplish this using the <code>Pipeline</code> and <code>ColumnTransformer</code> classes from the scikit-learn library.</p>
+<h3 id="-contents">○ Contents</h3>
+<ul>
+<li><a href="#-libraries-and-modules">Libraries and Modules</a></li>
+<li><a href="#-data">Data</a></li>
+<li><a href="#-feature-target-split">Feature-Target Split</a></li>
+<li><a href="#-custom-transformer-for-dropping-constant-columns">Custom Transformer for Dropping Constant Columns</a></li>
+<li><a href="#-feature-data-type">Feature Data Type</a></li>
+<li><a href="#-custom-transformer-for-missing-data-imputation">Custom Transformer for Missing Data Imputation</a></li>
+<li><a href="#-custom-transformer-for-ordinal-encoding-and-one-hot-encoding">Custom Transformer for Ordinal Encoding and One-Hot Encoding</a></li>
+<li><a href="#-custom-transformer-for-feature-scaling">Custom Transformer for Feature Scaling</a></li>
+<li><a href="#-pipelines">Pipelines</a></li>
+<li><a href="#-columntransformer">ColumnTransformer</a></li>
+<li><a href="#-train-test-split">Train-Test Split</a></li>
+<li><a href="#-fit-and-transform">Fit and Transform</a></li>
+<li><a href="#-training-inference-and-evaluation">Training, Inference, and Evaluation</a></li>
+<li><a href="#-references">References</a></li>
+</ul>
+<h3 id="-libraries-and-modules">○ Libraries and Modules</h3>
+<p>We begin by importing the <code>numpy</code> and <code>pandas</code> libraries.</p>
+<pre tabindex="0"><code>import numpy as np
+import pandas as pd
+</code></pre><p>To split the data into training set and test set, we make use of the <code>train_test_split</code> module from the scikit-learn library.</p>
+<pre tabindex="0"><code>from sklearn.model_selection import train_test_split
+</code></pre><p>The next modules are specifically required for building the required <a href="https://docs.python.org/3/tutorial/classes.html">classes</a>, <a href="https://scikit-learn.org/stable/modules/generated/sklearn.pipeline.Pipeline.html">Pipeline constructors</a>, and <a href="https://scikit-learn.org/stable/modules/generated/sklearn.compose.ColumnTransformer.html">ColumnTransformer constructor</a>.</p>
+<pre tabindex="0"><code>from sklearn.base import BaseEstimator, TransformerMixin
+from sklearn.pipeline import Pipeline
+from sklearn.compose import ColumnTransformer
+</code></pre><p>We import the <a href="https://en.wikipedia.org/wiki/Logistic_regression">logistic regression</a> <a href="https://en.wikipedia.org/wiki/Statistical_classification">classifier</a>, which we shall train on the processed data.</p>
+<pre tabindex="0"><code>from sklearn.linear_model import LogisticRegression
+</code></pre><h3 id="-data">○ Data</h3>
+<p>We load the dataset using the <code>read_csv</code> function from <code>pandas</code>.</p>
+<pre tabindex="0"><code>data = pd.read_csv(&#39;https://raw.githubusercontent.com/sugatagh/Patient-Survival-Prediction-using-Deep-Learning/main/Dataset/Dataset.csv&#39;)
+</code></pre><p><code>data.info()</code> provides basic information on the dataset. It contains <span class="has-mathjax">\(91713\)</span>
+ observations with a total of <span class="has-mathjax">\(186\)</span>
+ columns. Specifically, it has <span class="has-mathjax">\(170\)</span>
+ float-type columns, <span class="has-mathjax">\(8\)</span>
+ integer-type columns, and <span class="has-mathjax">\(8\)</span>
+ object-type columns.</p>
+<p>The objective here is to predict the binary variable <code>hospital_death</code> based on the independent variables. Thus, it is a <a href="https://en.wikipedia.org/wiki/Binary_classification#Statistical_binary_classification">binary classification</a> problem.</p>
+<h3 id="-feature-target-split">○ Feature-Target Split</h3>
+<p>The following function splits a given target variable from the independent variables of a dataset.</p>
+<pre tabindex="0"><code>def predictor_target_split(data, target):
+    X = data.drop(target, axis = 1)
+    y = data[target]
+    return X, y
+</code></pre><p>Here, we split the target variable <code>hospital_death</code> from the rest of the variables in the dataset.</p>
+<pre tabindex="0"><code>X, y = predictor_target_split(data, &#39;hospital_death&#39;)
+</code></pre><h3 id="-custom-transformer-for-dropping-constant-columns">○ Custom Transformer for Dropping Constant Columns</h3>
+<p>We build a custom transformer for dropping constant columns. The <code>fit</code> method identifies the constant columns of an input DataFrame <code>X</code>. The <code>transform</code> method directly drops the constant columns from <code>X</code> (without returning anything) if <code>inplace = True</code>. Otherwise, it leaves <code>X</code> unaltered but returns a copy of <code>X</code> with the constant columns dropped.</p>
+<pre tabindex="0"><code>class CustomDropConstant(BaseEstimator, TransformerMixin):
+
+    def __init__(self, inplace = True):
+        self.inplace = inplace
+
+    def fit(self, X, y = None):
+        cols_constant = data.columns[data.nunique() == 1].tolist()
+        self.constant = cols_constant
+        return self
+
+    def transform(self, X):
+        if self.inplace == True:
+            X.drop(self.constant, axis = 1, inplace = True)
+        else:
+            X_drop = X.copy(deep = True)
+            X_drop.drop(self.constant, axis = 1, inplace = True)
+            return X_drop
+</code></pre><p>We create an object of <code>CustomDropConstant</code> with <code>inplace = True</code>. Then, we fit it on the feature DataFrame <code>X</code> and transform it. The two processes are combined together with the <code>fit_transform</code> method.</p>
+<pre tabindex="0"><code>dropconstant = CustomDropConstant(inplace = True)
+dropconstant.fit_transform(X)
+</code></pre><h3 id="-feature-data-type">○ Feature Data Type</h3>
+<p>We list the integer type features, float type features, and object type features.</p>
+<pre tabindex="0"><code>cols_features_int = list(X.select_dtypes(include = [&#39;int64&#39;]).columns.values)
+cols_features_flt = list(X.select_dtypes(include = [&#39;float64&#39;]).columns.values)
+cols_features_obj = list(X.select_dtypes(include = [&#39;object&#39;]).columns.values)
+</code></pre><h3 id="-custom-transformer-for-missing-data-imputation">○ Custom Transformer for Missing Data Imputation</h3>
+<p>The next custom transformer <a href="https://en.wikipedia.org/wiki/Imputation_(statistics)">imputes</a> <a href="https://en.wikipedia.org/wiki/Missing_data">missing values</a> present in the dataset. The method of imputation is determined by the parameter <code>strategy</code>.</p>
+<ul>
+<li><code>strategy = 'mean'</code>: imputes the missing values in a numerical column by its mean.</li>
+<li><code>strategy = 'median'</code>: imputes the missing values in a numerical column by its median.</li>
+<li><code>strategy = 'mode'</code>: imputes the missing values in a categorical column by its mode.</li>
+<li><code>strategy = 'constant'</code>: imputes the missing values in a column by an input value <code>fill_value</code> initialized at <span class="has-mathjax">\(0.\)</span>
+</li>
+</ul>
+<p>The <code>fit</code> method computes values that will be used to impute the missing values in different columns. For <span class="has-mathjax">\(n\)</span>
+ columns, the <code>fit</code> method computes a vector of length <span class="has-mathjax">\(n\)</span>
+, one component for each column.</p>
+<p>The <code>transform</code> method uses this vector to return a copy of the input DataFrame with the missing values imputed.</p>
+<pre tabindex="0"><code>class CustomImputer(BaseEstimator, TransformerMixin):
+
+    def __init__(self, strategy = &#39;median&#39;, fill_value = 0):
+        self.strategy = strategy
+        self.fill_value = fill_value
+
+    def fit(self, X, y = None):
+        if self.strategy == &#39;mean&#39;:
+            self.scores = X.mean()
+        elif self.strategy == &#39;median&#39;:
+            self.scores = X.median()
+        elif self.strategy == &#39;most_frequent&#39;:
+            self.scores = X.mode().iloc[0]
+        elif self.strategy == &#39;constant&#39;:
+            self.scores = pd.Series(data = self.fill_value, index = X.columns)
+        else:
+            pass
+        return self
+
+    def transform(self, X):
+        X_imputed = X.copy(deep = True)
+        for col in X_imputed.columns:
+            X_imputed[col].fillna(self.scores[col], inplace = True)
+        return X_imputed
+</code></pre><h3 id="-custom-transformer-for-ordinal-encoding-and-one-hot-encoding">○ Custom Transformer for Ordinal Encoding and One-Hot Encoding</h3>
+<p>The next custom transformer encodes <a href="https://en.wikipedia.org/wiki/Categorical_variable">categorical variables</a> in the dataset. The method of encoding is determined by the parameter <code>strategy</code>.</p>
+<ul>
+<li><code>strategy = 'ordinal'</code>: encodes the categorical variables by ordinal encoder.</li>
+<li><code>strategy = 'onehot'</code>: encodes the categorical variables by <a href="https://en.wikipedia.org/wiki/One-hot">one-hot</a> encoder.</li>
+</ul>
+<p>The <code>fit</code> method (applicable when <code>strategy = 'ordinal'</code>) computes a series with keys as the different columns of the input DataFrame and data as dictionaries mapping the unique values of a column to integers (starting from <span class="has-mathjax">\(0\)).</span>
+</p>
+<p>The <code>transform</code> method returns a copy of the input DataFrame with the categorical variables encoded with a scheme dictated by the parameter <code>strategy</code>.</p>
+<pre tabindex="0"><code>class CustomEncoder(BaseEstimator, TransformerMixin):
+
+    def __init__(self, strategy = &#39;ordinal&#39;):
+        self.strategy = strategy
+
+    def fit(self, X, y = None):
+        if self.strategy == &#39;ordinal&#39;:
+            self.encoder = pd.Series(dtype = &#39;object&#39;)
+            for col in X.columns:
+                keys_ = X[col].unique().tolist()
+                values_ = np.arange(len(keys_))
+                dict_ = {keys_[i]: values_[i] for i in range(len(keys_))}
+                self.encoder[col] = dict_
+        else:
+            pass
+        return self
+
+    def transform(self, X):
+        X_encoded = X.copy(deep = True)
+        if self.strategy == &#39;ordinal&#39;:
+            for col in X_encoded.columns:
+                X_encoded[col].replace(self.encoder[col], inplace = True)
+        elif self.strategy == &#39;onehot&#39;:
+            for col in X_encoded.columns:
+                for cat in X_encoded[col].unique():
+                    newcol = col + &#39;_&#39; + cat
+                    X_encoded[newcol] = [int(t) for t in (X_encoded[col] == cat).values.tolist()]
+                X_encoded.drop(col, axis = 1, inplace = True)
+        else:
+            pass
+        return X_encoded
+</code></pre><h3 id="-custom-transformer-for-feature-scaling">○ Custom Transformer for Feature Scaling</h3>
+<p>The next custom transformer scales the feature variables in the dataset. The method of scaling is determined by the parameter <code>strategy</code>.</p>
+<ul>
+<li><code>strategy = 'standard'</code>: <a href="https://en.wikipedia.org/wiki/Feature_scaling#Standardization_(Z-score_Normalization)">standardizes</a> the columns using mean and standard deviation.</li>
+<li><code>strategy = 'minmax'</code>: <a href="https://en.wikipedia.org/wiki/Feature_scaling#Rescaling_(min-max_normalization)">normalizes</a> the columns using minimum and maximum.</li>
+</ul>
+<p>The <code>fit</code> method computes a vector of column means and a vector of column standard deviations when <code>strategy = 'standard'</code>. On the other hand, it computes a vector of minimum values and a vector of maximum values when <code>strategy = 'minmax'</code>.</p>
+<p>The <code>transform</code> method implements the scaling scheme as specified by the parameter <code>strategy</code>.</p>
+<pre tabindex="0"><code>class CustomScaler(BaseEstimator, TransformerMixin):
+
+    def __init__(self, strategy = &#39;standard&#39;):
+        self.strategy = strategy
+
+    def fit(self, X, y = None):
+        if self.strategy == &#39;standard&#39;:
+            self.loc = X.mean()
+            self.scl = X.std()
+        elif self.strategy == &#39;minmax&#39;:
+            self.loc = X.min()
+            self.scl = X.max() - X.min()
+        else:
+            pass
+        return self
+
+    def transform(self, X):
+        X_scaled = X.copy(deep = True)
+        cols = list(X_scaled.select_dtypes(include = [&#39;number&#39;]).columns.values)
+        for col in cols:
+            X_scaled[col] = (X_scaled[col] - self.loc[col]) / self.scl[col]
+        return X_scaled
+</code></pre><h3 id="-pipelines">○ Pipelines</h3>
+<p>We begin by creating a Pipeline constructor for integer features.</p>
+<pre tabindex="0"><code>pipeline_int = Pipeline([
+    (&#34;imputer&#34;, CustomImputer(strategy = &#39;median&#39;)),
+    (&#34;scaler&#34;, CustomScaler(strategy = &#39;standard&#39;))
+])
+</code></pre><p>Next, we create a Pipeline constructor for float features.</p>
+<pre tabindex="0"><code>pipeline_flt = Pipeline([
+    (&#34;imputer&#34;, CustomImputer(strategy = &#39;median&#39;)),
+    (&#34;scaler&#34;, CustomScaler(strategy = &#39;standard&#39;))
+])
+</code></pre><p>Next, we create a Pipeline constructor for object features.</p>
+<pre tabindex="0"><code>pipeline_obj = Pipeline([
+    (&#34;imputer&#34;, CustomImputer(strategy = &#39;most_frequent&#39;)),
+    (&#34;encoder&#34;, CustomEncoder(strategy = &#39;ordinal&#39;)),
+    (&#34;scaler&#34;, CustomScaler(strategy = &#39;minmax&#39;))
+])
+</code></pre><h3 id="-columntransformer">○ ColumnTransformer</h3>
+<p>We combine the pipelines and the corresponding lists of columns to create a ColumnTransformer constructor.</p>
+<pre tabindex="0"><code>pipeline_full = ColumnTransformer([
+    (&#34;int&#34;, pipeline_int, cols_features_int),
+    (&#34;flt&#34;, pipeline_flt, cols_features_flt),
+    (&#34;obj&#34;, pipeline_obj, cols_features_obj)
+])
+</code></pre><h3 id="-train-test-split">○ Train-Test Split</h3>
+<p>We split the dataset into a training set and a test set in the <span class="has-mathjax">\(80:20\)</span>
+ ratio, stratifying the split using the target variable and shuffling the data before the split.</p>
+<pre tabindex="0"><code>X_train, X_test, y_train, y_test = train_test_split(
+    X, y,
+    stratify = y,
+    test_size = 0.2,
+    shuffle = True
+)
+</code></pre><h3 id="-fit-and-transform">○ Fit and Transform</h3>
+<p>We fit <code>pipeline_full</code> to the training features and transform both the training features and the test features. Note that the <code>fit_transform</code> method (which applies the <code>fit</code> and <code>transform</code> methods sequentially) and the <code>transform</code> method return arrays, which have to be converted back to DataFrames.</p>
+<pre tabindex="0"><code>def CustomTransformer(X_train, X_test):
+    X_train_out_arr = pipeline_full.fit_transform(X_train)
+    X_test_out_arr = pipeline_full.transform(X_test)
+    X_train_out = pd.DataFrame(data = X_train_out_arr, index = X_train.index, columns = cols_features_int + cols_features_flt + cols_features_obj)
+    X_test_out = pd.DataFrame(data = X_test_out_arr, index = X_test.index, columns = cols_features_int + cols_features_flt + cols_features_obj)
+    return X_train_out, X_test_out
+
+X_train, X_test = CustomTransformer(X_train, X_test)
+</code></pre><h3 id="-training-inference-and-evaluation">○ Training, Inference, and Evaluation</h3>
+<p>We load a baseline logistic regression classifier and train it on the processed training data using the <code>fit</code> method. Then, we predict the test labels based on the processed test features using the <code>predict</code> method. Finally, we evaluate the performance through the accuracy metric using the <code>score</code> method.</p>
+<pre tabindex="0"><code>clf = LogisticRegression(max_iter = 500) # Model
+clf.fit(X_train, y_train) # Training
+y_pred = clf.predict(X_test) # Inference
+print(f&#34;Test accuracy: {clf.score(X_test, y_test)}&#34;) # Evaluation
+# Output - Test accuracy: 0.9274382598266369
+</code></pre><h3 id="-references">○ References</h3>
+<ul>
+<li><a href="https://en.wikipedia.org/wiki/Binary_classification#Statistical_binary_classification">Binary classification</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Categorical_variable">Categorical variable</a></li>
+<li><a href="https://scikit-learn.org/stable/modules/generated/sklearn.compose.ColumnTransformer.html">ColumnTransformer constructor</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Imputation_(statistics)">Imputation</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Logistic_regression">Logistic regression</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Missing_data">Missing data</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Feature_scaling#Rescaling_(min-max_normalization)">Min-max normalization</a></li>
+<li><a href="https://en.wikipedia.org/wiki/One-hot">One-hot</a></li>
+<li><a href="https://scikit-learn.org/stable/modules/generated/sklearn.pipeline.Pipeline.html">Pipeline constructor</a></li>
+<li><a href="https://docs.python.org/3/tutorial/classes.html">Python classes</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Feature_scaling#Standardization_(Z-score_Normalization)">Standardization</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Statistical_classification">Statistical classification</a></li>
+</ul>
+<ul class="pa0">
+  
+</ul>
+<div class="mt6 instapaper_ignoref">
+      
+      
+      </div>
+    </div>
+
+    <aside class="w-30-l mt6-l">
+
+
+
+
+</aside>
+
+  </article>
+
+    </main>
+    <footer class="bg-black bottom-0 w-100 pa3" role="contentinfo">
+  <div class="flex justify-between">
+  <a class="f4 fw4 hover-white no-underline white-70 dn dib-ns pv2 ph3" href="https://sugatagh.github.io/dsml/" >
+    &copy;  Sugata Ghosh, PhD 2024 
+  </a>
+    <div>
+<div class="ananke-socials">
+  
+    
+    <a href="https://www.linkedin.com/in/sugataghosh/" target="_blank" rel="noopener" class="linkedin ananke-social-link link-transition stackoverflow link dib z-999 pt3 pt0-l mr1" title="LinkedIn link" aria-label="follow on LinkedIn——Opens in a new window">
+      
+        <span class="icon"><svg style="enable-background:new 0 0 65 65;" version="1.1" viewBox="0 0 65 65"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <path d="M50.837,48.137V36.425c0-6.275-3.35-9.195-7.816-9.195  c-3.604,0-5.219,1.983-6.119,3.374V27.71h-6.79c0.09,1.917,0,20.427,0,20.427h6.79V36.729c0-0.609,0.044-1.219,0.224-1.655  c0.49-1.22,1.607-2.483,3.482-2.483c2.458,0,3.44,1.873,3.44,4.618v10.929H50.837z M22.959,24.922c2.367,0,3.842-1.57,3.842-3.531  c-0.044-2.003-1.475-3.528-3.797-3.528s-3.841,1.524-3.841,3.528c0,1.961,1.474,3.531,3.753,3.531H22.959z M34,64  C17.432,64,4,50.568,4,34C4,17.431,17.432,4,34,4s30,13.431,30,30C64,50.568,50.568,64,34,64z M26.354,48.137V27.71h-6.789v20.427  H26.354z" style="fill-rule:evenodd;clip-rule:evenodd;"/>
+</svg>
+</span>
+      
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;"/>
+</svg>
+</span></a>
+  
+    
+    <a href="https://twitter.com/sugatagh" target="_blank" rel="noopener" class="twitter ananke-social-link link-transition stackoverflow link dib z-999 pt3 pt0-l mr1" title="Twitter link" aria-label="follow on Twitter——Opens in a new window">
+      
+        <span class="icon"><svg style="enable-background:new 0 0 67 67;" version="1.1" viewBox="0 0 67 67"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M37.167,22.283c-2.619,0.953-4.274,3.411-4.086,6.101  l0.063,1.038l-1.048-0.127c-3.813-0.487-7.145-2.139-9.974-4.915l-1.383-1.377l-0.356,1.017c-0.754,2.267-0.272,4.661,1.299,6.271  c0.838,0.89,0.649,1.017-0.796,0.487c-0.503-0.169-0.943-0.296-0.985-0.233c-0.146,0.149,0.356,2.076,0.754,2.839  c0.545,1.06,1.655,2.097,2.871,2.712l1.027,0.487l-1.215,0.021c-1.173,0-1.215,0.021-1.089,0.467  c0.419,1.377,2.074,2.839,3.918,3.475l1.299,0.444l-1.131,0.678c-1.676,0.976-3.646,1.526-5.616,1.568  C19.775,43.256,19,43.341,19,43.405c0,0.211,2.557,1.397,4.044,1.864c4.463,1.377,9.765,0.783,13.746-1.568  c2.829-1.673,5.657-5,6.978-8.221c0.713-1.716,1.425-4.851,1.425-6.354c0-0.975,0.063-1.102,1.236-2.267  c0.692-0.678,1.341-1.419,1.467-1.631c0.21-0.403,0.188-0.403-0.88-0.043c-1.781,0.636-2.033,0.551-1.152-0.402  c0.649-0.678,1.425-1.907,1.425-2.267c0-0.063-0.314,0.042-0.671,0.233c-0.377,0.212-1.215,0.53-1.844,0.72l-1.131,0.361l-1.027-0.7  c-0.566-0.381-1.361-0.805-1.781-0.932C39.766,21.902,38.131,21.944,37.167,22.283z M33,64C16.432,64,3,50.569,3,34S16.432,4,33,4  s30,13.431,30,30S49.568,64,33,64z" style="fill-rule:evenodd;clip-rule:evenodd;"/></svg>
+</span>
+      
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;"/>
+</svg>
+</span></a>
+  
+    
+    <a href="https://github.com/sugatagh" target="_blank" rel="noopener" class="github ananke-social-link link-transition stackoverflow link dib z-999 pt3 pt0-l mr1" title="GitHub link" aria-label="follow on GitHub——Opens in a new window">
+      
+        <span class="icon"><svg style="enable-background:new 0 0 512 512;" version="1.1" viewBox="0 0 512 512"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+  <path d="M256,32C132.3,32,32,134.8,32,261.7c0,101.5,64.2,187.5,153.2,217.9c11.2,2.1,15.3-5,15.3-11.1   c0-5.5-0.2-19.9-0.3-39.1c-62.3,13.9-75.5-30.8-75.5-30.8c-10.2-26.5-24.9-33.6-24.9-33.6c-20.3-14.3,1.5-14,1.5-14   c22.5,1.6,34.3,23.7,34.3,23.7c20,35.1,52.4,25,65.2,19.1c2-14.8,7.8-25,14.2-30.7c-49.7-5.8-102-25.5-102-113.5   c0-25.1,8.7-45.6,23-61.6c-2.3-5.8-10-29.2,2.2-60.8c0,0,18.8-6.2,61.6,23.5c17.9-5.1,37-7.6,56.1-7.7c19,0.1,38.2,2.6,56.1,7.7   c42.8-29.7,61.5-23.5,61.5-23.5c12.2,31.6,4.5,55,2.2,60.8c14.3,16.1,23,36.6,23,61.6c0,88.2-52.4,107.6-102.3,113.3   c8,7.1,15.2,21.1,15.2,42.5c0,30.7-0.3,55.5-0.3,63c0,6.1,4,13.3,15.4,11C415.9,449.1,480,363.1,480,261.7   C480,134.8,379.7,32,256,32z"/>
+</svg>
+</span>
+      
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;"/>
+</svg>
+</span></a>
+  
+    
+    <a href="https://www.kaggle.com/sugataghosh" target="_blank" rel="noopener" class="Kaggle ananke-social-link link-transition stackoverflow link dib z-999 pt3 pt0-l mr1" title="Kaggle link" aria-label="follow on Kaggle——Opens in a new window">
+      
+        Kaggle
+      
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;"/>
+</svg>
+</span></a>
+  
+</div>
+</div>
+  </div>
+</footer>
+
+  </body>
+</html>

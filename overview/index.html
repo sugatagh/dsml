@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    
+    <title>Overview | Sugata Ghosh, PhD</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1">
+    <meta name="description" content="Projects E-commerce Text Classification
+&ndash; Classified products into four given categories based on their descriptions available on an e-commerce platform.
+&ndash; Employed TF-IDF vectorizer and Word2Vec embedder with a number of classifiers. Obtained test accuracy of \(0.949\) with the hyperparameter-tuned model achieving the highest validation accuracy (TF-IDF &#43; Linear SVM).
+&ndash; Project report | GitHub repository
+Anomaly Detection in Credit Card Transactions
+&ndash; Identified credit card transactions as authentic or fraudulent based on time, amount, and other attributes.">
+    <meta name="generator" content="Hugo 0.121.2">
+    
+    
+    
+    
+      <meta name="robots" content="noindex, nofollow">
+    
+
+    
+<link rel="stylesheet" href="https://sugatagh.github.io/dsml/ananke/css/main.min.css" >
+
+
+
+    
+
+    
+      
+
+    
+
+    
+
+    
+      <link rel="canonical" href="https://sugatagh.github.io/dsml/overview/">
+    
+
+    <meta property="og:title" content="Overview" />
+<meta property="og:description" content="Projects E-commerce Text Classification
+&ndash; Classified products into four given categories based on their descriptions available on an e-commerce platform.
+&ndash; Employed TF-IDF vectorizer and Word2Vec embedder with a number of classifiers. Obtained test accuracy of \(0.949\) with the hyperparameter-tuned model achieving the highest validation accuracy (TF-IDF &#43; Linear SVM).
+&ndash; Project report | GitHub repository
+Anomaly Detection in Credit Card Transactions
+&ndash; Identified credit card transactions as authentic or fraudulent based on time, amount, and other attributes." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://sugatagh.github.io/dsml/overview/" /><meta property="article:section" content="" />
+
+
+
+<meta itemprop="name" content="Overview">
+<meta itemprop="description" content="Projects E-commerce Text Classification
+&ndash; Classified products into four given categories based on their descriptions available on an e-commerce platform.
+&ndash; Employed TF-IDF vectorizer and Word2Vec embedder with a number of classifiers. Obtained test accuracy of \(0.949\) with the hyperparameter-tuned model achieving the highest validation accuracy (TF-IDF &#43; Linear SVM).
+&ndash; Project report | GitHub repository
+Anomaly Detection in Credit Card Transactions
+&ndash; Identified credit card transactions as authentic or fraudulent based on time, amount, and other attributes.">
+
+<meta itemprop="wordCount" content="683">
+<meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/><meta name="twitter:title" content="Overview"/>
+<meta name="twitter:description" content="Projects E-commerce Text Classification
+&ndash; Classified products into four given categories based on their descriptions available on an e-commerce platform.
+&ndash; Employed TF-IDF vectorizer and Word2Vec embedder with a number of classifiers. Obtained test accuracy of \(0.949\) with the hyperparameter-tuned model achieving the highest validation accuracy (TF-IDF &#43; Linear SVM).
+&ndash; Project report | GitHub repository
+Anomaly Detection in Credit Card Transactions
+&ndash; Identified credit card transactions as authentic or fraudulent based on time, amount, and other attributes."/>
+
+	<style>
+.has-mathjax {
+    visibility: hidden;
+}
+</style>
+
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+<script>
+window.MathJax = {
+  startup: {
+    pageReady: () => {
+      return MathJax.startup.defaultPageReady().then(() => {
+        for (let element of document.getElementsByClassName("has-mathjax")) {
+            element.style.visibility = "visible"
+        }
+      });
+    }
+  }
+};
+</script>
+  </head>
+
+  <body class="ma0 avenir bg-near-white">
+
+    
+
+  
+  <header class="cover bg-top" style="background-image: url('https://sugatagh.github.io/dsml/images/bg-overview-1.jpg');">
+    <div class="bg-black-60">
+      <nav class="pv3 ph3 ph4-ns" role="navigation">
+  <div class="flex-l justify-between items-center center">
+    <a href="https://sugatagh.github.io/dsml/" class="f3 fw2 hover-white no-underline white-90 dib">
+      
+        Sugata Ghosh, PhD
+      
+    </a>
+    <div class="flex-l items-center">
+      
+
+      
+        <ul class="pl0 mr3">
+          
+          <li class="list f5 f4-ns fw4 dib pr3">
+            <a class="hover-white no-underline white-90" href="https://sugatagh.github.io/dsml/about/" title="About page">
+              About
+            </a>
+          </li>
+          
+          <li class="list f5 f4-ns fw4 dib pr3">
+            <a class="hover-white no-underline white-90" href="https://sugatagh.github.io/dsml/overview/" title="Overview page">
+              Overview
+            </a>
+          </li>
+          
+          <li class="list f5 f4-ns fw4 dib pr3">
+            <a class="hover-white no-underline white-90" href="https://sugatagh.github.io/dsml/certifications/" title="Certifications page">
+              Certifications
+            </a>
+          </li>
+          
+          <li class="list f5 f4-ns fw4 dib pr3">
+            <a class="hover-white no-underline white-90" href="https://sugatagh.github.io/dsml/projects/" title="Projects page">
+              Projects
+            </a>
+          </li>
+          
+          <li class="list f5 f4-ns fw4 dib pr3">
+            <a class="hover-white no-underline white-90" href="https://sugatagh.github.io/dsml/notes/" title="Notes page">
+              Notes
+            </a>
+          </li>
+          
+          <li class="list f5 f4-ns fw4 dib pr3">
+            <a class="hover-white no-underline white-90" href="https://sugatagh.github.io/dsml/cv/" title="CV page">
+              CV
+            </a>
+          </li>
+          
+          <li class="list f5 f4-ns fw4 dib pr3">
+            <a class="hover-white no-underline white-90" href="https://sugatagh.github.io/dsml/contact/" title="Contact page">
+              Contact
+            </a>
+          </li>
+          
+        </ul>
+      
+      
+<div class="ananke-socials">
+  
+    
+    <a href="https://www.linkedin.com/in/sugataghosh/" target="_blank" rel="noopener" class="linkedin ananke-social-link link-transition stackoverflow link dib z-999 pt3 pt0-l mr1" title="LinkedIn link" aria-label="follow on LinkedIn——Opens in a new window">
+      
+        <span class="icon"><svg style="enable-background:new 0 0 65 65;" version="1.1" viewBox="0 0 65 65"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <path d="M50.837,48.137V36.425c0-6.275-3.35-9.195-7.816-9.195  c-3.604,0-5.219,1.983-6.119,3.374V27.71h-6.79c0.09,1.917,0,20.427,0,20.427h6.79V36.729c0-0.609,0.044-1.219,0.224-1.655  c0.49-1.22,1.607-2.483,3.482-2.483c2.458,0,3.44,1.873,3.44,4.618v10.929H50.837z M22.959,24.922c2.367,0,3.842-1.57,3.842-3.531  c-0.044-2.003-1.475-3.528-3.797-3.528s-3.841,1.524-3.841,3.528c0,1.961,1.474,3.531,3.753,3.531H22.959z M34,64  C17.432,64,4,50.568,4,34C4,17.431,17.432,4,34,4s30,13.431,30,30C64,50.568,50.568,64,34,64z M26.354,48.137V27.71h-6.789v20.427  H26.354z" style="fill-rule:evenodd;clip-rule:evenodd;"/>
+</svg>
+</span>
+      
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;"/>
+</svg>
+</span></a>
+  
+    
+    <a href="https://twitter.com/sugatagh" target="_blank" rel="noopener" class="twitter ananke-social-link link-transition stackoverflow link dib z-999 pt3 pt0-l mr1" title="Twitter link" aria-label="follow on Twitter——Opens in a new window">
+      
+        <span class="icon"><svg style="enable-background:new 0 0 67 67;" version="1.1" viewBox="0 0 67 67"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M37.167,22.283c-2.619,0.953-4.274,3.411-4.086,6.101  l0.063,1.038l-1.048-0.127c-3.813-0.487-7.145-2.139-9.974-4.915l-1.383-1.377l-0.356,1.017c-0.754,2.267-0.272,4.661,1.299,6.271  c0.838,0.89,0.649,1.017-0.796,0.487c-0.503-0.169-0.943-0.296-0.985-0.233c-0.146,0.149,0.356,2.076,0.754,2.839  c0.545,1.06,1.655,2.097,2.871,2.712l1.027,0.487l-1.215,0.021c-1.173,0-1.215,0.021-1.089,0.467  c0.419,1.377,2.074,2.839,3.918,3.475l1.299,0.444l-1.131,0.678c-1.676,0.976-3.646,1.526-5.616,1.568  C19.775,43.256,19,43.341,19,43.405c0,0.211,2.557,1.397,4.044,1.864c4.463,1.377,9.765,0.783,13.746-1.568  c2.829-1.673,5.657-5,6.978-8.221c0.713-1.716,1.425-4.851,1.425-6.354c0-0.975,0.063-1.102,1.236-2.267  c0.692-0.678,1.341-1.419,1.467-1.631c0.21-0.403,0.188-0.403-0.88-0.043c-1.781,0.636-2.033,0.551-1.152-0.402  c0.649-0.678,1.425-1.907,1.425-2.267c0-0.063-0.314,0.042-0.671,0.233c-0.377,0.212-1.215,0.53-1.844,0.72l-1.131,0.361l-1.027-0.7  c-0.566-0.381-1.361-0.805-1.781-0.932C39.766,21.902,38.131,21.944,37.167,22.283z M33,64C16.432,64,3,50.569,3,34S16.432,4,33,4  s30,13.431,30,30S49.568,64,33,64z" style="fill-rule:evenodd;clip-rule:evenodd;"/></svg>
+</span>
+      
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;"/>
+</svg>
+</span></a>
+  
+    
+    <a href="https://github.com/sugatagh" target="_blank" rel="noopener" class="github ananke-social-link link-transition stackoverflow link dib z-999 pt3 pt0-l mr1" title="GitHub link" aria-label="follow on GitHub——Opens in a new window">
+      
+        <span class="icon"><svg style="enable-background:new 0 0 512 512;" version="1.1" viewBox="0 0 512 512"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+  <path d="M256,32C132.3,32,32,134.8,32,261.7c0,101.5,64.2,187.5,153.2,217.9c11.2,2.1,15.3-5,15.3-11.1   c0-5.5-0.2-19.9-0.3-39.1c-62.3,13.9-75.5-30.8-75.5-30.8c-10.2-26.5-24.9-33.6-24.9-33.6c-20.3-14.3,1.5-14,1.5-14   c22.5,1.6,34.3,23.7,34.3,23.7c20,35.1,52.4,25,65.2,19.1c2-14.8,7.8-25,14.2-30.7c-49.7-5.8-102-25.5-102-113.5   c0-25.1,8.7-45.6,23-61.6c-2.3-5.8-10-29.2,2.2-60.8c0,0,18.8-6.2,61.6,23.5c17.9-5.1,37-7.6,56.1-7.7c19,0.1,38.2,2.6,56.1,7.7   c42.8-29.7,61.5-23.5,61.5-23.5c12.2,31.6,4.5,55,2.2,60.8c14.3,16.1,23,36.6,23,61.6c0,88.2-52.4,107.6-102.3,113.3   c8,7.1,15.2,21.1,15.2,42.5c0,30.7-0.3,55.5-0.3,63c0,6.1,4,13.3,15.4,11C415.9,449.1,480,363.1,480,261.7   C480,134.8,379.7,32,256,32z"/>
+</svg>
+</span>
+      
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;"/>
+</svg>
+</span></a>
+  
+    
+    <a href="https://www.kaggle.com/sugataghosh" target="_blank" rel="noopener" class="Kaggle ananke-social-link link-transition stackoverflow link dib z-999 pt3 pt0-l mr1" title="Kaggle link" aria-label="follow on Kaggle——Opens in a new window">
+      
+        Kaggle
+      
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;"/>
+</svg>
+</span></a>
+  
+</div>
+
+    </div>
+  </div>
+</nav>
+
+      <div class="tc-l pv6 ph3 ph4-ns">
+        
+          <div class="f2 f1-l fw2 white-90 mb0 lh-title">Overview</div>
+          
+        
+      </div>
+    </div>
+  </header>
+
+
+    <main class="pb7" role="main">
+      
+  <div class="flex-l mt2 mw8 center">
+    <article class="center cf pv5 ph3 ph4-ns mw7">
+      <header>
+        <h1 class="f1">
+          Overview
+        </h1>
+      </header>
+      <div class="nested-copy-line-height lh-copy f4 nested-links mid-gray">
+        <h3 id="projects">Projects</h3>
+<blockquote>
+<p><strong>E-commerce Text Classification</strong><br>
+&ndash; Classified products into four given categories based on their descriptions available on an e-commerce platform.<br>
+&ndash; Employed TF-IDF vectorizer and Word2Vec embedder with a number of classifiers. Obtained test accuracy of <span class="has-mathjax">\(0.949\)</span>
+ with the hyperparameter-tuned model achieving the highest validation accuracy (TF-IDF + Linear SVM).<br>
+&ndash; <a href="https://sugatagh.github.io/dsml/projects/e-commerce-text-classification">Project report</a> | <a href="https://github.com/sugatagh/E-commerce-Text-Classification">GitHub repository</a></p>
+</blockquote>
+<blockquote>
+<p><strong>Anomaly Detection in Credit Card Transactions</strong><br>
+&ndash; Identified credit card transactions as authentic or fraudulent based on time, amount, and other attributes.<br>
+&ndash; Fitted a multivariate normal distribution and achieved test <span class="has-mathjax">\(F_2\)-score</span>
+ of <span class="has-mathjax">\(0.816\)</span>
+ with threshold value <span class="has-mathjax">\(\approx 3.87 \times 10^{−19}\).</span>
+<br>
+&ndash; <a href="https://sugatagh.github.io/dsml/projects/anomaly-detection-in-credit-card-transactions">Project report</a> | <a href="https://github.com/sugatagh/Anomaly-Detection-in-Credit-Card-Transactions">GitHub repository</a></p>
+</blockquote>
+<blockquote>
+<p><strong>Higgs Boson Event Detection</strong><br>
+<em>Conducted by <a href="https://www.themlco.com/">The Machine Learning Company</a>.</em><br>
+&ndash; Predicted whether or not an event produced in a particle accelerator indicates the discovery of a new particle.<br>
+&ndash; Trained a deep neural network, achieving test AMS (approximate median significance) score of <span class="has-mathjax">\(1.200\)</span>
+ and test accuracy of <span class="has-mathjax">\(0.824\),</span>
+ using GridSearchCV for hyperparameter optimization.<br>
+&ndash; <a href="https://sugatagh.github.io/dsml/projects/higgs-boson-event-detection">Project report</a> | <a href="https://github.com/sugatagh/Higgs-Boson-Event-Detection">GitHub repository</a></p>
+</blockquote>
+<blockquote>
+<p><strong>Electron Energy Flux Prediction</strong><br>
+<em>Conducted by <a href="https://www.themlco.com/">The Machine Learning Company</a>.</em><br>
+&ndash; Predicted the total electron energy flux based on various relevant features, in the context of modeling electron particle precipitation from the magnetosphere to the ionosphere.<br>
+&ndash; Trained a deep neural network, achieving test <span class="has-mathjax">\(R^2\)-score</span>
+ of <span class="has-mathjax">\(0.699\),</span>
+ using Keras Tuner for hyperparameter tuning.<br>
+&ndash; <a href="https://sugatagh.github.io/dsml/projects/electron-energy-flux-prediction">Project report</a> | <a href="https://github.com/sugatagh/Electron-Energy-Flux-Prediction-using-Deep-Learning">GitHub repository</a></p>
+</blockquote>
+<blockquote>
+<p><strong>Site Energy Usage Intensity Prediction</strong><br>
+<em>Conducted by <a href="https://www.themlco.com/">The Machine Learning Company</a>.</em><br>
+&ndash; Estimated energy usage intensity of a building in a given year, based on building characteristics and weather data.<br>
+&ndash; Trained random forest regressor to obtain test <span class="has-mathjax">\(R^2\)-score</span>
+ of <span class="has-mathjax">\(0.703\),</span>
+ using Optuna for hyperparameter optimization.<br>
+&ndash; <a href="https://sugatagh.github.io/dsml/projects/site-energy-usage-intensity-prediction">Project report</a> | <a href="https://github.com/sugatagh/Site-Energy-Usage-Intensity-Prediction">GitHub repository</a></p>
+</blockquote>
+<blockquote>
+<p><strong>Patient Survival Prediction</strong><br>
+<em>Conducted by <a href="https://www.themlco.com/">The Machine Learning Company</a>.</em><br>
+&ndash; Performed analytics and predicted the survival of a patient based on various relevant medical information.<br>
+&ndash; Trained a deep neural network, achieving test accuracy of <span class="has-mathjax">\(0.923\),</span>
+ using Keras Tuner for hyperparameter tuning.<br>
+&ndash; <a href="https://sugatagh.github.io/dsml/projects/patient-survival-prediction">Project report</a> | <a href="https://github.com/sugatagh/Patient-Survival-Prediction-using-Deep-Learning">GitHub repository</a></p>
+</blockquote>
+<blockquote>
+<p><strong>Road Traffic Accident Severity Classification</strong><br>
+<em>Conducted by <a href="https://www.themlco.com/">The Machine Learning Company</a>.</em><br>
+&ndash; Built prediction models to classify severity of road traffic accidents (slight injury, serious injury or fatal injury).<br>
+&ndash; Obtained test weighted <span class="has-mathjax">\(F_1\)-score</span>
+ of <span class="has-mathjax">\(0.795\)</span>
+ with XGBoost classifier, using GridSearchCV for hyperparameter tuning.<br>
+&ndash; <a href="https://sugatagh.github.io/dsml/projects/road-traffic-accidents-severity-classification">Project report</a> | <a href="https://github.com/sugatagh/Road-Traffic-Accident-Severity-Classification">GitHub repository</a></p>
+</blockquote>
+<blockquote>
+<p><strong>Natural Language Processing with Disaster Tweets</strong><br>
+<em>Jointly with <a href="https://www.linkedin.com/in/shyambhu-mukherjee/">Shyambhu Mukherjee</a>.</em><br>
+&ndash; Predicted whether a tweet indicates a disaster or not, using bag-of-words, TF-IDF, and Word2Vec models.<br>
+&ndash; Obtained average cross-validation <span class="has-mathjax">\(F_1\)-score</span>
+ of <span class="has-mathjax">\(0.783\)</span>
+ with Word2Vec embedder and support vector machine classifier with a radial basis function kernel.<br>
+&ndash; <a href="https://sugatagh.github.io/dsml/projects/natural-language-processing-with-disaster-tweets">Project report</a> | <a href="https://github.com/sugatagh/Natural-Language-Processing-with-Disaster-Tweets">GitHub repository</a></p>
+</blockquote>
+<blockquote>
+<p><strong>Credit Card Fraud Detection</strong><br>
+<em>Jointly with <a href="https://www.linkedin.com/in/shyambhu-mukherjee/">Shyambhu Mukherjee</a>.</em><br>
+&ndash; Classified credit card transactions as authentic or fraudulent, based on relevant data such as time and amount.<br>
+&ndash; Obtained test <span class="has-mathjax">\(F_2\)-score</span>
+ of <span class="has-mathjax">\(0.880\)</span>
+ with random forest algorithm after oversampling the minority class (fraudulent transactions) in the training set via synthetic minority over-sampling technique (SMOTE).<br>
+&ndash; <a href="https://sugatagh.github.io/dsml/projects/credit-card-fraud-detection">Project report</a> | <a href="https://github.com/sugatagh/Credit-Card-Fraud-Detection">GitHub repository</a></p>
+</blockquote>
+<h3 id="notes">Notes</h3>
+<blockquote>
+<p><strong>Data Preparation with Pipeline and ColumnTransformer</strong><br>
+&ndash; Created class objects (with <code>fit</code> and <code>transform</code> methods) for each preprocessing and feature engineering step.<br>
+&ndash; Combined these classes into <code>Pipeline</code> constructors (for example, one pipeline for float-type columns, another for object-type columns).<br>
+&ndash; Combined the pipelines and the corresponding lists of columns to create a <code>ColumnTransformer</code> constructor.<br>
+&ndash; Using this, implemented each pipeline on the desired set of columns.<br>
+&ndash; <a href="https://sugatagh.github.io/dsml/notes/data-preparation-with-pipeline-and-columntransformer">Note</a></p>
+</blockquote>
+<blockquote>
+<p><strong>Implementing Neural Network with Callbacks</strong><br>
+&ndash; Created and compiled a simple neural network.<br>
+&ndash; Incorporated <code>EarlyStopping</code>, <code>LearningRateScheduler</code>, and <code>ModelCheckpoint</code> callbacks in the training of the neural network.<br>
+&ndash; <a href="https://sugatagh.github.io/dsml/notes/implementing-neural-network-with-callbacks">Note</a></p>
+</blockquote>
+<blockquote>
+<p><strong>A Simple Implementation of Support Vector Machine (SVM)</strong><br>
+&ndash; Loaded the MNIST dataset of handwritten digits from <code>keras.datasets</code>.<br>
+&ndash; Presented visualization of the digits from the input pixel values using <code>imshow</code>.<br>
+&ndash; Reshaped the data and used Support Vector Machine to predict the digits.<br>
+&ndash; <a href="https://sugatagh.github.io/dsml/notes/a-simple-implementation-of-support-vector-machine-svm">Note</a></p>
+</blockquote>
+<blockquote>
+<p><strong>Term Frequency-Inverse Document Frequency (TF-IDF)</strong> <br>
+&ndash; Described the construction of the TF-IDF measure.<br>
+&ndash; Explained how it can be implemented to vectorize text data.<br>
+&ndash; <a href="https://sugatagh.github.io/dsml/notes/term-frequency-inverse-document-frequency-tf-idf">Note</a></p>
+</blockquote>
+<blockquote>
+<p><strong>Implementing Logistic Regression from Scratch</strong><br>
+&ndash; Implemented a logistic regression model from scratch without using any advanced library to understand how it works regarding binary classification.<br>
+&ndash; <a href="https://sugatagh.github.io/dsml/notes/implementing-logistic-regression-from-scratch">Note</a></p>
+</blockquote>
+
+      </div>
+    </article>
+  </div>
+
+    </main>
+    <footer class="bg-black bottom-0 w-100 pa3" role="contentinfo">
+  <div class="flex justify-between">
+  <a class="f4 fw4 hover-white no-underline white-70 dn dib-ns pv2 ph3" href="https://sugatagh.github.io/dsml/" >
+    &copy;  Sugata Ghosh, PhD 2024 
+  </a>
+    <div>
+<div class="ananke-socials">
+  
+    
+    <a href="https://www.linkedin.com/in/sugataghosh/" target="_blank" rel="noopener" class="linkedin ananke-social-link link-transition stackoverflow link dib z-999 pt3 pt0-l mr1" title="LinkedIn link" aria-label="follow on LinkedIn——Opens in a new window">
+      
+        <span class="icon"><svg style="enable-background:new 0 0 65 65;" version="1.1" viewBox="0 0 65 65"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <path d="M50.837,48.137V36.425c0-6.275-3.35-9.195-7.816-9.195  c-3.604,0-5.219,1.983-6.119,3.374V27.71h-6.79c0.09,1.917,0,20.427,0,20.427h6.79V36.729c0-0.609,0.044-1.219,0.224-1.655  c0.49-1.22,1.607-2.483,3.482-2.483c2.458,0,3.44,1.873,3.44,4.618v10.929H50.837z M22.959,24.922c2.367,0,3.842-1.57,3.842-3.531  c-0.044-2.003-1.475-3.528-3.797-3.528s-3.841,1.524-3.841,3.528c0,1.961,1.474,3.531,3.753,3.531H22.959z M34,64  C17.432,64,4,50.568,4,34C4,17.431,17.432,4,34,4s30,13.431,30,30C64,50.568,50.568,64,34,64z M26.354,48.137V27.71h-6.789v20.427  H26.354z" style="fill-rule:evenodd;clip-rule:evenodd;"/>
+</svg>
+</span>
+      
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;"/>
+</svg>
+</span></a>
+  
+    
+    <a href="https://twitter.com/sugatagh" target="_blank" rel="noopener" class="twitter ananke-social-link link-transition stackoverflow link dib z-999 pt3 pt0-l mr1" title="Twitter link" aria-label="follow on Twitter——Opens in a new window">
+      
+        <span class="icon"><svg style="enable-background:new 0 0 67 67;" version="1.1" viewBox="0 0 67 67"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M37.167,22.283c-2.619,0.953-4.274,3.411-4.086,6.101  l0.063,1.038l-1.048-0.127c-3.813-0.487-7.145-2.139-9.974-4.915l-1.383-1.377l-0.356,1.017c-0.754,2.267-0.272,4.661,1.299,6.271  c0.838,0.89,0.649,1.017-0.796,0.487c-0.503-0.169-0.943-0.296-0.985-0.233c-0.146,0.149,0.356,2.076,0.754,2.839  c0.545,1.06,1.655,2.097,2.871,2.712l1.027,0.487l-1.215,0.021c-1.173,0-1.215,0.021-1.089,0.467  c0.419,1.377,2.074,2.839,3.918,3.475l1.299,0.444l-1.131,0.678c-1.676,0.976-3.646,1.526-5.616,1.568  C19.775,43.256,19,43.341,19,43.405c0,0.211,2.557,1.397,4.044,1.864c4.463,1.377,9.765,0.783,13.746-1.568  c2.829-1.673,5.657-5,6.978-8.221c0.713-1.716,1.425-4.851,1.425-6.354c0-0.975,0.063-1.102,1.236-2.267  c0.692-0.678,1.341-1.419,1.467-1.631c0.21-0.403,0.188-0.403-0.88-0.043c-1.781,0.636-2.033,0.551-1.152-0.402  c0.649-0.678,1.425-1.907,1.425-2.267c0-0.063-0.314,0.042-0.671,0.233c-0.377,0.212-1.215,0.53-1.844,0.72l-1.131,0.361l-1.027-0.7  c-0.566-0.381-1.361-0.805-1.781-0.932C39.766,21.902,38.131,21.944,37.167,22.283z M33,64C16.432,64,3,50.569,3,34S16.432,4,33,4  s30,13.431,30,30S49.568,64,33,64z" style="fill-rule:evenodd;clip-rule:evenodd;"/></svg>
+</span>
+      
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;"/>
+</svg>
+</span></a>
+  
+    
+    <a href="https://github.com/sugatagh" target="_blank" rel="noopener" class="github ananke-social-link link-transition stackoverflow link dib z-999 pt3 pt0-l mr1" title="GitHub link" aria-label="follow on GitHub——Opens in a new window">
+      
+        <span class="icon"><svg style="enable-background:new 0 0 512 512;" version="1.1" viewBox="0 0 512 512"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+  <path d="M256,32C132.3,32,32,134.8,32,261.7c0,101.5,64.2,187.5,153.2,217.9c11.2,2.1,15.3-5,15.3-11.1   c0-5.5-0.2-19.9-0.3-39.1c-62.3,13.9-75.5-30.8-75.5-30.8c-10.2-26.5-24.9-33.6-24.9-33.6c-20.3-14.3,1.5-14,1.5-14   c22.5,1.6,34.3,23.7,34.3,23.7c20,35.1,52.4,25,65.2,19.1c2-14.8,7.8-25,14.2-30.7c-49.7-5.8-102-25.5-102-113.5   c0-25.1,8.7-45.6,23-61.6c-2.3-5.8-10-29.2,2.2-60.8c0,0,18.8-6.2,61.6,23.5c17.9-5.1,37-7.6,56.1-7.7c19,0.1,38.2,2.6,56.1,7.7   c42.8-29.7,61.5-23.5,61.5-23.5c12.2,31.6,4.5,55,2.2,60.8c14.3,16.1,23,36.6,23,61.6c0,88.2-52.4,107.6-102.3,113.3   c8,7.1,15.2,21.1,15.2,42.5c0,30.7-0.3,55.5-0.3,63c0,6.1,4,13.3,15.4,11C415.9,449.1,480,363.1,480,261.7   C480,134.8,379.7,32,256,32z"/>
+</svg>
+</span>
+      
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;"/>
+</svg>
+</span></a>
+  
+    
+    <a href="https://www.kaggle.com/sugataghosh" target="_blank" rel="noopener" class="Kaggle ananke-social-link link-transition stackoverflow link dib z-999 pt3 pt0-l mr1" title="Kaggle link" aria-label="follow on Kaggle——Opens in a new window">
+      
+        Kaggle
+      
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;"/>
+</svg>
+</span></a>
+  
+</div>
+</div>
+  </div>
+</footer>
+
+  </body>
+</html>

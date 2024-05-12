@@ -1,0 +1,951 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    
+    <title>Natural Language Processing with Disaster Tweets | Sugata Ghosh, PhD</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1">
+    <meta name="description" content="Text Classification with Bag of Words, TF-IDF, and Word2Vec">
+    <meta name="generator" content="Hugo 0.121.2">
+    
+    
+    
+    
+      <meta name="robots" content="noindex, nofollow">
+    
+
+    
+<link rel="stylesheet" href="https://sugatagh.github.io/dsml/ananke/css/main.min.css" >
+
+
+
+    
+
+    
+      
+
+    
+
+    
+
+    
+      <link rel="canonical" href="https://sugatagh.github.io/dsml/projects/natural-language-processing-with-disaster-tweets/">
+    
+
+    <meta property="og:title" content="Natural Language Processing with Disaster Tweets" />
+<meta property="og:description" content="Text Classification with Bag of Words, TF-IDF, and Word2Vec" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://sugatagh.github.io/dsml/projects/natural-language-processing-with-disaster-tweets/" /><meta property="article:section" content="projects" />
+<meta property="article:published_time" content="2021-11-09T08:38:00+05:30" />
+<meta property="article:modified_time" content="2021-11-09T08:38:00+05:30" />
+
+<meta itemprop="name" content="Natural Language Processing with Disaster Tweets">
+<meta itemprop="description" content="Text Classification with Bag of Words, TF-IDF, and Word2Vec"><meta itemprop="datePublished" content="2021-11-09T08:38:00+05:30" />
+<meta itemprop="dateModified" content="2021-11-09T08:38:00+05:30" />
+<meta itemprop="wordCount" content="4700">
+<meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/><meta name="twitter:title" content="Natural Language Processing with Disaster Tweets"/>
+<meta name="twitter:description" content="Text Classification with Bag of Words, TF-IDF, and Word2Vec"/>
+
+	<style>
+.has-mathjax {
+    visibility: hidden;
+}
+</style>
+
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+<script>
+window.MathJax = {
+  startup: {
+    pageReady: () => {
+      return MathJax.startup.defaultPageReady().then(() => {
+        for (let element of document.getElementsByClassName("has-mathjax")) {
+            element.style.visibility = "visible"
+        }
+      });
+    }
+  }
+};
+</script>
+  </head>
+
+  <body class="ma0 avenir bg-near-white">
+
+    
+   
+  
+
+  
+  <header class="cover bg-top" style="background-image: url('https://sugatagh.github.io/dsml/images/bg-projects/bg-nlp-1.jpg');">
+    <div class="bg-black-60">
+      <nav class="pv3 ph3 ph4-ns" role="navigation">
+  <div class="flex-l justify-between items-center center">
+    <a href="https://sugatagh.github.io/dsml/" class="f3 fw2 hover-white no-underline white-90 dib">
+      
+        Sugata Ghosh, PhD
+      
+    </a>
+    <div class="flex-l items-center">
+      
+
+      
+        <ul class="pl0 mr3">
+          
+          <li class="list f5 f4-ns fw4 dib pr3">
+            <a class="hover-white no-underline white-90" href="https://sugatagh.github.io/dsml/about/" title="About page">
+              About
+            </a>
+          </li>
+          
+          <li class="list f5 f4-ns fw4 dib pr3">
+            <a class="hover-white no-underline white-90" href="https://sugatagh.github.io/dsml/overview/" title="Overview page">
+              Overview
+            </a>
+          </li>
+          
+          <li class="list f5 f4-ns fw4 dib pr3">
+            <a class="hover-white no-underline white-90" href="https://sugatagh.github.io/dsml/certifications/" title="Certifications page">
+              Certifications
+            </a>
+          </li>
+          
+          <li class="list f5 f4-ns fw4 dib pr3">
+            <a class="hover-white no-underline white-90" href="https://sugatagh.github.io/dsml/projects/" title="Projects page">
+              Projects
+            </a>
+          </li>
+          
+          <li class="list f5 f4-ns fw4 dib pr3">
+            <a class="hover-white no-underline white-90" href="https://sugatagh.github.io/dsml/notes/" title="Notes page">
+              Notes
+            </a>
+          </li>
+          
+          <li class="list f5 f4-ns fw4 dib pr3">
+            <a class="hover-white no-underline white-90" href="https://sugatagh.github.io/dsml/cv/" title="CV page">
+              CV
+            </a>
+          </li>
+          
+          <li class="list f5 f4-ns fw4 dib pr3">
+            <a class="hover-white no-underline white-90" href="https://sugatagh.github.io/dsml/contact/" title="Contact page">
+              Contact
+            </a>
+          </li>
+          
+        </ul>
+      
+      
+<div class="ananke-socials">
+  
+    
+    <a href="https://www.linkedin.com/in/sugataghosh/" target="_blank" rel="noopener" class="linkedin ananke-social-link link-transition stackoverflow link dib z-999 pt3 pt0-l mr1" title="LinkedIn link" aria-label="follow on LinkedIn——Opens in a new window">
+      
+        <span class="icon"><svg style="enable-background:new 0 0 65 65;" version="1.1" viewBox="0 0 65 65"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <path d="M50.837,48.137V36.425c0-6.275-3.35-9.195-7.816-9.195  c-3.604,0-5.219,1.983-6.119,3.374V27.71h-6.79c0.09,1.917,0,20.427,0,20.427h6.79V36.729c0-0.609,0.044-1.219,0.224-1.655  c0.49-1.22,1.607-2.483,3.482-2.483c2.458,0,3.44,1.873,3.44,4.618v10.929H50.837z M22.959,24.922c2.367,0,3.842-1.57,3.842-3.531  c-0.044-2.003-1.475-3.528-3.797-3.528s-3.841,1.524-3.841,3.528c0,1.961,1.474,3.531,3.753,3.531H22.959z M34,64  C17.432,64,4,50.568,4,34C4,17.431,17.432,4,34,4s30,13.431,30,30C64,50.568,50.568,64,34,64z M26.354,48.137V27.71h-6.789v20.427  H26.354z" style="fill-rule:evenodd;clip-rule:evenodd;"/>
+</svg>
+</span>
+      
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;"/>
+</svg>
+</span></a>
+  
+    
+    <a href="https://twitter.com/sugatagh" target="_blank" rel="noopener" class="twitter ananke-social-link link-transition stackoverflow link dib z-999 pt3 pt0-l mr1" title="Twitter link" aria-label="follow on Twitter——Opens in a new window">
+      
+        <span class="icon"><svg style="enable-background:new 0 0 67 67;" version="1.1" viewBox="0 0 67 67"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M37.167,22.283c-2.619,0.953-4.274,3.411-4.086,6.101  l0.063,1.038l-1.048-0.127c-3.813-0.487-7.145-2.139-9.974-4.915l-1.383-1.377l-0.356,1.017c-0.754,2.267-0.272,4.661,1.299,6.271  c0.838,0.89,0.649,1.017-0.796,0.487c-0.503-0.169-0.943-0.296-0.985-0.233c-0.146,0.149,0.356,2.076,0.754,2.839  c0.545,1.06,1.655,2.097,2.871,2.712l1.027,0.487l-1.215,0.021c-1.173,0-1.215,0.021-1.089,0.467  c0.419,1.377,2.074,2.839,3.918,3.475l1.299,0.444l-1.131,0.678c-1.676,0.976-3.646,1.526-5.616,1.568  C19.775,43.256,19,43.341,19,43.405c0,0.211,2.557,1.397,4.044,1.864c4.463,1.377,9.765,0.783,13.746-1.568  c2.829-1.673,5.657-5,6.978-8.221c0.713-1.716,1.425-4.851,1.425-6.354c0-0.975,0.063-1.102,1.236-2.267  c0.692-0.678,1.341-1.419,1.467-1.631c0.21-0.403,0.188-0.403-0.88-0.043c-1.781,0.636-2.033,0.551-1.152-0.402  c0.649-0.678,1.425-1.907,1.425-2.267c0-0.063-0.314,0.042-0.671,0.233c-0.377,0.212-1.215,0.53-1.844,0.72l-1.131,0.361l-1.027-0.7  c-0.566-0.381-1.361-0.805-1.781-0.932C39.766,21.902,38.131,21.944,37.167,22.283z M33,64C16.432,64,3,50.569,3,34S16.432,4,33,4  s30,13.431,30,30S49.568,64,33,64z" style="fill-rule:evenodd;clip-rule:evenodd;"/></svg>
+</span>
+      
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;"/>
+</svg>
+</span></a>
+  
+    
+    <a href="https://github.com/sugatagh" target="_blank" rel="noopener" class="github ananke-social-link link-transition stackoverflow link dib z-999 pt3 pt0-l mr1" title="GitHub link" aria-label="follow on GitHub——Opens in a new window">
+      
+        <span class="icon"><svg style="enable-background:new 0 0 512 512;" version="1.1" viewBox="0 0 512 512"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+  <path d="M256,32C132.3,32,32,134.8,32,261.7c0,101.5,64.2,187.5,153.2,217.9c11.2,2.1,15.3-5,15.3-11.1   c0-5.5-0.2-19.9-0.3-39.1c-62.3,13.9-75.5-30.8-75.5-30.8c-10.2-26.5-24.9-33.6-24.9-33.6c-20.3-14.3,1.5-14,1.5-14   c22.5,1.6,34.3,23.7,34.3,23.7c20,35.1,52.4,25,65.2,19.1c2-14.8,7.8-25,14.2-30.7c-49.7-5.8-102-25.5-102-113.5   c0-25.1,8.7-45.6,23-61.6c-2.3-5.8-10-29.2,2.2-60.8c0,0,18.8-6.2,61.6,23.5c17.9-5.1,37-7.6,56.1-7.7c19,0.1,38.2,2.6,56.1,7.7   c42.8-29.7,61.5-23.5,61.5-23.5c12.2,31.6,4.5,55,2.2,60.8c14.3,16.1,23,36.6,23,61.6c0,88.2-52.4,107.6-102.3,113.3   c8,7.1,15.2,21.1,15.2,42.5c0,30.7-0.3,55.5-0.3,63c0,6.1,4,13.3,15.4,11C415.9,449.1,480,363.1,480,261.7   C480,134.8,379.7,32,256,32z"/>
+</svg>
+</span>
+      
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;"/>
+</svg>
+</span></a>
+  
+    
+    <a href="https://www.kaggle.com/sugataghosh" target="_blank" rel="noopener" class="Kaggle ananke-social-link link-transition stackoverflow link dib z-999 pt3 pt0-l mr1" title="Kaggle link" aria-label="follow on Kaggle——Opens in a new window">
+      
+        Kaggle
+      
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;"/>
+</svg>
+</span></a>
+  
+</div>
+
+    </div>
+  </div>
+</nav>
+
+      <div class="tc-l pv6 ph3 ph4-ns">
+        
+          <div class="f2 f1-l fw2 white-90 mb0 lh-title">Natural Language Processing with Disaster Tweets</div>
+          
+            <div class="fw1 f5 f3-l white-80 measure-wide-l center lh-copy mt3 mb4">
+              Text Classification with Bag of Words, TF-IDF, and Word2Vec
+            </div>
+          
+        
+      </div>
+    </div>
+  </header>
+
+
+
+    <main class="pb7" role="main">
+      
+  
+  <article class="flex-l flex-wrap justify-between mw8 center ph3">
+    <header class="mt4 w-100">
+      <aside class="instapaper_ignoref b helvetica tracked ttu">
+          
+        Projects
+      </aside>
+      
+
+
+
+
+
+
+
+
+
+
+  <div id="sharing" class="mt3 ananke-socials">
+    
+      
+      <a href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https://sugatagh.github.io/dsml/projects/natural-language-processing-with-disaster-tweets/&amp;title=Natural%20Language%20Processing%20with%20Disaster%20Tweets" class="ananke-social-link linkedin no-underline" aria-label="share on LinkedIn">
+        
+        <span class="icon"> <svg style="enable-background:new 0 0 65 65;" version="1.1" viewBox="0 0 65 65"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <path d="M50.837,48.137V36.425c0-6.275-3.35-9.195-7.816-9.195  c-3.604,0-5.219,1.983-6.119,3.374V27.71h-6.79c0.09,1.917,0,20.427,0,20.427h6.79V36.729c0-0.609,0.044-1.219,0.224-1.655  c0.49-1.22,1.607-2.483,3.482-2.483c2.458,0,3.44,1.873,3.44,4.618v10.929H50.837z M22.959,24.922c2.367,0,3.842-1.57,3.842-3.531  c-0.044-2.003-1.475-3.528-3.797-3.528s-3.841,1.524-3.841,3.528c0,1.961,1.474,3.531,3.753,3.531H22.959z M34,64  C17.432,64,4,50.568,4,34C4,17.431,17.432,4,34,4s30,13.431,30,30C64,50.568,50.568,64,34,64z M26.354,48.137V27.71h-6.789v20.427  H26.354z" style="fill-rule:evenodd;clip-rule:evenodd;"/>
+</svg>
+</span>
+        
+      </a>
+    
+      
+      <a href="https://twitter.com/intent/tweet?url=https://sugatagh.github.io/dsml/projects/natural-language-processing-with-disaster-tweets/&amp;text=Natural%20Language%20Processing%20with%20Disaster%20Tweets" class="ananke-social-link twitter no-underline" aria-label="share on Twitter">
+        
+        <span class="icon"> <svg style="enable-background:new 0 0 67 67;" version="1.1" viewBox="0 0 67 67"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M37.167,22.283c-2.619,0.953-4.274,3.411-4.086,6.101  l0.063,1.038l-1.048-0.127c-3.813-0.487-7.145-2.139-9.974-4.915l-1.383-1.377l-0.356,1.017c-0.754,2.267-0.272,4.661,1.299,6.271  c0.838,0.89,0.649,1.017-0.796,0.487c-0.503-0.169-0.943-0.296-0.985-0.233c-0.146,0.149,0.356,2.076,0.754,2.839  c0.545,1.06,1.655,2.097,2.871,2.712l1.027,0.487l-1.215,0.021c-1.173,0-1.215,0.021-1.089,0.467  c0.419,1.377,2.074,2.839,3.918,3.475l1.299,0.444l-1.131,0.678c-1.676,0.976-3.646,1.526-5.616,1.568  C19.775,43.256,19,43.341,19,43.405c0,0.211,2.557,1.397,4.044,1.864c4.463,1.377,9.765,0.783,13.746-1.568  c2.829-1.673,5.657-5,6.978-8.221c0.713-1.716,1.425-4.851,1.425-6.354c0-0.975,0.063-1.102,1.236-2.267  c0.692-0.678,1.341-1.419,1.467-1.631c0.21-0.403,0.188-0.403-0.88-0.043c-1.781,0.636-2.033,0.551-1.152-0.402  c0.649-0.678,1.425-1.907,1.425-2.267c0-0.063-0.314,0.042-0.671,0.233c-0.377,0.212-1.215,0.53-1.844,0.72l-1.131,0.361l-1.027-0.7  c-0.566-0.381-1.361-0.805-1.781-0.932C39.766,21.902,38.131,21.944,37.167,22.283z M33,64C16.432,64,3,50.569,3,34S16.432,4,33,4  s30,13.431,30,30S49.568,64,33,64z" style="fill-rule:evenodd;clip-rule:evenodd;"/></svg>
+</span>
+        
+      </a>
+    
+  </div>
+
+
+      <h1 class="f1 athelas mt3 mb1">Natural Language Processing with Disaster Tweets</h1>
+      
+      
+      
+      <time class="f6 mv4 dib tracked" datetime="2021-11-09T08:38:00+05:30">November 9, 2021</time>
+      
+
+      
+      
+    </header>
+    <div class="nested-copy-line-height lh-copy serif f4 nested-links mid-gray pr4-l w-two-thirds-l"><p>Disaster-related tweets have the potential to alert relevant authorities early on so that they can take action to reduce damage and possibly save lives. In this project, we attempt to predict whether a given tweet indicates a real disaster or not. We take a number of text normalization processes into consideration. For text representation, we experiment with the bag of words model (count vectorizer), TF-IDF vectorizer, and word2vec embedding. For each approach, we consider several binary classifiers and compare their performances through cross-validation.</p>
+<p><a href="https://github.com/sugatagh/Natural-Language-Processing-with-Disaster-Tweets">GitHub repository</a></p>
+<h3 id="-contents">○ Contents</h3>
+<ul>
+<li><a href="#-overview">Overview</a></li>
+<li><a href="#-introduction">Introduction</a></li>
+<li><a href="#-exploratory-data-analysis">Exploratory Data Analysis</a></li>
+<li><a href="#-text-normalization">Text Normalization</a></li>
+<li><a href="#-bag-of-n-gram-model">Bag of n-gram Model</a></li>
+<li><a href="#-tf-idf-model">TF-IDF Model</a></li>
+<li><a href="#-word2vec-model">Word2Vec Model</a></li>
+<li><a href="#-conclusion">Conclusion</a></li>
+<li><a href="#-acknowledgements">Acknowledgements</a></li>
+<li><a href="#-references">References</a></li>
+</ul>
+<h3 id="-overview">○ Overview</h3>
+<ul>
+<li>Disaster-related tweets have the potential to alert relevant authorities early on so that they can take action to reduce damage and possibly save lives.</li>
+<li>In this project, we attempt to predict whether a given tweet indicates a real disaster or not.</li>
+<li>A detailed <a href="https://en.wikipedia.org/wiki/Exploratory_data_analysis">exploratory data analysis</a> on the dataset is carried out.</li>
+<li>We consider a number of <a href="https://en.wikipedia.org/wiki/Text_normalization">text normalization</a> processes, namely conversion to <a href="https://en.wikipedia.org/wiki/Letter_case">lowercase</a>, removal of <a href="https://en.wikipedia.org/wiki/Whitespace_character">whitespaces</a>, removal of <a href="https://en.wikipedia.org/wiki/Punctuation">punctuations</a>, removal of <a href="https://en.wikipedia.org/wiki/List_of_Unicode_characters">unicode characters</a> (including <a href="https://en.wikipedia.org/wiki/HTML">HTML</a> tags, <a href="https://en.wikipedia.org/wiki/Emoji">emojis</a>, and <a href="https://en.wikipedia.org/wiki/URL">URL</a>s starting with <a href="https://en.wikipedia.org/wiki/HTTP">http</a>), substitution of <a href="https://en.wikipedia.org/wiki/Acronym">acronyms</a>, substitution of <a href="https://en.wikipedia.org/wiki/Contraction_(grammar)">contractions</a>, removal of <a href="https://en.wikipedia.org/wiki/Stop_word">stop words</a>, <a href="https://en.wikipedia.org/wiki/Spelling">spelling</a> correction, <a href="https://en.wikipedia.org/wiki/Stemming">stemming</a>, <a href="https://en.wikipedia.org/wiki/Lemmatization">lemmatization</a>, discardment of non-alphabetic words, and retention of relevant <a href="https://en.wikipedia.org/wiki/Part_of_speech">parts of speech</a>.</li>
+<li>We implement <a href="https://en.wikipedia.org/wiki/Bag-of-words_model">bag of words</a> text representation and extend the analysis to bag of <a href="https://en.wikipedia.org/wiki/Bigram">bigrams</a> as well as a mixture representation incorporating both words and bigrams.</li>
+<li>Next, we implement <a href="https://en.wikipedia.org/wiki/Tf%E2%80%93idf">TF-IDF</a> text representation. Similar to the previous setup, we carry out unigram, bigram, and mixture analysis.</li>
+<li>Finally, we use <a href="https://en.wikipedia.org/wiki/Word2vec">word2vec</a> embedding for text representation.</li>
+<li>For each text representation setup, we apply a number of <a href="https://en.wikipedia.org/wiki/Statistical_classification">classifiers</a>, namely <a href="https://en.wikipedia.org/wiki/Logistic_regression">logistic regression</a>, <a href="https://en.wikipedia.org/wiki/K-nearest_neighbors_algorithm"><span class="has-mathjax">\(k\)-nearest</span>
+ neighbors classifier</a>, <a href="https://en.wikipedia.org/wiki/Decision_tree">decision tree</a>, <a href="https://en.wikipedia.org/wiki/Support_vector_machine">support vector machine</a> with <a href="https://en.wikipedia.org/wiki/Radial_basis_function_kernel">radial basis function kernel</a>, <a href="https://en.wikipedia.org/wiki/Random_forest">random forest</a>, <a href="https://en.wikipedia.org/wiki/Stochastic_gradient_descent">stochastic gradient descent</a>, <a href="https://en.wikipedia.org/wiki/Ridge_regression">ridge classifier</a>, <a href="https://en.wikipedia.org/wiki/XGBoost">XGBoost classifier</a>, and <a href="https://en.wikipedia.org/wiki/AdaBoost">AdaBoost classifier</a>, and compare their performances in terms of the average <a href="https://en.wikipedia.org/wiki/F-score"><span class="has-mathjax">\(F_1\)-score</span>
+</a> obtained from <span class="has-mathjax">\(5\)</span>
+ repetitions of <span class="has-mathjax">\(6\)-fold</span>
+ <a href="https://en.wikipedia.org/wiki/Cross-validation_(statistics)">cross-validation</a>.</li>
+<li>The <strong>support vector machine</strong> classifier with a radial basis function kernel acting on the embedded data obtained through the <strong>word2vec</strong> algorithm produces the best result in terms of the average <span class="has-mathjax">\(F_1\)-score</span>
+ obtained from <span class="has-mathjax">\(5\)</span>
+ repetitions of <span class="has-mathjax">\(6\)-fold</span>
+ cross-validation. It achieves an average <span class="has-mathjax">\(F_1\)-score</span>
+ of <span class="has-mathjax">\(0.783204\).</span>
+</li>
+</ul>
+<h3 id="-introduction">○ Introduction</h3>
+<ul>
+<li><a href="#data">Data</a></li>
+<li><a href="#project-objective">Project Objective</a></li>
+<li><a href="#evaluation-metric">Evaluation Metric</a></li>
+</ul>
+<p>Twitter is one of the most active social media platform that many people use to share occurrence of incidents including disasters. For example, if a fire breaks out in a building, many people around the particular location are likely to tweet about the incident. These tweets can send early alerts not only to people in the neighbourhood to evacuate, but also to the appropriate authority to take measures to minimize the loss, potentially saving lives. Thus the tweets indicating real disasters can be utilized for emergency disaster management to remarkable effect. In this project, we attempt to predict whether a given tweet indicates a real disaster or not.</p>
+<h4 id="data">Data</h4>
+<p>Source: <a href="https://www.kaggle.com/c/nlp-getting-started/data">https://www.kaggle.com/c/nlp-getting-started/data</a></p>
+<p>The <a href="https://en.wikipedia.org/wiki/Training,_validation,_and_test_data_sets#Training_data_set">training dataset</a> contains information on <span class="has-mathjax">\(7613\)</span>
+ tweets, each with a unique id, keyword (if available), location (if available), text and whether or not the tweet indicates a real disaster or not (expressed via a binary variable).</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/nlp/nlp-data-train.png"/>
+</figure>
+
+<p>The <a href="https://en.wikipedia.org/wiki/Training,_validation,_and_test_data_sets#Test_data_set">test dataset</a> contains information on <span class="has-mathjax">\(3263\)</span>
+ tweets with the same features as above except the status of real disaster, which is to be predicted.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/nlp/nlp-data-test.png"/>
+</figure>
+
+<p>The features of the dataset are described below.</p>
+<ul>
+<li><strong>id</strong> : A unique identifier corresponding to the tweet</li>
+<li><strong>keyword</strong> : A highlighting word from the tweet</li>
+<li><strong>location</strong> : The location from where the tweet is sent</li>
+<li><strong>text</strong>: The textual content of the tweet</li>
+<li><strong>target</strong> : A binary variable, which is <span class="has-mathjax">\(0\)</span>
+ if the tweet does not indicate a real disaster and <span class="has-mathjax">\(1\)</span>
+ if it does</li>
+</ul>
+<p>Note that the features <strong>keyword</strong> and <strong>location</strong> may be blank for many tweets. Here we do not split the training set to hold a validation set out for evaluation purpose. Instead, we use repetition of <span class="has-mathjax">\(k\)-fold</span>
+ cross-validation and take average performance to assess the models.</p>
+<h4 id="project-objective">Project Objective</h4>
+<p>The objective of the project is to predict whether a particular tweet, of which the text (occasionally the keyword and the location as well) is provided, indicates a real disaster or not. Thus, it is a <a href="https://en.wikipedia.org/wiki/Binary_classification#Statistical_binary_classification">binary classification</a> problem.</p>
+<h4 id="evaluation-metric">Evaluation Metric</h4>
+<p>Too much <a href="https://en.wikipedia.org/wiki/False_positives_and_false_negatives">false positives</a>, where a model detects disaster in a tweet that does not indicate any such occurrence, may be counterproductive and wasteful in terms of resources. Again, a <a href="https://en.wikipedia.org/wiki/False_positives_and_false_negatives">false negative</a>, where the model fails to detect a disaster from a tweet which actually indicates one, would delay disaster management and clearly costs too much. Let us denote</p>
+<ul>
+<li><strong>TP</strong>: Number of true positives</li>
+<li><strong>TN</strong>: Number of true negatives</li>
+<li><strong>FP</strong>: Number of false positives</li>
+<li><strong>FN</strong>: Number of false negatives</li>
+</ul>
+<p><a href="https://en.wikipedia.org/wiki/Precision_and_recall">Precision</a> and <a href="https://en.wikipedia.org/wiki/Precision_and_recall">recall</a> are universally accepted metrics to capture the performance of a model, when restricted respectively to the <strong>predicted positive class</strong> and the <strong>actual positive class</strong>. These are defined as</p>
+<div class="has-mathjax">
+
+\[\text{Precision} = \frac{\text{TP}}{\text{TP} + \text{FP}}\]
+
+</div>
+
+<div class="has-mathjax">
+
+\[\text{Recall} = \frac{\text{TP}}{\text{TP} + \text{FN}}\]
+
+</div>
+
+<p>Observe that, in this problem, the class of tweets that indicate actual disasters (positive class) is more important than the class of tweets not indicating any disaster (negative class). Thus the goal is to build a model that attempts to minimize the proportion of false positives in the predicted positive class (maximize precision) and that of false negatives in the actual positive class (maximize recall), assigning equal emphasis on both. The <span class="has-mathjax">\(F_1\)-score</span>
+ provides a balanced measuring stick by considering the <a href="https://en.wikipedia.org/wiki/Harmonic_mean">harmonic mean</a> of the above two matrics.</p>
+<div class="has-mathjax">
+
+\[F_1\text{-score} = \frac{2 \times \text{Precision} \times \text{Recall}}{\text{Precision} + \text{Recall}}\]
+
+</div>
+
+<p>For its equal emphasis on both precision and recall, <span class="has-mathjax">\(F_1\)-score</span>
+ is one of the most suitable metrics for evaluating the models in this project.</p>
+<h3 id="-exploratory-data-analysis">○ Exploratory Data Analysis</h3>
+<ul>
+<li><a href="#class-frequency-comparison">Class frequency comparison</a></li>
+<li><a href="#keywords-associated-with-a-tweet">Keywords associated with a tweet</a></li>
+<li><a href="#location-associated-with-a-tweet">Location associated with a tweet</a></li>
+<li><a href="#number-of-characters-in-a-tweet">Number of characters in a tweet</a></li>
+<li><a href="#number-of-words-in-a-tweet">Number of words in a tweet</a></li>
+<li><a href="#average-word-length-in-a-tweet">Average word-length in a tweet</a></li>
+<li><a href="#number-of-urls-in-a-tweet">Number of URLs in a tweet</a></li>
+<li><a href="#number-of-hashtags--in-a-tweet">Number of hashtags (#) in a tweet</a></li>
+<li><a href="#number-of-mentions--in-a-tweet">Number of mentions (@) in a tweet</a></li>
+<li><a href="#punctuations-in-a-tweet">Punctuations in a tweet</a></li>
+</ul>
+<h4 id="class-frequency-comparison">Class frequency comparison</h4>
+<p>We begin by visualizing the class frequencies.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/nlp/nlp-frequency-comparison.png"/>
+</figure>
+
+<p>We observe that the training dataset is more or less balanced with respect to the <code>target</code> variable, which encodes whether or not a particular tweet indicates a disaster.</p>
+<p>Next, we perform exploratory data analysis on a number of original and derived features in the training dataset.</p>
+<h4 id="keywords-associated-with-a-tweet">Keywords associated with a tweet</h4>
+<p><strong>Note:</strong> A lot of keywords contain two words joined by <em>%20</em>, which is the URL-encoding of the <em>space</em> character.</p>
+<p>We visualize the top keywords, as per <em>total count</em>, for each class.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/nlp/nlp-keyword-count.png"/>
+</figure>
+
+<p>Since the sizes of the two classes are unequal, we cannot directly compare the count of a keyword in non-disaster tweets with the same in disaster tweets. To make a valid comparison, we must scale these counts by respective class sizes to obtain proportions of a keyword in non-disaster tweets and disaster tweets.</p>
+<p>In particular, the absolute difference between these two quantities can be considered a measure of the ability of a keyword to discriminate between non-disaster tweets and disaster tweets. For instance, if the absolute difference is close to <span class="has-mathjax">\(0\),</span>
+ then we cannot infer anything about the status of the tweet based on the keyword alone. On the other hand, a high value indicates that the keyword contributes significantly towards classifying the tweet into a particular class.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/nlp/nlp-keyword-proportion.png"/>
+</figure>
+
+<p>We investigate the <span class="has-mathjax">\(5\)</span>
+ keywords with least absolute difference between proportion in non-disaster tweets and proportion in disaster tweets. Surprisingly, the keywords turn out to be <em>bomb</em>, <em>weapons</em>, <em>landslide</em>, <em>flood</em>, and <em>disaster</em>. These are usually associated with occurances of disasters. Although these words are used in non-disastrous contexts, for example <em>landslide victory in an election</em> or <em>flood of joyful tears</em> etc., it is still surprising for these to qualify as keywords in the non-disaster tweets.</p>
+<h4 id="location-associated-with-a-tweet">Location associated with a tweet</h4>
+<p>We visualize the top locations, as per <em>total count</em>, for each class.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/nlp/nlp-location-count.png"/>
+</figure>
+
+<p>As in the case of keywords, we scale location counts by respective class sizes to obtain proportions of a location in non-disaster tweets and disaster tweets.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/nlp/nlp-location-proportion.png"/>
+</figure>
+
+<h4 id="number-of-characters-in-a-tweet">Number of characters in a tweet</h4>
+<p>We examine the distribution of number of characters per tweet for both the class of non-disaster tweets and the class of disaster tweets.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/nlp/nlp-number-of-characters.png"/>
+</figure>
+
+<h4 id="number-of-words-in-a-tweet">Number of words in a tweet</h4>
+<p>We examine the distribution of number of words per tweet for both the class of non-disaster tweets and the class of disaster tweets.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/nlp/nlp-number-of-words.png"/>
+</figure>
+
+<h4 id="average-word-length-in-a-tweet">Average word-length in a tweet</h4>
+<p>Next we analyze the distribution of average word-length in tweets for both the class of non-disaster tweets and the class of disaster tweets.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/nlp/nlp-length-of-words.png"/>
+</figure>
+
+<h4 id="number-of-urls-in-a-tweet">Number of URLs in a tweet</h4>
+<p>We examine the distribution of number of URLs per tweet for both the class of non-disaster tweets and the class of disaster tweets.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/nlp/nlp-number-of-urls.png"/>
+</figure>
+
+<h4 id="number-of-hashtags--in-a-tweet">Number of hashtags (#) in a tweet</h4>
+<p>We examine the distribution of number of hashtags per tweet for both the class of non-disaster tweets and the class of disaster tweets.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/nlp/nlp-number-of-hashtags.png"/>
+</figure>
+
+<h4 id="number-of-mentions--in-a-tweet">Number of mentions (@) in a tweet</h4>
+<p>We examine the distribution of number of mentions per tweet for both the class of non-disaster tweets and the class of disaster tweets.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/nlp/nlp-number-of-mentions.png"/>
+</figure>
+
+<h4 id="punctuations-in-a-tweet">Punctuations in a tweet</h4>
+<p>We visualize the top punctuations, as per <em>total count</em>, for each class.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/nlp/nlp-punctuation-count.png"/>
+</figure>
+
+<p>We scale punctuation counts by respective class sizes to obtain proportions of a punctuation in non-disaster tweets and disaster tweets.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/nlp/nlp-punctuation-count-per-tweet.png"/>
+</figure>
+
+<p><strong>Observations:</strong></p>
+<ul>
+<li><code>keyword</code> for <span class="has-mathjax">\(99.2\%\)</span>
+ training tweets is <code>NaN</code>.</li>
+<li>The <span class="has-mathjax">\(5\)</span>
+ keywords with least absolute difference between their respective proportions in non-disaster tweets and disaster tweets are <em>bomb</em>, <em>weapons</em>, <em>landslide</em>, <em>flood</em>, <em>disaster</em>. These are usually associated with occurances of disasters. Although these words are used in non-disastrous contexts, for example landslide victory is an election or flood of joyful tears etc, it is still surprising for these to qualify as keywords in the non-disaster tweets.</li>
+<li><code>location</code> for <span class="has-mathjax">\(66.7\%\)</span>
+ training tweets is <code>NaN</code>.</li>
+<li>The distribution of most of the derived features are similar in case of disaster tweets (positive class) and non-disaster tweets (negative class).</li>
+</ul>
+<p><strong>Note:</strong> In the visualizations of class wise comparison of most features, including keyword and location, we produce only a few observations of the feature of interest due to the large number of distinct textual value taken by these features. The selection of these observations are done by considering certain attributes such as <em>total count</em> and choosing the top observations according to that attribute.</p>
+<h3 id="-text-normalization">○ Text Normalization</h3>
+<ul>
+<li><a href="#conversion-to-lowercase">Conversion to lowercase</a></li>
+<li><a href="#removal-of-whitespaces">Removal of whitespaces</a></li>
+<li><a href="#removal-of-punctuations">Removal of punctuations</a></li>
+<li><a href="#removal-of-unicode-characters">Removal of unicode characters</a></li>
+<li><a href="#substitution-of-acronyms">Substitution of acronyms</a></li>
+<li><a href="#substitution-of-contractions">Substitution of contractions</a></li>
+<li><a href="#removal-of-stop-words">Removal of stop words</a></li>
+<li><a href="#spelling-correction">Spelling correction</a></li>
+<li><a href="#stemming-and-lemmatization">Stemming and lemmatization</a></li>
+<li><a href="#discardment-of-non-alphabetic-words">Discardment of non-alphabetic words</a></li>
+<li><a href="#retention-of-relevant-parts-of-speech">Retention of relevant parts of speech</a></li>
+<li><a href="#integration-of-the-processes">Integration of the processes</a></li>
+<li><a href="#implementation-of-text-normalization">Implementation of text normalization</a></li>
+</ul>
+<p>Text normalization is the process of transforming text into a single <a href="https://en.wikipedia.org/wiki/Canonical_form">canonical form</a> that it might not have had before. We consider the following text normalization processes.</p>
+<h4 id="conversion-to-lowercase">Conversion to lowercase</h4>
+<p>We convert all alphabetical characters of the tweets to lowercase so that the models do not differentiate identical words due to case-sensitivity. For example, without the normalization, <em>Sun</em> and <em>sun</em> would have been treated as two different words, which is not useful in the present context.</p>
+<pre tabindex="0"><code>def convert_to_lowercase(text):
+    return text.lower()
+</code></pre><h4 id="removal-of-whitespaces">Removal of whitespaces</h4>
+<p>We remove the unnecessary empty spaces from the tweets.</p>
+<pre tabindex="0"><code>def remove_whitespace(text):
+    return text.strip()
+</code></pre><h4 id="removal-of-punctuations">Removal of punctuations</h4>
+<p>Mostly the punctuations do not play any role in predicting whether a particular tweet indicate disaster or not. Thus we prevent them from contaminating the classification procedures by removing them from the tweets. However, we keep <em>apostrophe</em> since most of the contractions contain this punctuation and will be automatically taken care of once we convert the contractions.</p>
+<pre tabindex="0"><code>def remove_punctuation(text):
+    punct_str = string.punctuation
+    punct_str = punct_str.replace(&#34;&#39;&#34;, &#34;&#34;) # discarding apostrophe from the string to keep the contractions intact
+    return text.translate(str.maketrans(&#34;&#34;, &#34;&#34;, punct_str))
+</code></pre><h4 id="removal-of-unicode-characters">Removal of unicode characters</h4>
+<p>The training tweets are typically sprinkled with emojis, URLs, and other symbols that do not contribute meaningfully to our analysis, but instead create noise in the learning procedure. Some of these symbols are unique, while the rest usually translate into unicode strings. We remove these irrelevant characters from the data. We make use of the <a href="https://docs.python.org/3/library/re.html">re</a> module, which provides <a href="https://en.wikipedia.org/wiki/Regular_expression">regular expression</a> matching operations.</p>
+<p>First we remove the HTML tags.</p>
+<pre tabindex="0"><code>def remove_html(text):
+    html = re.compile(r&#39;&lt;.*?&gt;&#39;)
+    return html.sub(r&#39;&#39;, text)
+</code></pre><p>Next, we remove the emojis.</p>
+<pre tabindex="0"><code>def remove_emoji(text):
+    emoji_pattern = re.compile(
+        &#34;[&#34;
+        u&#34;\U0001F600-\U0001F64F&#34;  # emoticons
+        u&#34;\U0001F300-\U0001F5FF&#34;  # symbols &amp; pictographs
+        u&#34;\U0001F680-\U0001F6FF&#34;  # transport &amp; map symbols
+        u&#34;\U0001F1E0-\U0001F1FF&#34;  # flags (iOS)
+        u&#34;\U00002702-\U000027B0&#34;
+        u&#34;\U000024C2-\U0001F251&#34;
+        &#34;]+&#34;, flags=re.UNICODE
+    )
+    return emoji_pattern.sub(r&#39;&#39;, text)
+</code></pre><p>We also remove URLs starting with http.</p>
+<pre tabindex="0"><code>def remove_http(text):
+    http = &#34;https?://\S+|www\.\S+&#34; # matching strings beginning with http (but not just &#34;http&#34;)
+    pattern = r&#34;({})&#34;.format(http) # creating pattern
+    return re.sub(pattern, &#34;&#34;, text)
+</code></pre><h4 id="substitution-of-acronyms">Substitution of acronyms</h4>
+<p>Acronyms are shortened forms of phrases, generally found in informal writings such as personal messages. Examples:</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/nlp/nlp-list-of-acronyms.png"/>
+</figure>
+
+<p>These time and effort-saving acronyms have received almost universal acceptance in social media platforms including twitter. For the sake of proper modeling, we convert the acronyms, appearing in the tweets, back to their respective original forms. For this purpose, we have compiled an extensive list of English acronyms, which can be found in the file:</p>
+<p><a href="https://github.com/sugatagh/Natural-Language-Processing-with-Disaster-Tweets/blob/main/english_acronyms_lowercase.json"><em>english_acronyms_lowercase.json</em></a></p>
+<p>Note that the file only considers acronyms in lowercase, i.e. it assumes that the textual data have already been transformed to lowercase before substituting the acronyms. For example, the process will convert <em>fyi</em> to <em>for your information</em> but will leave <em>Fyi</em> unchanged.</p>
+<pre tabindex="0"><code>acronyms_url = &#39;https://raw.githubusercontent.com/sugatagh/E-commerce-Text-Classification/main/JSON/english_acronyms.json&#39;
+acronyms_dict = pd.read_json(acronyms_url, typ = &#39;series&#39;)
+acronyms_list = list(acronyms_dict.keys())
+</code></pre><p>The following function converts the acronyms, included in the <em>.json</em> file, appearing in any given input text.</p>
+<pre tabindex="0"><code>def convert_acronyms(text):
+    words = []
+    for word in regexp.tokenize(text):
+        if word in acronyms_list:
+            words = words + acronyms_dict[word].split()
+        else:
+            words = words + word.split()
+    text_converted = &#34; &#34;.join(words)
+    return text_converted
+</code></pre><h4 id="substitution-of-contractions">Substitution of contractions</h4>
+<p>A contraction is a shortened form of a word or a phrase, obtained by dropping one or more letters. Examples:</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/nlp/nlp-list-of-contractions.png"/>
+</figure>
+
+<p>These are commonly used in everyday speech, written dialogue, informal writing and in situations where space is limited or costly, such as advertisements. Usually the missing letters are indicated by an apostrophe, but there are exceptions. We have compiled an extensive list of English contractions, which can be found here:</p>
+<p><a href="https://github.com/sugatagh/Natural-Language-Processing-with-Disaster-Tweets/blob/main/english_contractions_lowercase.json"><em>english_contractions_lowercase.json</em></a></p>
+<p>Note that the file only considers contractions in lowercase, i.e. it assumes that the textual data have already been transformed to lowercase before substituting the contractions. For example, the process will convert <em>i&rsquo;ll</em> to <em>i shall</em> but will leave <em>I&rsquo;ll</em> unchanged.</p>
+<pre tabindex="0"><code>contractions_url = &#39;https://raw.githubusercontent.com/sugatagh/E-commerce-Text-Classification/main/JSON/english_contractions.json&#39;
+contractions_dict = pd.read_json(contractions_url, typ = &#39;series&#39;)
+contractions_list = list(contractions_dict.keys())
+</code></pre><p>The following function converts the contractions, included in the <em>.json</em> file, appearing in any given input text.</p>
+<pre tabindex="0"><code>def convert_contractions(text):
+    words = []
+    for word in regexp.tokenize(text):
+        if word in contractions_list:
+            words = words + contractions_dict[word].split()
+        else:
+            words = words + word.split()
+    text_converted = &#34; &#34;.join(words)
+    return text_converted
+</code></pre><h4 id="removal-of-stop-words">Removal of stop words</h4>
+<p>Several words, primarily pronouns, prepositions, modal verbs etc., are identified not to have much effect on the classification procedure. To get rid of the unwanted contamination effect, we remove these words. For this purpose, we use the <code>stopwords</code> module from <a href="https://en.wikipedia.org/wiki/Natural_Language_Toolkit">NLTK</a>. Some of these words are shown below.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/nlp/nlp-list-of-stop-words.png"/>
+</figure>
+
+<pre tabindex="0"><code>stops = stopwords.words(&#34;english&#34;) # stopwords
+addstops = [&#34;among&#34;, &#34;onto&#34;, &#34;shall&#34;, &#34;thrice&#34;, &#34;thus&#34;, &#34;twice&#34;, &#34;unto&#34;, &#34;us&#34;, &#34;would&#34;] # additional stopwords
+allstops = stops + addstops
+def remove_stopwords(text):
+    return &#34; &#34;.join([word for word in regexp.tokenize(text) if word not in allstops])
+</code></pre><h4 id="spelling-correction">Spelling correction</h4>
+<p>The classification process cannot take misspellings into consideration and treats a word and its misspelt version as separate words. For this reason it is necessary to conduct spelling correction before feeding the data to the classification procedure. We use the <code>pyspellchecker</code> package for this purpose.</p>
+<p>The next function corrects the misspelt words in a given input text.</p>
+<pre tabindex="0"><code>spell = SpellChecker()
+def pyspellchecker(text):
+    word_list = regexp.tokenize(text)
+    word_list_corrected = []
+    for word in word_list:
+        if word in spell.unknown(word_list):
+            word_corrected = spell.correction(word)
+            if word_corrected == None:
+                word_list_corrected.append(word)
+            else:
+                word_list_corrected.append(word_corrected)
+        else:
+            word_list_corrected.append(word)
+    text_corrected = &#34; &#34;.join(word_list_corrected)
+    return text_corrected
+</code></pre><h4 id="stemming-and-lemmatization">Stemming and lemmatization</h4>
+<p><strong>Stemming</strong> is the process of reducing the words to their root form or stem. It reduces related words to the same stem even if the stem is not a dictionary word. For example, the words <em>introducing</em>, <em>introduced</em>, <em>introduction</em> reduce to a common word <em>introduce</em>. However, the process often produces stems that are not actual words. The sentence <em>Introducing lemmatization as an improvement over stemming</em> becomes <em>introduc lemmat as an improv over stem</em> upon applying the stemming procedure. The stems <em>introduc</em>, <em>lemmat</em> and <em>improv</em> are not actual words. Here we use the <em>Porter stemming algorithm</em>.</p>
+<p>The function to implement stemming is as follows.</p>
+<pre tabindex="0"><code>stemmer = PorterStemmer()
+def text_stemmer(text):
+    text_stem = &#34; &#34;.join([stemmer.stem(word) for word in regexp.tokenize(text)])
+    return text_stem
+</code></pre><p><strong>Lemmatization</strong> offers a more sophisticated approach by utilizing a <a href="https://en.wikipedia.org/wiki/Text_corpus">corpus</a> to match root forms of the words. Unlike stemming, it uses the context in which a word is being used. Upon applying lemmatization, the same sentence becomes <em>introduce lemmatization as an improvement over stem</em>. Here we use the <a href="https://en.wikipedia.org/wiki/SpaCy">spaCy</a> lemmatizer.</p>
+<p>We implement lemmatization through the following function.</p>
+<pre tabindex="0"><code>spacy_lemmatizer = spacy.load(&#34;en_core_web_sm&#34;, disable = [&#39;parser&#39;, &#39;ner&#39;])
+def text_lemmatizer(text):
+    text_spacy = &#34; &#34;.join([token.lemma_ for token in spacy_lemmatizer(text)])
+    return text_spacy
+</code></pre><h4 id="discardment-of-non-alphabetic-words">Discardment of non-alphabetic words</h4>
+<p>The non-alphabetic words are not numerous and create unnecessary diversions in the context of classifying tweets into non-disaster and disaster categories. Hence we discard these words.</p>
+<pre tabindex="0"><code>def discard_non_alpha(text):
+    word_list_non_alpha = [word for word in regexp.tokenize(text) if word.isalpha()]
+    text_non_alpha = &#34; &#34;.join(word_list_non_alpha)
+    return text_non_alpha
+</code></pre><h4 id="retention-of-relevant-parts-of-speech">Retention of relevant parts of speech</h4>
+<p>The parts of speech provide a great tool to select a subset of words that are more likely to contribute in the classification procedure and discard the rest to avoid noise. The idea is to select a number of parts of speech that are important to the context of the problem. Then we partition the words in a given text into several subsets corresponding to each part of speech and keep only those subsets corresponding to the selected parts of speech. An alphabetical list of part-of-speech tags used in the Penn Treebank Project is given <a href="https://www.ling.upenn.edu/courses/Fall_2003/ling001/penn_treebank_pos.html">here</a>.</p>
+<pre tabindex="0"><code>def keep_pos(text):
+    tokens = regexp.tokenize(text)
+    tokens_tagged = nltk.pos_tag(tokens)
+    keep_tags = [&#39;NN&#39;, &#39;NNS&#39;, &#39;NNP&#39;, &#39;NNPS&#39;, &#39;FW&#39;, &#39;PRP&#39;, &#39;PRPS&#39;, &#39;RB&#39;, &#39;RBR&#39;, &#39;RBS&#39;, &#39;VB&#39;, &#39;VBD&#39;, &#39;VBG&#39;, &#39;VBN&#39;, &#39;VBP&#39;, &#39;VBZ&#39;, &#39;WDT&#39;, &#39;WP&#39;, &#39;WPS&#39;, &#39;WRB&#39;]
+    keep_words = [x[0] for x in tokens_tagged if x[1] in keep_tags]
+    return &#34; &#34;.join(keep_words)
+</code></pre><h4 id="integration-of-the-processes">Integration of the processes</h4>
+<p>We integrate the text normalization processes in appropriate order into one single function. Note that the spelling correction step takes a massive amount of time to run on large datasets and hence may be commented out for a quick implementation.</p>
+<pre tabindex="0"><code>def text_normalizer(text):
+    text = convert_to_lowercase(text)
+    text = remove_whitespace(text)
+    text = re.sub(&#39;\n&#39; , &#39;&#39;, text) # converting text to one line
+    text = re.sub(&#39;\[.*?\]&#39;, &#39;&#39;, text) # removing square brackets
+    text = remove_http(text)
+    text = remove_punctuation(text)
+    text = remove_html(text)
+    text = remove_emoji(text)
+    text = convert_acronyms(text)
+    text = convert_contractions(text)
+    text = remove_stopwords(text)
+    text = pyspellchecker(text)
+    text = text_lemmatizer(text) # text = text_stemmer(text)
+    text = discard_non_alpha(text)
+    text = keep_pos(text)
+    text = remove_additional_stopwords(text)
+    return text
+</code></pre><h4 id="implementation-of-text-normalization">Implementation of text normalization</h4>
+<p>Next, we perform text normalization on the training tweets.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/nlp/nlp-text-normalization-training-set.png"/>
+</figure>
+
+<p>We perform the same on the test tweets.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/nlp/nlp-text-normalization-test-set.png"/>
+</figure>
+
+<p>Here we consider only the <code>normalized text</code> as the predictor variable, leaving <code>keyword</code> and <code>location</code> out as they are missing for most tweets.</p>
+<h3 id="-bag-of-n-gram-model">○ Bag of n-gram Model</h3>
+<ul>
+<li><a href="#bag-of-words">Bag of Words</a></li>
+<li><a href="#bag-of-bigrams">Bag of Bigrams</a></li>
+<li><a href="#mixture-models">Mixture Models</a></li>
+</ul>
+<p>In this section, we use the <code>CountVectorizer</code> class to convert the list of normalized texts to a matrix of token counts. We create an instance of this class by setting the <code>ngram_range</code> parameter, with the default choice being <span class="has-mathjax">\((1, 1).\)</span>
+</p>
+<pre tabindex="0"><code>CountVec = CountVectorizer(ngram_range = (1, 1))
+</code></pre><p>The parameter gives the lower and upper boundary of the range of <span class="has-mathjax">\(n\)-values</span>
+ corresponding to different word <span class="has-mathjax">\(n\)-grams</span>
+ to be extracted, i.e. all values of <span class="has-mathjax">\(n\)</span>
+ such that <span class="has-mathjax">\(\text{min}_n \leq n \leq \text{max}_n\)</span>
+ will be used. For example, an <code>ngram_range</code> of <span class="has-mathjax">\((1, 1)\)</span>
+ means only words, <span class="has-mathjax">\((1, 2)\)</span>
+ means words and bigrams, and <span class="has-mathjax">\((2, 2)\)</span>
+ means only bigrams.</p>
+<p>Note that this implementation produces a <a href="https://en.wikipedia.org/wiki/Sparse_matrix">sparse representation</a> of the counts as <a href="https://en.wikipedia.org/wiki/Sparse_matrix#Compressed_sparse_row_(CSR,_CRS_or_Yale_format)">compressed sparse row</a> matrix. We shall need to convert it to DataFrame and then transform it back to the original format at a later stage in the modeling phase. For this purpose, we use the <code>csr_matrix</code> class from the <code>sparse</code> package of the <a href="https://en.wikipedia.org/wiki/SciPy">SciPy</a> library.</p>
+<h4 id="bag-of-words">Bag of Words</h4>
+<p>The bag of words model is a way of representing text data used in <a href="https://en.wikipedia.org/wiki/Natural_language_processing">natural language processing</a>. The model only considers <a href="https://en.wikipedia.org/wiki/Multiplicity_(mathematics)">multiplicity</a> of the words and completely disregards the grammatical structure and ordering of the words.</p>
+<p>The top <span class="has-mathjax">\(10\)</span>
+ most frequent words, along with their respective frequencies, for both the positive class and the negative class, are documented in the following table.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/nlp/nlp-bag-of-words.png"/>
+</figure>
+
+<p>We fit the bag of words model, treating each word as a feature. We observe the average <span class="has-mathjax">\(F_1\)-score</span>
+ obtained from <span class="has-mathjax">\(5\)</span>
+ repetitions of <span class="has-mathjax">\(6\)</span>
+-fold cross-validation using different classifiers.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/nlp/nlp-bag-of-words-f1-score-K.png"/>
+</figure>
+
+<p>We observe that logistic regression, support vector machine (SVM) with radial basis function (RBF) kernel, stochastic gradient descent, and ridge classifier work well in this prediction scheme, compared to the other classifiers.</p>
+<p>Next, we fit the same model, considering only the top <span class="has-mathjax">\(10\%\)</span>
+ words as features. We observe the average <span class="has-mathjax">\(F_1\)-score</span>
+ resulting from cross-validations using different classifiers.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/nlp/nlp-bag-of-words-f1-score-selected-K.png"/>
+</figure>
+
+<p>As in the model considering all words as features, logistic regression, SVM with RBF kernel, stochastic gradient descent and ridge classifier works well in the model considering only the top layer of words, compared to the other classifiers.</p>
+<h4 id="bag-of-bigrams">Bag of Bigrams</h4>
+<p>Next, we consider bag of bigrams (pair of consecutive words) model instead of bag of words model. The next function produces a DataFrame consisting of all possible bigrams from an input text corpus, along with their respective frequencies.</p>
+<p>The top <span class="has-mathjax">\(10\)</span>
+ most frequent bigrams, along with their respective frequencies, for both the positive class and the negative class, are documented in the following table.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/nlp/nlp-bag-of-bigrams.png"/>
+</figure>
+
+<p>We fit the bag of bigrams model, treating each bigram as a feature. We observe the average <span class="has-mathjax">\(F_1\)-score</span>
+ obtained from <span class="has-mathjax">\(5\)</span>
+ repetitions of <span class="has-mathjax">\(6\)-fold</span>
+ cross-validation using different classifiers.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/nlp/nlp-bag-of-bigrams-f1-score-K.png"/>
+</figure>
+
+<p>Next, we consider the same model with the top quarter <span class="has-mathjax">\((25\%)\)</span>
+ of bigrams. We observe the average <span class="has-mathjax">\(F_1\)-score</span>
+ obtained from <span class="has-mathjax">\(5\)</span>
+ repetitions of <span class="has-mathjax">\(6\)-fold</span>
+ cross-validation using different classifiers.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/nlp/nlp-bag-of-bigrams-f1-score-selected-K.png"/>
+</figure>
+
+<p>We observe that logistic regression, decision tree, SVM with RBF kernel, stochastic gradient descent and ridge classifier work moderately well for the bag of bigrams models, but not as well as the bag of words models.</p>
+<h4 id="mixture-models">Mixture Models</h4>
+<p>Now, we consider mixture models by considering both words as well as bigrams as features. We observe the average <span class="has-mathjax">\(F_1\)-score</span>
+ obtained from <span class="has-mathjax">\(5\)</span>
+ repetitions of <span class="has-mathjax">\(6\)-fold</span>
+ cross-validation using different classifiers.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/nlp/nlp-bag-of-bigrams-words-f1-score-K.png"/>
+</figure>
+
+<p>Next, we consider a mixture of features by considering top <span class="has-mathjax">\(10\%\)</span>
+ words and top <span class="has-mathjax">\(25\%\)</span>
+ bigrams. We observe the average <span class="has-mathjax">\(F_1\)-score</span>
+ obtained from <span class="has-mathjax">\(5\)</span>
+ repetitions of <span class="has-mathjax">\(6\)-fold</span>
+ cross-validation using different classifiers.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/nlp/nlp-bag-of-bigrams-words-f1-score-selected-K.png"/>
+</figure>
+
+<p>We observe that the performances under mixture models are more or less similar to those under bag of words models.</p>
+<h3 id="-tf-idf-model">○ TF-IDF Model</h3>
+<ul>
+<li><a href="#bag-of-words-tf-idf">Bag of Words (TF-IDF)</a></li>
+<li><a href="#bag-of-bigrams-tf-idf">Bag of Bigrams (TF-IDF)</a></li>
+<li><a href="#mixture-models-tf-idf">Mixture Models (TF-IDF)</a></li>
+</ul>
+<p>In the context of <a href="https://en.wikipedia.org/wiki/Information_retrieval">information retrieval</a>, <strong>TF-IDF</strong> (short for <em>term frequency-inverse document frequency</em>), is a numerical statistic that is intended to reflect how important a word is to a document in a collection or corpus. It is often used as a weighting factor in searches of information retrieval, <a href="https://en.wikipedia.org/wiki/Text_mining">text mining</a>, and <a href="https://en.wikipedia.org/wiki/User_modeling">user modeling</a>.</p>
+<p>The <strong>TF-IDF</strong> value increases proportionally to the number of times a word appears in the document and is offset by the number of documents in the corpus that contain the word, which helps to adjust for the fact that some words appear more frequently in general.</p>
+<p>Thus, the measure objectively evaluates how relevant a word is to a text in a collection of texts, taking into consideration that some words appear more frequently in general. For more details, check <a href="https://sugatagh.github.io/dsml/notes/term-frequency-inverse-document-frequency-tf-idf">this note</a>.</p>
+<p>The <code>TfidfVectorizer</code> class converts a collection of raw documents to a matrix of <strong>TF-IDF</strong> features. Creating an instance of the class with the <code>ngram_range</code> parameter is similar to creating an instance of the <code>CountVectorizer</code> class, described in the previous section.</p>
+<pre tabindex="0"><code>TfidfVec = TfidfVectorizer(ngram_range = (1, 1))
+</code></pre><h4 id="bag-of-words-tf-idf">Bag of Words (TF-IDF)</h4>
+<p>First, we fit the TF-IDF model, treating each word as a feature. We observe the average <span class="has-mathjax">\(F_1\)-score</span>
+ obtained from <span class="has-mathjax">\(5\)</span>
+ repetitions of <span class="has-mathjax">\(6\)-fold</span>
+ cross-validation using different classifiers.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/nlp/nlp-tf-idf-bag-of-words-f1-score-K.png"/>
+</figure>
+
+<p>We observe that logistic regression, SVM with RBF kernel, stochastic gradient descent, and ridge classifier work well in this prediction scheme, compared to the other classifiers. In fact, logistic regression, the classifier returning the highest average <span class="has-mathjax">\(F_1\)-score</span>
+, has a slight improvement over the same model without TF-IDF implementation.</p>
+<p>Next, we fit the same model, considering only the top <span class="has-mathjax">\(10\%\)</span>
+ words as features. We observe the average <span class="has-mathjax">\(F_1\)-score</span>
+ resulting from cross-validations using different classifiers.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/nlp/nlp-tf-idf-bag-of-words-f1-score-selected-K.png"/>
+</figure>
+
+<p>As in the model considering all words as features, logistic regression, SVM with RBF kernel, stochastic gradient descent and ridge classifier work well in the model considering only the top layer of words, compared to the other classifiers.</p>
+<h4 id="bag-of-bigrams-tf-idf">Bag of Bigrams (TF-IDF)</h4>
+<p>Next, we fit the TF-IDF model, treating each bigram as a feature. We observe the average <span class="has-mathjax">\(F_1\)-score</span>
+ resulting from cross-validations using different classifiers.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/nlp/nlp-tf-idf-bag-of-bigrams-f1-score-K.png"/>
+</figure>
+
+<p>We fit the same model, considering only the top <span class="has-mathjax">\(10\%\)</span>
+ bigrams as features. We observe the average <span class="has-mathjax">\(F_1\)-score</span>
+ resulting from cross-validations using different classifiers.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/nlp/nlp-tf-idf-bag-of-bigrams-f1-score-selected-K.png"/>
+</figure>
+
+<h4 id="mixture-models-tf-idf">Mixture Models (TF-IDF)</h4>
+<p>Next, we fit the TF-IDF model, considering both words as well as bigrams as features. We observe the average <span class="has-mathjax">\(F_1\)-score</span>
+ resulting from cross-validations using different classifiers.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/nlp/nlp-tf-idf-bag-of-bigrams-words-f1-score-K.png"/>
+</figure>
+
+<p>We fit the same model, considering only the top <span class="has-mathjax">\(10\%\)</span>
+ words and the top <span class="has-mathjax">\(10\%\)</span>
+ bigrams as features. We observe the average <span class="has-mathjax">\(F_1\)-score</span>
+ resulting from cross-validations using different classifiers.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/nlp/nlp-tf-idf-bag-of-bigrams-words-f1-score-selected-K.png"/>
+</figure>
+
+<p>We observe that the results of the mixture models are more or less similar to that of the bag of words models. Also, the <span class="has-mathjax">\(k\)-NN</span>
+ classifier works poorly in all the prediction schemes described above, except for the bag of words model treating each word as a feature.</p>
+<h3 id="-word2vec-model">○ Word2Vec Model</h3>
+<p>Roughly speaking, <a href="https://en.wikipedia.org/wiki/Word_embedding">word embeddings</a> are <a href="https://en.wikipedia.org/wiki/Euclidean_vector">vector</a> representations of a particular word. It has the ability to capture the <a href="https://en.wikipedia.org/wiki/Context_(linguistics)">context</a> of a particular word in a <a href="https://en.wikipedia.org/wiki/Document">document</a>, as well as identify <a href="https://en.wikipedia.org/wiki/Semantic_similarity">semantic</a> and syntactic similarity and other contextual relations with other words in the document.</p>
+<p>Word2Vec is a specific word-embedding technique that uses a <a href="https://en.wikipedia.org/wiki/Neural_network">neural network</a> model to learn word associations from a fairly large corpus of text. After the model is trained, it can detect similarity of words, as well as recommend words to complete a partial sentence. True to its name, word2vec maps each distinct word to a vector, which is assigned in such a way that the level of semantic similarity between words are indicated by a simple mathematical operation on the vectors that the words are mapped to (for instance, the <a href="https://en.wikipedia.org/wiki/Cosine_similarity">cosine similarity</a> between the vectors).</p>
+<p>Here we use the raw text except for <em>converting to lowercase</em> and <em>converting the contractions</em> to their respective expanded forms. We do not use the other text normalization processes. Then, we tokenize the processed text and feed the tokens to the <em>word2vec</em> embedder. The embedded observations, color-coded by their class (non-disaster or disaster), are visualized in the following plot.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/nlp/nlp-word2vec-embedding-K.png"/>
+</figure>
+
+<p>We convert the <em>word2vec</em> embeddings to a compressed sparse row matrix. Finally, we observe the average <span class="has-mathjax">\(F_1\)-score</span>
+ obtained from <span class="has-mathjax">\(5\)</span>
+ repetitions of <span class="has-mathjax">\(6\)-fold</span>
+ cross-validation using different classifiers acting on the word embeddings obtained through the <em>word2vec</em> model.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/nlp/nlp-word2vec-f1-score-K.png"/>
+</figure>
+
+<h3 id="-conclusion">○ Conclusion</h3>
+<p>We observe that the <strong>support vector machine</strong> classifier with a <strong>radial basis function kernel</strong> acting on the embedded data obtained through the <strong>word2vec</strong> algorithm produces the best result in terms of the average <span class="has-mathjax">\(F_1\)-score</span>
+ obtained from <span class="has-mathjax">\(5\)</span>
+ repetitions of <span class="has-mathjax">\(6\)-fold</span>
+ cross-validation. It achieves an average <span class="has-mathjax">\(F_1\)-score</span>
+ of <span class="has-mathjax">\(0.783204\).</span>
+</p>
+<h3 id="-acknowledgements">○ Acknowledgements</h3>
+<ul>
+<li><a href="https://www.ling.upenn.edu/courses/Fall_2003/ling001/penn_treebank_pos.html">Alphabetical list of part-of-speech tags used in the Penn Treebank Project</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Wikipedia:List_of_English_contractions">List of English contractions</a></li>
+<li><a href="https://www.kaggle.com/c/nlp-getting-started/data">Natural Language Processing with Disaster Tweets Dataset</a></li>
+</ul>
+<h3 id="-references">○ References</h3>
+<ul>
+<li><a href="https://en.wikipedia.org/wiki/Acronym">Acronym</a></li>
+<li><a href="https://en.wikipedia.org/wiki/AdaBoost">AdaBoost</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Bag-of-words_model">Bag of words</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Bigram">Bigram</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Binary_classification#Statistical_binary_classification">Binary classification</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Canonical_form">Canonical form</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Statistical_classification">Classifier</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Sparse_matrix#Compressed_sparse_row_(CSR,_CRS_or_Yale_format)">Compressed sparse row</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Context_(linguistics)">Context</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Contraction_(grammar)">Contraction</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Text_corpus">Corpus</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Cosine_similarity">Cosine similarity</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Cross-validation_(statistics)">Cross-validation</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Decision_tree">Decision tree</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Document">Document</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Emoji">Emoji</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Exploratory_data_analysis">Exploratory data analysis</a></li>
+<li><a href="https://en.wikipedia.org/wiki/False_positives_and_false_negatives">False negative</a></li>
+<li><a href="https://en.wikipedia.org/wiki/False_positives_and_false_negatives">False positive</a></li>
+<li><a href="https://en.wikipedia.org/wiki/F-score"><span class="has-mathjax">\(F\)-score</span>
+</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Harmonic_mean">Harmonic mean</a></li>
+<li><a href="https://en.wikipedia.org/wiki/HTML">HTML</a></li>
+<li><a href="https://en.wikipedia.org/wiki/HTTP">HTTP</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Information_retrieval">Information retrieval</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Tf%E2%80%93idf#Inverse_document_frequency">Inverse document frequency</a></li>
+<li><a href="https://en.wikipedia.org/wiki/K-nearest_neighbors_algorithm"><span class="has-mathjax">\(k\)-nearest</span>
+ neighbors algorithm</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Lemmatization">Lemmatization</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Letter_case">Lowercase</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Logistic_regression">Logistic regression</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Multiplicity_(mathematics)">Multiplicity</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Natural_language_processing">Natural language processing</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Neural_network">Neural network</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Natural_Language_Toolkit">NLTK</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Part_of_speech">Part of speech</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Precision_and_recall">Precision</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Punctuation">Punctuation</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Random_forest">Random forest</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Regular_expression">Regular expression</a></li>
+<li><a href="https://docs.python.org/3/library/re.html">Regular expression python module</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Precision_and_recall">Recall</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Ridge_regression">Ridge classifier</a></li>
+<li><a href="https://en.wikipedia.org/wiki/SciPy">SciPy</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Semantic_similarity">Semantic similarity</a></li>
+<li><a href="https://en.wikipedia.org/wiki/SpaCy">SpaCy</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Sparse_matrix">Sparse matrix</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Spelling">Spelling</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Stemming">Stemming</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Stochastic_gradient_descent">Stochastic gradient descent</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Stop_word">Stop word</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Support_vector_machine">Support vector machine</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Tf%E2%80%93idf#Term_frequency">Term frequency</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Training,_validation,_and_test_data_sets#Test_data_set">Test dataset</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Text_mining">Text mining</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Text_normalization">Text normalization</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Tf%E2%80%93idf">TF-IDF</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Training,_validation,_and_test_data_sets#Training_data_set">Training dataset</a></li>
+<li><a href="https://en.wikipedia.org/wiki/List_of_Unicode_characters">Unicode character</a></li>
+<li><a href="https://en.wikipedia.org/wiki/URL">URL</a></li>
+<li><a href="https://en.wikipedia.org/wiki/User_modeling">User modeling</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Euclidean_vector">Vector</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Whitespace_character">Whitespace character</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Word_embedding">Word embedding</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Word2vec">Word2Vec</a></li>
+<li><a href="https://en.wikipedia.org/wiki/XGBoost">XGBoost</a></li>
+</ul>
+<ul class="pa0">
+  
+</ul>
+<div class="mt6 instapaper_ignoref">
+      
+      
+      </div>
+    </div>
+
+    <aside class="w-30-l mt6-l">
+
+
+
+
+</aside>
+
+  </article>
+
+    </main>
+    <footer class="bg-black bottom-0 w-100 pa3" role="contentinfo">
+  <div class="flex justify-between">
+  <a class="f4 fw4 hover-white no-underline white-70 dn dib-ns pv2 ph3" href="https://sugatagh.github.io/dsml/" >
+    &copy;  Sugata Ghosh, PhD 2024 
+  </a>
+    <div>
+<div class="ananke-socials">
+  
+    
+    <a href="https://www.linkedin.com/in/sugataghosh/" target="_blank" rel="noopener" class="linkedin ananke-social-link link-transition stackoverflow link dib z-999 pt3 pt0-l mr1" title="LinkedIn link" aria-label="follow on LinkedIn——Opens in a new window">
+      
+        <span class="icon"><svg style="enable-background:new 0 0 65 65;" version="1.1" viewBox="0 0 65 65"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <path d="M50.837,48.137V36.425c0-6.275-3.35-9.195-7.816-9.195  c-3.604,0-5.219,1.983-6.119,3.374V27.71h-6.79c0.09,1.917,0,20.427,0,20.427h6.79V36.729c0-0.609,0.044-1.219,0.224-1.655  c0.49-1.22,1.607-2.483,3.482-2.483c2.458,0,3.44,1.873,3.44,4.618v10.929H50.837z M22.959,24.922c2.367,0,3.842-1.57,3.842-3.531  c-0.044-2.003-1.475-3.528-3.797-3.528s-3.841,1.524-3.841,3.528c0,1.961,1.474,3.531,3.753,3.531H22.959z M34,64  C17.432,64,4,50.568,4,34C4,17.431,17.432,4,34,4s30,13.431,30,30C64,50.568,50.568,64,34,64z M26.354,48.137V27.71h-6.789v20.427  H26.354z" style="fill-rule:evenodd;clip-rule:evenodd;"/>
+</svg>
+</span>
+      
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;"/>
+</svg>
+</span></a>
+  
+    
+    <a href="https://twitter.com/sugatagh" target="_blank" rel="noopener" class="twitter ananke-social-link link-transition stackoverflow link dib z-999 pt3 pt0-l mr1" title="Twitter link" aria-label="follow on Twitter——Opens in a new window">
+      
+        <span class="icon"><svg style="enable-background:new 0 0 67 67;" version="1.1" viewBox="0 0 67 67"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M37.167,22.283c-2.619,0.953-4.274,3.411-4.086,6.101  l0.063,1.038l-1.048-0.127c-3.813-0.487-7.145-2.139-9.974-4.915l-1.383-1.377l-0.356,1.017c-0.754,2.267-0.272,4.661,1.299,6.271  c0.838,0.89,0.649,1.017-0.796,0.487c-0.503-0.169-0.943-0.296-0.985-0.233c-0.146,0.149,0.356,2.076,0.754,2.839  c0.545,1.06,1.655,2.097,2.871,2.712l1.027,0.487l-1.215,0.021c-1.173,0-1.215,0.021-1.089,0.467  c0.419,1.377,2.074,2.839,3.918,3.475l1.299,0.444l-1.131,0.678c-1.676,0.976-3.646,1.526-5.616,1.568  C19.775,43.256,19,43.341,19,43.405c0,0.211,2.557,1.397,4.044,1.864c4.463,1.377,9.765,0.783,13.746-1.568  c2.829-1.673,5.657-5,6.978-8.221c0.713-1.716,1.425-4.851,1.425-6.354c0-0.975,0.063-1.102,1.236-2.267  c0.692-0.678,1.341-1.419,1.467-1.631c0.21-0.403,0.188-0.403-0.88-0.043c-1.781,0.636-2.033,0.551-1.152-0.402  c0.649-0.678,1.425-1.907,1.425-2.267c0-0.063-0.314,0.042-0.671,0.233c-0.377,0.212-1.215,0.53-1.844,0.72l-1.131,0.361l-1.027-0.7  c-0.566-0.381-1.361-0.805-1.781-0.932C39.766,21.902,38.131,21.944,37.167,22.283z M33,64C16.432,64,3,50.569,3,34S16.432,4,33,4  s30,13.431,30,30S49.568,64,33,64z" style="fill-rule:evenodd;clip-rule:evenodd;"/></svg>
+</span>
+      
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;"/>
+</svg>
+</span></a>
+  
+    
+    <a href="https://github.com/sugatagh" target="_blank" rel="noopener" class="github ananke-social-link link-transition stackoverflow link dib z-999 pt3 pt0-l mr1" title="GitHub link" aria-label="follow on GitHub——Opens in a new window">
+      
+        <span class="icon"><svg style="enable-background:new 0 0 512 512;" version="1.1" viewBox="0 0 512 512"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+  <path d="M256,32C132.3,32,32,134.8,32,261.7c0,101.5,64.2,187.5,153.2,217.9c11.2,2.1,15.3-5,15.3-11.1   c0-5.5-0.2-19.9-0.3-39.1c-62.3,13.9-75.5-30.8-75.5-30.8c-10.2-26.5-24.9-33.6-24.9-33.6c-20.3-14.3,1.5-14,1.5-14   c22.5,1.6,34.3,23.7,34.3,23.7c20,35.1,52.4,25,65.2,19.1c2-14.8,7.8-25,14.2-30.7c-49.7-5.8-102-25.5-102-113.5   c0-25.1,8.7-45.6,23-61.6c-2.3-5.8-10-29.2,2.2-60.8c0,0,18.8-6.2,61.6,23.5c17.9-5.1,37-7.6,56.1-7.7c19,0.1,38.2,2.6,56.1,7.7   c42.8-29.7,61.5-23.5,61.5-23.5c12.2,31.6,4.5,55,2.2,60.8c14.3,16.1,23,36.6,23,61.6c0,88.2-52.4,107.6-102.3,113.3   c8,7.1,15.2,21.1,15.2,42.5c0,30.7-0.3,55.5-0.3,63c0,6.1,4,13.3,15.4,11C415.9,449.1,480,363.1,480,261.7   C480,134.8,379.7,32,256,32z"/>
+</svg>
+</span>
+      
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;"/>
+</svg>
+</span></a>
+  
+    
+    <a href="https://www.kaggle.com/sugataghosh" target="_blank" rel="noopener" class="Kaggle ananke-social-link link-transition stackoverflow link dib z-999 pt3 pt0-l mr1" title="Kaggle link" aria-label="follow on Kaggle——Opens in a new window">
+      
+        Kaggle
+      
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;"/>
+</svg>
+</span></a>
+  
+</div>
+</div>
+  </div>
+</footer>
+
+  </body>
+</html>

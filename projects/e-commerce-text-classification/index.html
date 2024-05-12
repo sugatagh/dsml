@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    
+    <title>E-commerce Text Classification | Sugata Ghosh, PhD</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1">
+    <meta name="description" content="Multiclass Text Classification with TF-IDF and Word2Vec">
+    <meta name="generator" content="Hugo 0.121.2">
+    
+    
+    
+    
+      <meta name="robots" content="noindex, nofollow">
+    
+
+    
+<link rel="stylesheet" href="https://sugatagh.github.io/dsml/ananke/css/main.min.css" >
+
+
+
+    
+
+    
+      
+
+    
+
+    
+
+    
+      <link rel="canonical" href="https://sugatagh.github.io/dsml/projects/e-commerce-text-classification/">
+    
+
+    <meta property="og:title" content="E-commerce Text Classification" />
+<meta property="og:description" content="Multiclass Text Classification with TF-IDF and Word2Vec" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://sugatagh.github.io/dsml/projects/e-commerce-text-classification/" /><meta property="article:section" content="projects" />
+<meta property="article:published_time" content="2022-09-26T00:00:00+05:30" />
+<meta property="article:modified_time" content="2022-09-26T00:00:00+05:30" />
+
+<meta itemprop="name" content="E-commerce Text Classification">
+<meta itemprop="description" content="Multiclass Text Classification with TF-IDF and Word2Vec"><meta itemprop="datePublished" content="2022-09-26T00:00:00+05:30" />
+<meta itemprop="dateModified" content="2022-09-26T00:00:00+05:30" />
+<meta itemprop="wordCount" content="3413">
+<meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/><meta name="twitter:title" content="E-commerce Text Classification"/>
+<meta name="twitter:description" content="Multiclass Text Classification with TF-IDF and Word2Vec"/>
+
+	<style>
+.has-mathjax {
+    visibility: hidden;
+}
+</style>
+
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+<script>
+window.MathJax = {
+  startup: {
+    pageReady: () => {
+      return MathJax.startup.defaultPageReady().then(() => {
+        for (let element of document.getElementsByClassName("has-mathjax")) {
+            element.style.visibility = "visible"
+        }
+      });
+    }
+  }
+};
+</script>
+  </head>
+
+  <body class="ma0 avenir bg-near-white">
+
+    
+   
+  
+
+  
+  <header class="cover bg-top" style="background-image: url('https://sugatagh.github.io/dsml/images/bg-projects/bg-ectc-1.jpg');">
+    <div class="bg-black-60">
+      <nav class="pv3 ph3 ph4-ns" role="navigation">
+  <div class="flex-l justify-between items-center center">
+    <a href="https://sugatagh.github.io/dsml/" class="f3 fw2 hover-white no-underline white-90 dib">
+      
+        Sugata Ghosh, PhD
+      
+    </a>
+    <div class="flex-l items-center">
+      
+
+      
+        <ul class="pl0 mr3">
+          
+          <li class="list f5 f4-ns fw4 dib pr3">
+            <a class="hover-white no-underline white-90" href="https://sugatagh.github.io/dsml/about/" title="About page">
+              About
+            </a>
+          </li>
+          
+          <li class="list f5 f4-ns fw4 dib pr3">
+            <a class="hover-white no-underline white-90" href="https://sugatagh.github.io/dsml/overview/" title="Overview page">
+              Overview
+            </a>
+          </li>
+          
+          <li class="list f5 f4-ns fw4 dib pr3">
+            <a class="hover-white no-underline white-90" href="https://sugatagh.github.io/dsml/certifications/" title="Certifications page">
+              Certifications
+            </a>
+          </li>
+          
+          <li class="list f5 f4-ns fw4 dib pr3">
+            <a class="hover-white no-underline white-90" href="https://sugatagh.github.io/dsml/projects/" title="Projects page">
+              Projects
+            </a>
+          </li>
+          
+          <li class="list f5 f4-ns fw4 dib pr3">
+            <a class="hover-white no-underline white-90" href="https://sugatagh.github.io/dsml/notes/" title="Notes page">
+              Notes
+            </a>
+          </li>
+          
+          <li class="list f5 f4-ns fw4 dib pr3">
+            <a class="hover-white no-underline white-90" href="https://sugatagh.github.io/dsml/cv/" title="CV page">
+              CV
+            </a>
+          </li>
+          
+          <li class="list f5 f4-ns fw4 dib pr3">
+            <a class="hover-white no-underline white-90" href="https://sugatagh.github.io/dsml/contact/" title="Contact page">
+              Contact
+            </a>
+          </li>
+          
+        </ul>
+      
+      
+<div class="ananke-socials">
+  
+    
+    <a href="https://www.linkedin.com/in/sugataghosh/" target="_blank" rel="noopener" class="linkedin ananke-social-link link-transition stackoverflow link dib z-999 pt3 pt0-l mr1" title="LinkedIn link" aria-label="follow on LinkedIn——Opens in a new window">
+      
+        <span class="icon"><svg style="enable-background:new 0 0 65 65;" version="1.1" viewBox="0 0 65 65"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <path d="M50.837,48.137V36.425c0-6.275-3.35-9.195-7.816-9.195  c-3.604,0-5.219,1.983-6.119,3.374V27.71h-6.79c0.09,1.917,0,20.427,0,20.427h6.79V36.729c0-0.609,0.044-1.219,0.224-1.655  c0.49-1.22,1.607-2.483,3.482-2.483c2.458,0,3.44,1.873,3.44,4.618v10.929H50.837z M22.959,24.922c2.367,0,3.842-1.57,3.842-3.531  c-0.044-2.003-1.475-3.528-3.797-3.528s-3.841,1.524-3.841,3.528c0,1.961,1.474,3.531,3.753,3.531H22.959z M34,64  C17.432,64,4,50.568,4,34C4,17.431,17.432,4,34,4s30,13.431,30,30C64,50.568,50.568,64,34,64z M26.354,48.137V27.71h-6.789v20.427  H26.354z" style="fill-rule:evenodd;clip-rule:evenodd;"/>
+</svg>
+</span>
+      
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;"/>
+</svg>
+</span></a>
+  
+    
+    <a href="https://twitter.com/sugatagh" target="_blank" rel="noopener" class="twitter ananke-social-link link-transition stackoverflow link dib z-999 pt3 pt0-l mr1" title="Twitter link" aria-label="follow on Twitter——Opens in a new window">
+      
+        <span class="icon"><svg style="enable-background:new 0 0 67 67;" version="1.1" viewBox="0 0 67 67"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M37.167,22.283c-2.619,0.953-4.274,3.411-4.086,6.101  l0.063,1.038l-1.048-0.127c-3.813-0.487-7.145-2.139-9.974-4.915l-1.383-1.377l-0.356,1.017c-0.754,2.267-0.272,4.661,1.299,6.271  c0.838,0.89,0.649,1.017-0.796,0.487c-0.503-0.169-0.943-0.296-0.985-0.233c-0.146,0.149,0.356,2.076,0.754,2.839  c0.545,1.06,1.655,2.097,2.871,2.712l1.027,0.487l-1.215,0.021c-1.173,0-1.215,0.021-1.089,0.467  c0.419,1.377,2.074,2.839,3.918,3.475l1.299,0.444l-1.131,0.678c-1.676,0.976-3.646,1.526-5.616,1.568  C19.775,43.256,19,43.341,19,43.405c0,0.211,2.557,1.397,4.044,1.864c4.463,1.377,9.765,0.783,13.746-1.568  c2.829-1.673,5.657-5,6.978-8.221c0.713-1.716,1.425-4.851,1.425-6.354c0-0.975,0.063-1.102,1.236-2.267  c0.692-0.678,1.341-1.419,1.467-1.631c0.21-0.403,0.188-0.403-0.88-0.043c-1.781,0.636-2.033,0.551-1.152-0.402  c0.649-0.678,1.425-1.907,1.425-2.267c0-0.063-0.314,0.042-0.671,0.233c-0.377,0.212-1.215,0.53-1.844,0.72l-1.131,0.361l-1.027-0.7  c-0.566-0.381-1.361-0.805-1.781-0.932C39.766,21.902,38.131,21.944,37.167,22.283z M33,64C16.432,64,3,50.569,3,34S16.432,4,33,4  s30,13.431,30,30S49.568,64,33,64z" style="fill-rule:evenodd;clip-rule:evenodd;"/></svg>
+</span>
+      
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;"/>
+</svg>
+</span></a>
+  
+    
+    <a href="https://github.com/sugatagh" target="_blank" rel="noopener" class="github ananke-social-link link-transition stackoverflow link dib z-999 pt3 pt0-l mr1" title="GitHub link" aria-label="follow on GitHub——Opens in a new window">
+      
+        <span class="icon"><svg style="enable-background:new 0 0 512 512;" version="1.1" viewBox="0 0 512 512"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+  <path d="M256,32C132.3,32,32,134.8,32,261.7c0,101.5,64.2,187.5,153.2,217.9c11.2,2.1,15.3-5,15.3-11.1   c0-5.5-0.2-19.9-0.3-39.1c-62.3,13.9-75.5-30.8-75.5-30.8c-10.2-26.5-24.9-33.6-24.9-33.6c-20.3-14.3,1.5-14,1.5-14   c22.5,1.6,34.3,23.7,34.3,23.7c20,35.1,52.4,25,65.2,19.1c2-14.8,7.8-25,14.2-30.7c-49.7-5.8-102-25.5-102-113.5   c0-25.1,8.7-45.6,23-61.6c-2.3-5.8-10-29.2,2.2-60.8c0,0,18.8-6.2,61.6,23.5c17.9-5.1,37-7.6,56.1-7.7c19,0.1,38.2,2.6,56.1,7.7   c42.8-29.7,61.5-23.5,61.5-23.5c12.2,31.6,4.5,55,2.2,60.8c14.3,16.1,23,36.6,23,61.6c0,88.2-52.4,107.6-102.3,113.3   c8,7.1,15.2,21.1,15.2,42.5c0,30.7-0.3,55.5-0.3,63c0,6.1,4,13.3,15.4,11C415.9,449.1,480,363.1,480,261.7   C480,134.8,379.7,32,256,32z"/>
+</svg>
+</span>
+      
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;"/>
+</svg>
+</span></a>
+  
+    
+    <a href="https://www.kaggle.com/sugataghosh" target="_blank" rel="noopener" class="Kaggle ananke-social-link link-transition stackoverflow link dib z-999 pt3 pt0-l mr1" title="Kaggle link" aria-label="follow on Kaggle——Opens in a new window">
+      
+        Kaggle
+      
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;"/>
+</svg>
+</span></a>
+  
+</div>
+
+    </div>
+  </div>
+</nav>
+
+      <div class="tc-l pv6 ph3 ph4-ns">
+        
+          <div class="f2 f1-l fw2 white-90 mb0 lh-title">E-commerce Text Classification</div>
+          
+            <div class="fw1 f5 f3-l white-80 measure-wide-l center lh-copy mt3 mb4">
+              Multiclass Text Classification with TF-IDF and Word2Vec
+            </div>
+          
+        
+      </div>
+    </div>
+  </header>
+
+
+
+    <main class="pb7" role="main">
+      
+  
+  <article class="flex-l flex-wrap justify-between mw8 center ph3">
+    <header class="mt4 w-100">
+      <aside class="instapaper_ignoref b helvetica tracked ttu">
+          
+        Projects
+      </aside>
+      
+
+
+
+
+
+
+
+
+
+
+  <div id="sharing" class="mt3 ananke-socials">
+    
+      
+      <a href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https://sugatagh.github.io/dsml/projects/e-commerce-text-classification/&amp;title=E-commerce%20Text%20Classification" class="ananke-social-link linkedin no-underline" aria-label="share on LinkedIn">
+        
+        <span class="icon"> <svg style="enable-background:new 0 0 65 65;" version="1.1" viewBox="0 0 65 65"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <path d="M50.837,48.137V36.425c0-6.275-3.35-9.195-7.816-9.195  c-3.604,0-5.219,1.983-6.119,3.374V27.71h-6.79c0.09,1.917,0,20.427,0,20.427h6.79V36.729c0-0.609,0.044-1.219,0.224-1.655  c0.49-1.22,1.607-2.483,3.482-2.483c2.458,0,3.44,1.873,3.44,4.618v10.929H50.837z M22.959,24.922c2.367,0,3.842-1.57,3.842-3.531  c-0.044-2.003-1.475-3.528-3.797-3.528s-3.841,1.524-3.841,3.528c0,1.961,1.474,3.531,3.753,3.531H22.959z M34,64  C17.432,64,4,50.568,4,34C4,17.431,17.432,4,34,4s30,13.431,30,30C64,50.568,50.568,64,34,64z M26.354,48.137V27.71h-6.789v20.427  H26.354z" style="fill-rule:evenodd;clip-rule:evenodd;"/>
+</svg>
+</span>
+        
+      </a>
+    
+      
+      <a href="https://twitter.com/intent/tweet?url=https://sugatagh.github.io/dsml/projects/e-commerce-text-classification/&amp;text=E-commerce%20Text%20Classification" class="ananke-social-link twitter no-underline" aria-label="share on Twitter">
+        
+        <span class="icon"> <svg style="enable-background:new 0 0 67 67;" version="1.1" viewBox="0 0 67 67"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M37.167,22.283c-2.619,0.953-4.274,3.411-4.086,6.101  l0.063,1.038l-1.048-0.127c-3.813-0.487-7.145-2.139-9.974-4.915l-1.383-1.377l-0.356,1.017c-0.754,2.267-0.272,4.661,1.299,6.271  c0.838,0.89,0.649,1.017-0.796,0.487c-0.503-0.169-0.943-0.296-0.985-0.233c-0.146,0.149,0.356,2.076,0.754,2.839  c0.545,1.06,1.655,2.097,2.871,2.712l1.027,0.487l-1.215,0.021c-1.173,0-1.215,0.021-1.089,0.467  c0.419,1.377,2.074,2.839,3.918,3.475l1.299,0.444l-1.131,0.678c-1.676,0.976-3.646,1.526-5.616,1.568  C19.775,43.256,19,43.341,19,43.405c0,0.211,2.557,1.397,4.044,1.864c4.463,1.377,9.765,0.783,13.746-1.568  c2.829-1.673,5.657-5,6.978-8.221c0.713-1.716,1.425-4.851,1.425-6.354c0-0.975,0.063-1.102,1.236-2.267  c0.692-0.678,1.341-1.419,1.467-1.631c0.21-0.403,0.188-0.403-0.88-0.043c-1.781,0.636-2.033,0.551-1.152-0.402  c0.649-0.678,1.425-1.907,1.425-2.267c0-0.063-0.314,0.042-0.671,0.233c-0.377,0.212-1.215,0.53-1.844,0.72l-1.131,0.361l-1.027-0.7  c-0.566-0.381-1.361-0.805-1.781-0.932C39.766,21.902,38.131,21.944,37.167,22.283z M33,64C16.432,64,3,50.569,3,34S16.432,4,33,4  s30,13.431,30,30S49.568,64,33,64z" style="fill-rule:evenodd;clip-rule:evenodd;"/></svg>
+</span>
+        
+      </a>
+    
+  </div>
+
+
+      <h1 class="f1 athelas mt3 mb1">E-commerce Text Classification</h1>
+      
+      
+      
+      <time class="f6 mv4 dib tracked" datetime="2022-09-26T00:00:00+05:30">September 26, 2022</time>
+      
+
+      
+      
+    </header>
+    <div class="nested-copy-line-height lh-copy serif f4 nested-links mid-gray pr4-l w-two-thirds-l"><p>Product categorization is a type of economic taxonomy that refers to a system of categories into which a collection of products would fall. The problem considered in this project involves the categorization of products offered on e-commerce platforms based on the descriptions of the products mentioned therein. The categories are: <code>Electronics</code>, <code>Household</code>, <code>Books</code>, and <code>Clothing &amp; Accessories</code>. The purpose of such categorization is to enhance the user experience and achieve better results with external search engines.</p>
+<p><a href="https://github.com/sugatagh/E-commerce-Text-Classification">GitHub repository</a></p>
+<h3 id="-contents">○ Contents</h3>
+<ul>
+<li><a href="#-overview">Overview</a></li>
+<li><a href="#-introduction">Introduction</a></li>
+<li><a href="#-exploratory-data-analysis">Exploratory Data Analysis</a></li>
+<li><a href="#-train-validation-test-split">Train-Validation-Test Split</a></li>
+<li><a href="#-text-normalization">Text Normalization</a></li>
+<li><a href="#-tf-idf-model">TF-IDF Model</a></li>
+<li><a href="#-word2vec-model">Word2Vec Model</a></li>
+<li><a href="#-prediction-and-evaluation">Prediction and Evaluation</a></li>
+<li><a href="#-acknowledgements">Acknowledgements</a></li>
+<li><a href="#-references">References</a></li>
+</ul>
+<h3 id="-overview">○ Overview</h3>
+<p>The objective of the project is to classify <a href="https://en.wikipedia.org/wiki/E-commerce">e-commerce</a> products into four categories, based on its description available in the e-commerce platforms. The categories are:</p>
+<ul>
+<li><code>Electronics</code></li>
+<li><code>Household</code></li>
+<li><code>Books</code></li>
+<li><code>Clothing &amp; Accessories</code></li>
+</ul>
+<p>We carried out the following steps in this work:</p>
+<ul>
+<li>We perform <a href="https://en.wikipedia.org/wiki/Exploratory_data_analysis">exploratory data analysis</a> on the dataset.</li>
+<li>We consider a number of <a href="https://en.wikipedia.org/wiki/Text_normalization">text normalization</a> techniques for product descriptions.</li>
+<li>We use <a href="https://en.wikipedia.org/wiki/Tf%E2%80%93idf">TF-IDF</a> vectorizer on the normalized product descriptions for <em>text vectorization</em>, compared the baseline performance of several classifiers, and perform <a href="https://en.wikipedia.org/wiki/Hyperparameter_optimization">hyperparameter tuning</a> on the <a href="https://en.wikipedia.org/wiki/Support-vector_machine">support vector machine</a> classifier with <em>linear kernel</em>. The tuned model obtains a validation accuracy of <span class="has-mathjax">\(0.952158\).</span>
+</li>
+<li>In another direction, we employ a few selected <em>text normalization</em> processes on the raw data on product descriptions. Then, we use <a href="https://en.wikipedia.org/wiki/Google">Google</a>&rsquo;s pre-trained <a href="https://en.wikipedia.org/wiki/Word2vec">Word2Vec</a> model on the tokens, obtained from the partially normalized descriptions, to get the <a href="https://en.wikipedia.org/wiki/Word_embedding">embeddings</a>, which are converted to <a href="https://en.wikipedia.org/wiki/Sparse_matrix">compressed sparse row</a> (CSR) format. The baseline performance of several classifiers are compared. Finally, we perform hyperparameter tuning on the <a href="https://en.wikipedia.org/wiki/XGBoost">XGBoost</a> classifier. The tuned model obtains a validation accuracy of <span class="has-mathjax">\(0.948561\).</span>
+</li>
+<li>We employ the tuned model with the highest validation accuracy to predict the labels of the test observations and obtained a test accuracy of <span class="has-mathjax">\(0.948939\).</span>
+ We present the confusion matrix depicting the test set performance of the model.</li>
+</ul>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ectc/ectc-best-model-confusion-matrix.png"/>
+</figure>
+
+<h3 id="-introduction">○ Introduction</h3>
+<ul>
+<li><a href="#e-commerce-product-categorization">E-commerce Product Categorization</a></li>
+<li><a href="#text-classification">Text Classification</a></li>
+<li><a href="#data">Data</a></li>
+<li><a href="#project-objective">Project Objective</a></li>
+<li><a href="#evaluation-metric">Evaluation Metric</a></li>
+</ul>
+<h4 id="e-commerce-product-categorization">E-commerce Product Categorization</h4>
+<p>Product categorization or <a href="https://en.wikipedia.org/wiki/Product_classification">product classification</a> is a type of <a href="https://en.wikipedia.org/wiki/Economic_taxonomy">economic taxonomy</a> that refers to a system of categories into which a collection of products would fall under. Product categorization involves two separate tasks:</p>
+<ul>
+<li>Create, support, and expand the catalogue structure for the offered products.</li>
+<li>Tagging products with the correct categories and attributes.</li>
+</ul>
+<p>While machine learning does not have much potential for use in the first task, it is possible to automate the second task, which is relatively laborious and time-consuming.</p>
+<p>The problem considered in this project involves the categorization of products offered on e-commerce platforms based on the descriptions of the products mentioned therein.</p>
+<p>The purpose of such categorization is to enhance the user experience and achieve better results with external search engines. Visitors can quickly find the products they need by navigating the catalogue or using the website&rsquo;s search engine.</p>
+<h4 id="text-classification">Text Classification</h4>
+<p>Text classification is a widely used <a href="https://en.wikipedia.org/wiki/Natural_language_processing">natural language processing</a> task in different business problems. Given a statement or document, the task involves assigning to it an appropriate category from a pre-defined set of categories. The dataset of choice determines the set of categories. Text classification has applications in emotion classification, news classification, spam email detection, auto-tagging of customer queries etc.</p>
+<p>In the present problem, the statements are the product descriptions and the categories are <code>Electronics</code>, <code>Household</code>, <code>Books</code>, and <code>Clothing &amp; Accessories</code>.</p>
+<h4 id="data">Data</h4>
+<p><em>Original source</em>: <a href="https://doi.org/10.5281/zenodo.3355823">https://doi.org/10.5281/zenodo.3355823</a></p>
+<p><em>Kaggle dataset</em>: <a href="https://www.kaggle.com/datasets/saurabhshahane/ecommerce-text-classification">https://www.kaggle.com/datasets/saurabhshahane/ecommerce-text-classification</a></p>
+<p>The dataset has been scraped from Indian e-commerce platform(s). It contains e-commerce text data for four categories: <code>Electronics</code>, <code>Household</code>, <code>Books</code>, and <code>Clothing &amp; Accessories</code>. These four categories cover <span class="has-mathjax">\(80\%\)</span>
+ of any e-commerce website, by and large.</p>
+<p>The dataset is in <em>.csv</em> format and consists of two columns. The first column gives the target class name and the second column gives the description of the product from the e-commerce website. We insert column names and swap the columns, to put the target column at the right.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ectc/ectc-data.png"/>
+</figure>
+
+<p>An example description is given as follows.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ectc/ectc-description-example.png"/>
+</figure>
+
+<p>We observe:</p>
+<ul>
+<li>Total number of observations: <span class="has-mathjax">\(50425\)</span>
+</li>
+<li>Number of observations with missing values: <span class="has-mathjax">\(1\)</span>
+</li>
+<li>Number of duplicate observations: <span class="has-mathjax">\(22622\)</span>
+</li>
+</ul>
+<p>We drop the single observation with missing values and drop the duplicate observations.</p>
+<p>The labels are manually encoded with the following scheme:</p>
+<div class="has-mathjax">
+
+\begin{align*}
+&\text{Electronics} \mapsto 0\\
+&\text{Household} \mapsto 1\\
+&\text{Books} \mapsto 2\\
+&\text{Clothing & Accessories} \mapsto 3
+\end{align*}
+
+</div>
+
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ectc/ectc-data-manual-encoding.png"/>
+</figure>
+
+<h4 id="project-objective">Project Objective</h4>
+<p>The objective of the project is to classify a product into the four categories <code>Electronics</code>, <code>Household</code>, <code>Books</code> and <code>Clothing &amp; Accessories</code>, based on its description available in the e-commerce platform.</p>
+<h4 id="evaluation-metric">Evaluation Metric</h4>
+<p>Any prediction about a binary categorical target variable falls into one of the four categories:</p>
+<ul>
+<li><em>True Positive</em> <span class="has-mathjax">\(\mapsto\)</span>
+ The classification model correctly predicts the output to be positive</li>
+<li><em>True Negative</em> <span class="has-mathjax">\(\mapsto\)</span>
+ The classification model correctly predicts the output to be negative</li>
+<li><em>False Positive</em> <span class="has-mathjax">\(\mapsto\)</span>
+ The classification model incorrectly predicts the output to be positive</li>
+<li><em>False Negative</em> <span class="has-mathjax">\(\mapsto\)</span>
+ The classification model incorrectly predicts the output to be negative</li>
+</ul>
+<p>Let <strong>TP</strong>, <strong>TN</strong>, <strong>FP</strong> and <strong>FN</strong> respectively denote the number of <em>true positives</em>, <em>true negatives</em>, <em>false positives</em>, and <em>false negatives</em> among the predictions made by a particular classification model.</p>
+<p>In this work, we use the <a href="https://en.wikipedia.org/wiki/Accuracy_and_precision#In_binary_classification">accuracy</a> metric to evaluate the models. It is the proportion of correct predictions, given by</p>
+<div class="has-mathjax">
+
+\[ \text{Accuracy} = \frac{\text{Number of correct predictions}}{\text{Number of total predictions}} = \frac{\text{TP} + \text{TN}}{\text{TP} + \text{TN} + \text{FP} + \text{FN}}. \]
+
+</div>
+
+<h3 id="-exploratory-data-analysis">○ Exploratory Data Analysis</h3>
+<ul>
+<li><a href="#class-frequencies">Class Frequencies</a></li>
+<li><a href="#number-of-characters">Number of Characters</a></li>
+<li><a href="#number-of-words">Number of Words</a></li>
+<li><a href="#average-word-length">Average Word-length</a></li>
+</ul>
+<h4 id="class-frequencies">Class Frequencies</h4>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ectc/ectc-eda-class-frequencies.png"/>
+</figure>
+
+<h4 id="number-of-characters">Number of Characters</h4>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ectc/ectc-eda-number-of-characters.png"/>
+</figure>
+
+<h4 id="number-of-words">Number of Words</h4>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ectc/ectc-eda-number-of-words.png"/>
+</figure>
+
+<h4 id="average-word-length">Average Word-length</h4>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ectc/ectc-eda-average-word-length.png"/>
+</figure>
+
+<h3 id="-train-validation-test-split">○ Train-Validation-Test Split</h3>
+<p>We split the data in <span class="has-mathjax">\(80 : 10 : 10\)</span>
+ ratio. Specifically, we construct the training set with <span class="has-mathjax">\(80\%\)</span>
+ observations. The rest of the observations are split into equal halves to form the validation set and the test set.</p>
+<p>The sizes of the training set, the validation set, and the test set are compared visually.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ectc/ectc-train-validation-test-split-K.png"/>
+</figure>
+
+<h3 id="-text-normalization">○ Text Normalization</h3>
+<ul>
+<li><a href="#conversion-to-lowercase">Conversion to Lowercase</a></li>
+<li><a href="#removal-of-whitespaces">Removal of Whitespaces</a></li>
+<li><a href="#removal-of-punctuations">Removal of Punctuations</a></li>
+<li><a href="#removal-of-unicode-characters">Removal of Unicode Characters</a></li>
+<li><a href="#substitution-of-acronyms">Substitution of Acronyms</a></li>
+<li><a href="#substitution-of-contractions">Substitution of Contractions</a></li>
+<li><a href="#removal-of-stop-words">Removal of Stop Words</a></li>
+<li><a href="#spelling-correction">Spelling Correction</a></li>
+<li><a href="#stemming-and-lemmatization">Stemming and Lemmatization</a></li>
+<li><a href="#discardment-of-non-alphabetic-words">Discardment of Non-alphabetic Words</a></li>
+<li><a href="#retention-of-relevant-parts-of-speech">Retention of Relevant Parts of Speech</a></li>
+<li><a href="#integration-of-the-processes">Integration of the Processes</a></li>
+<li><a href="#implementation-on-product-description">Implementation on Product Description</a></li>
+</ul>
+<p>Text normalization is the process of transforming text into a single <a href="https://en.wikipedia.org/wiki/Canonical_form">canonical form</a> that it might not have had before. We consider the following text normalization processes.</p>
+<h4 id="conversion-to-lowercase">Conversion to Lowercase</h4>
+<p>We convert all alphabetical characters of the tweets to lowercase so that the models do not differentiate identical words due to case-sensitivity. For example, without the normalization, <em>Sun</em> and <em>sun</em> would have been treated as two different words, which is not useful in the present context.</p>
+<pre tabindex="0"><code>def convert_to_lowercase(text):
+    return text.lower()
+</code></pre><h4 id="removal-of-whitespaces">Removal of Whitespaces</h4>
+<p>We remove the unnecessary empty spaces from the tweets.</p>
+<pre tabindex="0"><code>def remove_whitespace(text):
+    return text.strip()
+</code></pre><h4 id="removal-of-punctuations">Removal of Punctuations</h4>
+<p>Mostly the punctuations do not play any role in predicting whether a particular tweet indicate disaster or not. Thus we prevent them from contaminating the classification procedures by removing them from the tweets. However, we keep <em>apostrophe</em> since most of the <a href="https://en.wikipedia.org/wiki/Contraction_(grammar)">contractions</a> contain this punctuation and will be automatically taken care of once we convert the contractions.</p>
+<pre tabindex="0"><code>def remove_punctuation(text):
+    punct_str = string.punctuation
+    punct_str = punct_str.replace(&#34;&#39;&#34;, &#34;&#34;) # discarding apostrophe from the string to keep the contractions intact
+    return text.translate(str.maketrans(&#34;&#34;, &#34;&#34;, punct_str))
+</code></pre><h4 id="removal-of-unicode-characters">Removal of Unicode Characters</h4>
+<p>The training tweets are typically sprinkled with emojis, URLs, and other symbols that do not contribute meaningfully to our analysis, but instead create noise in the learning procedure. Some of these symbols are unique, while the rest usually translate into unicode strings. We remove these irrelevant characters from the data.</p>
+<p>First, we remove the HTML tags.</p>
+<pre tabindex="0"><code>def remove_html(text):
+    html = re.compile(r&#39;&lt;.*?&gt;&#39;)
+    return html.sub(r&#39;&#39;, text)
+</code></pre><p>Next, we remove the emojis.</p>
+<pre tabindex="0"><code>def remove_emoji(text):
+    emoji_pattern = re.compile(
+        &#34;[&#34;
+        u&#34;\U0001F600-\U0001F64F&#34;  # emoticons
+        u&#34;\U0001F300-\U0001F5FF&#34;  # symbols &amp; pictographs
+        u&#34;\U0001F680-\U0001F6FF&#34;  # transport &amp; map symbols
+        u&#34;\U0001F1E0-\U0001F1FF&#34;  # flags (iOS)
+        u&#34;\U00002702-\U000027B0&#34;
+        u&#34;\U000024C2-\U0001F251&#34;
+        &#34;]+&#34;, flags=re.UNICODE
+    )
+    return emoji_pattern.sub(r&#39;&#39;, text)
+</code></pre><p>We also remove URLs starting with http.</p>
+<pre tabindex="0"><code>def remove_http(text):
+    http = &#34;https?://\S+|www\.\S+&#34; # matching strings beginning with http (but not just &#34;http&#34;)
+    pattern = r&#34;({})&#34;.format(http) # creating pattern
+    return re.sub(pattern, &#34;&#34;, text)
+</code></pre><h4 id="substitution-of-acronyms">Substitution of Acronyms</h4>
+<p>Acronyms are shortened forms of phrases, generally found in informal writings such as personal messages. Examples:</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ectc/ectc-list-of-acronyms.png"/>
+</figure>
+
+<p>These time and effort-saving acronyms have received almost universal acceptance in social media platforms including twitter. For the sake of proper modeling, we convert the acronyms, appearing in the tweets, back to their respective original forms. For this purpose, we have compiled an extensive list of English acronyms, which can be found in the file:</p>
+<p><a href="https://github.com/sugatagh/Natural-Language-Processing-with-Disaster-Tweets/blob/main/english_acronyms_lowercase.json"><em>english_acronyms_lowercase.json</em></a></p>
+<p>Note that the file only considers acronyms in lowercase, i.e. it assumes that the textual data have already been transformed to lowercase before substituting the acronyms. For example, the process will convert <em>fyi</em> to <em>for your information</em> but will leave <em>Fyi</em> unchanged.</p>
+<pre tabindex="0"><code>acronyms_url = &#39;https://raw.githubusercontent.com/sugatagh/E-commerce-Text-Classification/main/JSON/english_acronyms.json&#39;
+acronyms_dict = pd.read_json(acronyms_url, typ = &#39;series&#39;)
+acronyms_list = list(acronyms_dict.keys())
+</code></pre><p>The following function converts the acronyms, included in the <em>.json</em> file, appearing in any given input text.</p>
+<pre tabindex="0"><code>def convert_acronyms(text):
+    words = []
+    for word in regexp.tokenize(text):
+        if word in acronyms_list:
+            words = words + acronyms_dict[word].split()
+        else:
+            words = words + word.split()
+    text_converted = &#34; &#34;.join(words)
+    return text_converted
+</code></pre><h4 id="substitution-of-contractions">Substitution of Contractions</h4>
+<p>A contraction is a shortened form of a word or a phrase, obtained by dropping one or more letters. Examples:</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ectc/ectc-list-of-contractions.png"/>
+</figure>
+
+<p>These are commonly used in everyday speech, written dialogue, informal writing and in situations where space is limited or costly, such as advertisements. Usually the missing letters are indicated by an apostrophe, but there are exceptions. We have compiled an extensive list of English contractions, which can be found here:</p>
+<p><a href="https://github.com/sugatagh/Natural-Language-Processing-with-Disaster-Tweets/blob/main/english_contractions_lowercase.json"><em>english_contractions_lowercase.json</em></a></p>
+<p>Note that the file only considers contractions in lowercase, i.e. it assumes that the textual data have already been transformed to lowercase before substituting the contractions. For example, the process will convert <em>i&rsquo;ll</em> to <em>i shall</em> but will leave <em>I&rsquo;ll</em> unchanged.</p>
+<pre tabindex="0"><code>contractions_url = &#39;https://raw.githubusercontent.com/sugatagh/E-commerce-Text-Classification/main/JSON/english_contractions.json&#39;
+contractions_dict = pd.read_json(contractions_url, typ = &#39;series&#39;)
+contractions_list = list(contractions_dict.keys())
+</code></pre><p>The following function converts the contractions, included in the <em>.json</em> file, appearing in any given input text.</p>
+<pre tabindex="0"><code>def convert_contractions(text):
+    words = []
+    for word in regexp.tokenize(text):
+        if word in contractions_list:
+            words = words + contractions_dict[word].split()
+        else:
+            words = words + word.split()
+    text_converted = &#34; &#34;.join(words)
+    return text_converted
+</code></pre><h4 id="removal-of-stop-words">Removal of Stop Words</h4>
+<p>Several words, primarily pronouns, prepositions, modal verbs etc., are identified not to have much effect on the classification procedure. To get rid of the unwanted contamination effect, we remove these words. For this purpose, we use the <code>stopwords</code> module from NLTK. Some of these words are shown below.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ectc/ectc-list-of-stop-words.png"/>
+</figure>
+
+<pre tabindex="0"><code>stops = stopwords.words(&#34;english&#34;) # stopwords
+addstops = [&#34;among&#34;, &#34;onto&#34;, &#34;shall&#34;, &#34;thrice&#34;, &#34;thus&#34;, &#34;twice&#34;, &#34;unto&#34;, &#34;us&#34;, &#34;would&#34;] # additional stopwords
+allstops = stops + addstops
+def remove_stopwords(text):
+    return &#34; &#34;.join([word for word in regexp.tokenize(text) if word not in allstops])
+</code></pre><h4 id="spelling-correction">Spelling Correction</h4>
+<p>The classification process cannot take misspellings into consideration and treats a word and its misspelt version as separate words. For this reason it is necessary to conduct spelling correction before feeding the data to the classification procedure. We use the <code>pyspellchecker</code> package for this purpose.</p>
+<p>The next function corrects the misspelt words in a given input text.</p>
+<pre tabindex="0"><code>spell = SpellChecker()
+def pyspellchecker(text):
+    word_list = regexp.tokenize(text)
+    word_list_corrected = []
+    for word in word_list:
+        if word in spell.unknown(word_list):
+            word_corrected = spell.correction(word)
+            if word_corrected == None:
+                word_list_corrected.append(word)
+            else:
+                word_list_corrected.append(word_corrected)
+        else:
+            word_list_corrected.append(word)
+    text_corrected = &#34; &#34;.join(word_list_corrected)
+    return text_corrected
+</code></pre><h4 id="stemming-and-lemmatization">Stemming and Lemmatization</h4>
+<p><strong>Stemming</strong> is the process of reducing the words to their root form or stem. It reduces related words to the same stem even if the stem is not a dictionary word. For example, the words <em>introducing</em>, <em>introduced</em>, <em>introduction</em> reduce to a common word <em>introduce</em>. However, the process often produces stems that are not actual words. The sentence <em>Introducing lemmatization as an improvement over stemming</em> becomes <em>introduc lemmat as an improv over stem</em> upon applying the stemming procedure. The stems <em>introduc</em>, <em>lemmat</em> and <em>improv</em> are not actual words. Here we use the <em>Porter stemming algorithm</em>.</p>
+<p>The function to implement stemming is as follows.</p>
+<pre tabindex="0"><code>stemmer = PorterStemmer()
+def text_stemmer(text):
+    text_stem = &#34; &#34;.join([stemmer.stem(word) for word in regexp.tokenize(text)])
+    return text_stem
+</code></pre><p><strong>Lemmatization</strong> offers a more sophisticated approach by utilizing a <a href="https://en.wikipedia.org/wiki/Text_corpus">corpus</a> to match root forms of the words. Unlike stemming, it uses the context in which a word is being used. Upon applying lemmatization, the same sentence becomes <em>introduce lemmatization as an improvement over stem</em>. Here we use the <a href="https://en.wikipedia.org/wiki/SpaCy">spaCy</a> lemmatizer.</p>
+<p>We implement lemmatization through the following function.</p>
+<pre tabindex="0"><code>spacy_lemmatizer = spacy.load(&#34;en_core_web_sm&#34;, disable = [&#39;parser&#39;, &#39;ner&#39;])
+def text_lemmatizer(text):
+    text_spacy = &#34; &#34;.join([token.lemma_ for token in spacy_lemmatizer(text)])
+    return text_spacy
+</code></pre><h4 id="discardment-of-non-alphabetic-words">Discardment of Non-alphabetic Words</h4>
+<p>The non-alphabetic words are not numerous and create unnecessary diversions in the context of classifying tweets into non-disaster and disaster categories. Hence we discard these words.</p>
+<pre tabindex="0"><code>def discard_non_alpha(text):
+    word_list_non_alpha = [word for word in regexp.tokenize(text) if word.isalpha()]
+    text_non_alpha = &#34; &#34;.join(word_list_non_alpha)
+    return text_non_alpha
+</code></pre><h4 id="retention-of-relevant-parts-of-speech">Retention of Relevant Parts of Speech</h4>
+<p>The parts of speech provide a great tool to select a subset of words that are more likely to contribute in the classification procedure and discard the rest to avoid noise. The idea is to select a number of parts of speech that are important to the context of the problem. Then we partition the words in a given text into several subsets corresponding to each part of speech and keep only those subsets corresponding to the selected parts of speech. An alphabetical list of part-of-speech tags used in the Penn Treebank Project is given <a href="https://www.ling.upenn.edu/courses/Fall_2003/ling001/penn_treebank_pos.html">here</a>.</p>
+<pre tabindex="0"><code>def keep_pos(text):
+    tokens = regexp.tokenize(text)
+    tokens_tagged = nltk.pos_tag(tokens)
+    keep_tags = [&#39;NN&#39;, &#39;NNS&#39;, &#39;NNP&#39;, &#39;NNPS&#39;, &#39;FW&#39;, &#39;PRP&#39;, &#39;PRPS&#39;, &#39;RB&#39;, &#39;RBR&#39;, &#39;RBS&#39;, &#39;VB&#39;, &#39;VBD&#39;, &#39;VBG&#39;, &#39;VBN&#39;, &#39;VBP&#39;, &#39;VBZ&#39;, &#39;WDT&#39;, &#39;WP&#39;, &#39;WPS&#39;, &#39;WRB&#39;]
+    keep_words = [x[0] for x in tokens_tagged if x[1] in keep_tags]
+    return &#34; &#34;.join(keep_words)
+</code></pre><h4 id="integration-of-the-processes">Integration of the Processes</h4>
+<p>We integrate the text normalization processes in appropriate order into one single function. Note that the spelling correction step takes a massive amount of time to run on large datasets and hence may be commented out for a quick implementation.</p>
+<pre tabindex="0"><code>def text_normalizer(text):
+    text = convert_to_lowercase(text)
+    text = remove_whitespace(text)
+    text = re.sub(&#39;\n&#39; , &#39;&#39;, text) # converting text to one line
+    text = re.sub(&#39;\[.*?\]&#39;, &#39;&#39;, text) # removing square brackets
+    text = remove_http(text)
+    text = remove_punctuation(text)
+    text = remove_html(text)
+    text = remove_emoji(text)
+    text = convert_acronyms(text)
+    text = convert_contractions(text)
+    text = remove_stopwords(text)
+    text = pyspellchecker(text)
+    text = text_lemmatizer(text) # text = text_stemmer(text)
+    text = discard_non_alpha(text)
+    text = keep_pos(text)
+    text = remove_additional_stopwords(text)
+    return text
+</code></pre><h4 id="implementation-on-product-description">Implementation on Product Description</h4>
+<p>We perform text normalization on the <code>description</code> column of the training set, the validation set, and the test set. The normalized description and label of the training observations are shown below:</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ectc/ectc-text-normalization-training-set.png"/>
+</figure>
+
+<h3 id="-tf-idf-model">○ TF-IDF Model</h3>
+<ul>
+<li><a href="#text-vectorization">Text Vectorization</a></li>
+<li><a href="#tf-idf-baseline-modeling">TF-IDF Baseline Modeling</a></li>
+<li><a href="#tf-idf-hyperparameter-tuning">TF-IDF Hyperparameter Tuning</a></li>
+</ul>
+<p>In the context of <a href="https://en.wikipedia.org/wiki/Information_retrieval">information retrieval</a>, <strong>TF-IDF</strong> (short for <em>term frequency-inverse document frequency</em>), is a numerical statistic that is intended to reflect how important a word is to a document in a collection or corpus. It is often used as a weighting factor in searches of information retrieval, <a href="https://en.wikipedia.org/wiki/Text_mining">text mining</a>, and <a href="https://en.wikipedia.org/wiki/User_modeling">user modeling</a>.</p>
+<p>The <strong>TF-IDF</strong> value increases proportionally to the number of times a word appears in the document and is offset by the number of documents in the corpus that contain the word, which helps to adjust for the fact that some words appear more frequently in general.</p>
+<p>Thus, the measure objectively evaluates how relevant a word is to a text in a collection of texts, taking into consideration that some words appear more frequently in general. For more details, check <a href="https://sugatagh.github.io/dsml/notes/term-frequency-inverse-document-frequency-tf-idf">this note</a>.</p>
+<h4 id="text-vectorization">Text Vectorization</h4>
+<p>In order to perform machine learning on text data, we must transform the documents into vector representations. In natural language processing, <em>text vectorization</em>  is the process of converting words, sentences, or even larger units of text data to numerical vectors.</p>
+<p>We begin by separating the feature variable and the target variable in the training set, the validation set, and the test set.</p>
+<p>Next, we use the <code>TfidfVectorizer</code> class to convert the lists of normalized texts to matrices of token counts. We create an instance of this class by setting the <code>ngram_range</code> parameter, with the default choice being <span class="has-mathjax">\((1, 1).\)</span>
+</p>
+<pre tabindex="0"><code>TfidfVec = TfidfVectorizer(ngram_range = (1, 1))
+</code></pre><p><strong>Note:</strong> The parameter gives the lower and upper boundary of the range of <span class="has-mathjax">\(n\)-values</span>
+ corresponding to different word <span class="has-mathjax">\(n\)-grams</span>
+ to be extracted, i.e. all values of <span class="has-mathjax">\(n\)</span>
+ such that <span class="has-mathjax">\(\text{min}_n \leq n \leq \text{max}_n\)</span>
+ will be used. For example, an <code>ngram_range</code> of <span class="has-mathjax">\((1, 1)\)</span>
+ means only words, <span class="has-mathjax">\((1, 2)\)</span>
+ means words and bigrams, and <span class="has-mathjax">\((2, 2)\)</span>
+ means only bigrams.</p>
+<p>Next, we vectorize the lists of normalized product descriptions in the training set, the validation set, and the test set.</p>
+<pre tabindex="0"><code>X_train_tfidf = TfidfVec.fit_transform(X_train_norm)
+X_val_tfidf = TfidfVec.transform(X_val_norm)
+X_test_tfidf = TfidfVec.transform(X_test_norm)
+</code></pre><h4 id="tf-idf-baseline-modeling">TF-IDF Baseline Modeling</h4>
+<p>We give a summary of the baseline models considered.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ectc/ectc-tf-idf-baseline-modeling-summary.png"/>
+</figure>
+
+<h4 id="tf-idf-hyperparameter-tuning">TF-IDF Hyperparameter Tuning</h4>
+<p>We perform <em>hyperparameter tuning</em> on the best performing baseline model, which is <em>support vector machine</em> classifier with <em>linear kernel</em>. We set the parameter grid used for tuning the hyperparameters.</p>
+<pre tabindex="0"><code>params_svm = {
+    &#39;kernel&#39;: [&#39;linear&#39;],
+    &#39;C&#39;: [0.1, 1, 10, 100]
+}
+</code></pre><p>Next, we perform the tuning operation and report the summary of each gridpoint.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ectc/ectc-tf-idf-ht-gridpoints.png"/>
+</figure>
+
+<p>The best model is given below.</p>
+<pre tabindex="0"><code>best_model_tfidf = SVC(C = 1, kernel = &#39;linear&#39;)
+</code></pre><p>It obtains a validation accuracy of <span class="has-mathjax">\(0.952158\).</span>
+</p>
+<h3 id="-word2vec-model">○ Word2Vec Model</h3>
+<ul>
+<li><a href="#partial-text-normalization">Partial Text Normalization</a></li>
+<li><a href="#word-embedding">Word Embedding</a></li>
+<li><a href="#word2vec-baseline-modeling">Word2Vec Baseline Modeling</a></li>
+<li><a href="#word2vec-hyperparameter-tuning">Word2Vec Hyperparameter Tuning</a></li>
+</ul>
+<p>In the context of natural language processing, <em>word embeddings</em> are used for representing a word in terms of a real-valued vector that encodes the meaning of the word such that the words that are close in the vector space are expected to be similar in meaning. It can capture the context of a word in a document, as well as identify semantic and syntactic similarity and other contextual relations with other words in the document.</p>
+<p><strong>Word2Vec</strong> is a specific word-embedding technique that uses a neural network model to learn word associations from a reasonably large corpus of text. After training, the model can detect similar words and recommend words to complete a partial sentence. As its name suggests, word2vec maps each distinct word to a vector, which is assigned in such a way that the level of semantic similarity between words is indicated by a simple mathematical operation on the vectors that the words are mapped to (for instance, the cosine similarity between the vectors).</p>
+<h4 id="partial-text-normalization">Partial Text Normalization</h4>
+<p>Standard text normalization processes like <em>stemming</em>, <em>lemmatization</em>, or <em>removal of stop words</em> are not recommended when we have pre-trained embeddings.</p>
+<p>The reason behind this is that valuable information, which could be used by the neural network, is lost by those preprocessing steps.</p>
+<p>Here we shall implement a few selected text normalization processes only, before we feed the tokenized words to the pre-trained model to get the embeddings. We give a snapshot of the training set after implementing partial text normalization and tokenization.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ectc/ectc-text-normalization-training-set-word2vec.png"/>
+</figure>
+
+<h4 id="word-embedding">Word Embedding</h4>
+<p>We load the pretrained <em>word2vec</em> model and use it to embed the processed descriptions in the training set, the validation set, and the test set. The embedded observations in the training set, color-coded by their respective <code>label</code>, are visualized below.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ectc/ectc-word2vec-embedding.png"/>
+</figure>
+
+<p>We convert the embeddings to compressed sparse row matrix before feeding them to the algorithms.</p>
+<h4 id="word2vec-baseline-modeling">Word2Vec Baseline Modeling</h4>
+<p>We give a summary of baseline models.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ectc/ectc-word2vec-baseline-modeling-summary.png"/>
+</figure>
+
+<h4 id="word2vec-hyperparameter-tuning">Word2Vec Hyperparameter Tuning</h4>
+<p>We perform <em>hyperparameter tuning</em> on the best performing baseline model, which is the <em>XGBoost</em> classifier. We set the parameter grid used for tuning the hyperparameters.</p>
+<pre tabindex="0"><code>params_xgb = {
+    &#39;learning_rate&#39;: [0.03, 0.3],
+    &#39;min_child_weight&#39;: [0, 10],
+    &#39;n_estimators&#39;: [200],
+    &#39;reg_lambda&#39;: [1, 2],
+    &#39;seed&#39;: [40]
+}
+</code></pre><p>Next, we perform the tuning operation and report the summary of each gridpoint.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ectc/ectc-word2vec-ht-gridpoints.png"/>
+</figure>
+
+<p>The best model is given below.</p>
+<pre tabindex="0"><code>best_model_w2v = XGBClassifier(
+    learning_rate = 0.3,
+    min_child_weight = 0,
+    n_estimators = 200,
+    reg_lambda = 1,
+    seed = 40
+)
+</code></pre><p>It obtains a validation accuracy of <span class="has-mathjax">\(0.948561\).</span>
+</p>
+<h3 id="-prediction-and-evaluation">○ Prediction and Evaluation</h3>
+<p>We choose the best model (in terms of validation accuracy) between the tuned models from <strong>TF-IDF</strong> and <strong>Word2Vec</strong> approaches.</p>
+<p>We fit the chosen model on the training set and use it to predict on the test set. It obtains a test accuracy of <span class="has-mathjax">\(0.948939\).</span>
+</p>
+<p>The confusion matrix depicting the performance of the best model on the test set is given below.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/ectc/ectc-best-model-confusion-matrix.png"/>
+</figure>
+
+<h3 id="-acknowledgements">○ Acknowledgements</h3>
+<ul>
+<li><a href="https://www.ling.upenn.edu/courses/Fall_2003/ling001/penn_treebank_pos.html">Alphabetical list of part-of-speech tags used in the Penn Treebank Project</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Wikipedia:List_of_English_contractions">List of English contractions</a></li>
+<li><a href="https://www.kaggle.com/code/prashant111/a-guide-on-xgboost-hyperparameters-tuning">A Guide on XGBoost hyperparameters tuning</a> by <a href="https://www.kaggle.com/prashant111">Prashant Banerjee</a></li>
+<li><a href="https://www.kaggle.com/datasets/saurabhshahane/ecommerce-text-classification">Ecommerce Text Classification</a> dataset</li>
+<li><a href="https://doi.org/10.5281/zenodo.3355823">Gautam. (2019). E commerce text dataset (version - 2) [Data set]. <em>Zenodo</em>.</a></li>
+<li><a href="https://virtocommerce.com/blog/ecommerce-product-categorization">Machine Learning in eCommerce Product Categorization</a> by Nikolay Sidelnikov</li>
+</ul>
+<h3 id="-references">○ References</h3>
+<ul>
+<li><a href="https://en.wikipedia.org/wiki/Accuracy_and_precision#In_binary_classification">Accuracy</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Canonical_form">Canonical form</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Contraction_(grammar)">Contractions</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Text_corpus">Corpus</a></li>
+<li><a href="https://en.wikipedia.org/wiki/E-commerce">E-commerce</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Economic_taxonomy">Economic taxonomy</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Exploratory_data_analysis">Exploratory data analysis</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Google">Google</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Hyperparameter_optimization">Hyperparameter tuning</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Information_retrieval">Information retrieval</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Tf%E2%80%93idf#Inverse_document_frequency">Inverse document frequency</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Natural_language_processing">Natural language processing</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Product_classification">Product classification</a></li>
+<li><a href="https://en.wikipedia.org/wiki/SpaCy">SpaCy lemmatizer</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Sparse_matrix">Sparse matrix</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Support-vector_machine">Support vector machine</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Tf%E2%80%93idf#Term_frequency">Term frequency</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Text_mining">Text mining</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Text_normalization">Text normalization</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Tf%E2%80%93idf">TF-IDF</a></li>
+<li><a href="https://en.wikipedia.org/wiki/User_modeling">User modeling</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Word_embedding">Word embedding</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Word2vec">Word2Vec</a></li>
+<li><a href="https://en.wikipedia.org/wiki/XGBoost">XGBoost</a></li>
+</ul>
+<ul class="pa0">
+  
+</ul>
+<div class="mt6 instapaper_ignoref">
+      
+      
+      </div>
+    </div>
+
+    <aside class="w-30-l mt6-l">
+
+
+
+
+</aside>
+
+  </article>
+
+    </main>
+    <footer class="bg-black bottom-0 w-100 pa3" role="contentinfo">
+  <div class="flex justify-between">
+  <a class="f4 fw4 hover-white no-underline white-70 dn dib-ns pv2 ph3" href="https://sugatagh.github.io/dsml/" >
+    &copy;  Sugata Ghosh, PhD 2024 
+  </a>
+    <div>
+<div class="ananke-socials">
+  
+    
+    <a href="https://www.linkedin.com/in/sugataghosh/" target="_blank" rel="noopener" class="linkedin ananke-social-link link-transition stackoverflow link dib z-999 pt3 pt0-l mr1" title="LinkedIn link" aria-label="follow on LinkedIn——Opens in a new window">
+      
+        <span class="icon"><svg style="enable-background:new 0 0 65 65;" version="1.1" viewBox="0 0 65 65"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <path d="M50.837,48.137V36.425c0-6.275-3.35-9.195-7.816-9.195  c-3.604,0-5.219,1.983-6.119,3.374V27.71h-6.79c0.09,1.917,0,20.427,0,20.427h6.79V36.729c0-0.609,0.044-1.219,0.224-1.655  c0.49-1.22,1.607-2.483,3.482-2.483c2.458,0,3.44,1.873,3.44,4.618v10.929H50.837z M22.959,24.922c2.367,0,3.842-1.57,3.842-3.531  c-0.044-2.003-1.475-3.528-3.797-3.528s-3.841,1.524-3.841,3.528c0,1.961,1.474,3.531,3.753,3.531H22.959z M34,64  C17.432,64,4,50.568,4,34C4,17.431,17.432,4,34,4s30,13.431,30,30C64,50.568,50.568,64,34,64z M26.354,48.137V27.71h-6.789v20.427  H26.354z" style="fill-rule:evenodd;clip-rule:evenodd;"/>
+</svg>
+</span>
+      
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;"/>
+</svg>
+</span></a>
+  
+    
+    <a href="https://twitter.com/sugatagh" target="_blank" rel="noopener" class="twitter ananke-social-link link-transition stackoverflow link dib z-999 pt3 pt0-l mr1" title="Twitter link" aria-label="follow on Twitter——Opens in a new window">
+      
+        <span class="icon"><svg style="enable-background:new 0 0 67 67;" version="1.1" viewBox="0 0 67 67"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M37.167,22.283c-2.619,0.953-4.274,3.411-4.086,6.101  l0.063,1.038l-1.048-0.127c-3.813-0.487-7.145-2.139-9.974-4.915l-1.383-1.377l-0.356,1.017c-0.754,2.267-0.272,4.661,1.299,6.271  c0.838,0.89,0.649,1.017-0.796,0.487c-0.503-0.169-0.943-0.296-0.985-0.233c-0.146,0.149,0.356,2.076,0.754,2.839  c0.545,1.06,1.655,2.097,2.871,2.712l1.027,0.487l-1.215,0.021c-1.173,0-1.215,0.021-1.089,0.467  c0.419,1.377,2.074,2.839,3.918,3.475l1.299,0.444l-1.131,0.678c-1.676,0.976-3.646,1.526-5.616,1.568  C19.775,43.256,19,43.341,19,43.405c0,0.211,2.557,1.397,4.044,1.864c4.463,1.377,9.765,0.783,13.746-1.568  c2.829-1.673,5.657-5,6.978-8.221c0.713-1.716,1.425-4.851,1.425-6.354c0-0.975,0.063-1.102,1.236-2.267  c0.692-0.678,1.341-1.419,1.467-1.631c0.21-0.403,0.188-0.403-0.88-0.043c-1.781,0.636-2.033,0.551-1.152-0.402  c0.649-0.678,1.425-1.907,1.425-2.267c0-0.063-0.314,0.042-0.671,0.233c-0.377,0.212-1.215,0.53-1.844,0.72l-1.131,0.361l-1.027-0.7  c-0.566-0.381-1.361-0.805-1.781-0.932C39.766,21.902,38.131,21.944,37.167,22.283z M33,64C16.432,64,3,50.569,3,34S16.432,4,33,4  s30,13.431,30,30S49.568,64,33,64z" style="fill-rule:evenodd;clip-rule:evenodd;"/></svg>
+</span>
+      
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;"/>
+</svg>
+</span></a>
+  
+    
+    <a href="https://github.com/sugatagh" target="_blank" rel="noopener" class="github ananke-social-link link-transition stackoverflow link dib z-999 pt3 pt0-l mr1" title="GitHub link" aria-label="follow on GitHub——Opens in a new window">
+      
+        <span class="icon"><svg style="enable-background:new 0 0 512 512;" version="1.1" viewBox="0 0 512 512"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+  <path d="M256,32C132.3,32,32,134.8,32,261.7c0,101.5,64.2,187.5,153.2,217.9c11.2,2.1,15.3-5,15.3-11.1   c0-5.5-0.2-19.9-0.3-39.1c-62.3,13.9-75.5-30.8-75.5-30.8c-10.2-26.5-24.9-33.6-24.9-33.6c-20.3-14.3,1.5-14,1.5-14   c22.5,1.6,34.3,23.7,34.3,23.7c20,35.1,52.4,25,65.2,19.1c2-14.8,7.8-25,14.2-30.7c-49.7-5.8-102-25.5-102-113.5   c0-25.1,8.7-45.6,23-61.6c-2.3-5.8-10-29.2,2.2-60.8c0,0,18.8-6.2,61.6,23.5c17.9-5.1,37-7.6,56.1-7.7c19,0.1,38.2,2.6,56.1,7.7   c42.8-29.7,61.5-23.5,61.5-23.5c12.2,31.6,4.5,55,2.2,60.8c14.3,16.1,23,36.6,23,61.6c0,88.2-52.4,107.6-102.3,113.3   c8,7.1,15.2,21.1,15.2,42.5c0,30.7-0.3,55.5-0.3,63c0,6.1,4,13.3,15.4,11C415.9,449.1,480,363.1,480,261.7   C480,134.8,379.7,32,256,32z"/>
+</svg>
+</span>
+      
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;"/>
+</svg>
+</span></a>
+  
+    
+    <a href="https://www.kaggle.com/sugataghosh" target="_blank" rel="noopener" class="Kaggle ananke-social-link link-transition stackoverflow link dib z-999 pt3 pt0-l mr1" title="Kaggle link" aria-label="follow on Kaggle——Opens in a new window">
+      
+        Kaggle
+      
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;"/>
+</svg>
+</span></a>
+  
+</div>
+</div>
+  </div>
+</footer>
+
+  </body>
+</html>

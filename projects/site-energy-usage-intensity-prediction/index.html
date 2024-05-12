@@ -1,0 +1,1042 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    
+    <title>Site Energy Usage Intensity Prediction | Sugata Ghosh, PhD</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1">
+    <meta name="description" content="Regression with Random Forest, XGBoost, and CatBoost">
+    <meta name="generator" content="Hugo 0.121.2">
+    
+    
+    
+    
+      <meta name="robots" content="noindex, nofollow">
+    
+
+    
+<link rel="stylesheet" href="https://sugatagh.github.io/dsml/ananke/css/main.min.css" >
+
+
+
+    
+
+    
+      
+
+    
+
+    
+
+    
+      <link rel="canonical" href="https://sugatagh.github.io/dsml/projects/site-energy-usage-intensity-prediction/">
+    
+
+    <meta property="og:title" content="Site Energy Usage Intensity Prediction" />
+<meta property="og:description" content="Regression with Random Forest, XGBoost, and CatBoost" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://sugatagh.github.io/dsml/projects/site-energy-usage-intensity-prediction/" /><meta property="article:section" content="projects" />
+<meta property="article:published_time" content="2022-04-08T00:00:00+05:30" />
+<meta property="article:modified_time" content="2022-04-08T00:00:00+05:30" />
+
+<meta itemprop="name" content="Site Energy Usage Intensity Prediction">
+<meta itemprop="description" content="Regression with Random Forest, XGBoost, and CatBoost"><meta itemprop="datePublished" content="2022-04-08T00:00:00+05:30" />
+<meta itemprop="dateModified" content="2022-04-08T00:00:00+05:30" />
+<meta itemprop="wordCount" content="4260">
+<meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/><meta name="twitter:title" content="Site Energy Usage Intensity Prediction"/>
+<meta name="twitter:description" content="Regression with Random Forest, XGBoost, and CatBoost"/>
+
+	<style>
+.has-mathjax {
+    visibility: hidden;
+}
+</style>
+
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+<script>
+window.MathJax = {
+  startup: {
+    pageReady: () => {
+      return MathJax.startup.defaultPageReady().then(() => {
+        for (let element of document.getElementsByClassName("has-mathjax")) {
+            element.style.visibility = "visible"
+        }
+      });
+    }
+  }
+};
+</script>
+  </head>
+
+  <body class="ma0 avenir bg-near-white">
+
+    
+   
+  
+
+  
+  <header class="cover bg-top" style="background-image: url('https://sugatagh.github.io/dsml/images/bg-projects/bg-seui-7.jpg');">
+    <div class="bg-black-60">
+      <nav class="pv3 ph3 ph4-ns" role="navigation">
+  <div class="flex-l justify-between items-center center">
+    <a href="https://sugatagh.github.io/dsml/" class="f3 fw2 hover-white no-underline white-90 dib">
+      
+        Sugata Ghosh, PhD
+      
+    </a>
+    <div class="flex-l items-center">
+      
+
+      
+        <ul class="pl0 mr3">
+          
+          <li class="list f5 f4-ns fw4 dib pr3">
+            <a class="hover-white no-underline white-90" href="https://sugatagh.github.io/dsml/about/" title="About page">
+              About
+            </a>
+          </li>
+          
+          <li class="list f5 f4-ns fw4 dib pr3">
+            <a class="hover-white no-underline white-90" href="https://sugatagh.github.io/dsml/overview/" title="Overview page">
+              Overview
+            </a>
+          </li>
+          
+          <li class="list f5 f4-ns fw4 dib pr3">
+            <a class="hover-white no-underline white-90" href="https://sugatagh.github.io/dsml/certifications/" title="Certifications page">
+              Certifications
+            </a>
+          </li>
+          
+          <li class="list f5 f4-ns fw4 dib pr3">
+            <a class="hover-white no-underline white-90" href="https://sugatagh.github.io/dsml/projects/" title="Projects page">
+              Projects
+            </a>
+          </li>
+          
+          <li class="list f5 f4-ns fw4 dib pr3">
+            <a class="hover-white no-underline white-90" href="https://sugatagh.github.io/dsml/notes/" title="Notes page">
+              Notes
+            </a>
+          </li>
+          
+          <li class="list f5 f4-ns fw4 dib pr3">
+            <a class="hover-white no-underline white-90" href="https://sugatagh.github.io/dsml/cv/" title="CV page">
+              CV
+            </a>
+          </li>
+          
+          <li class="list f5 f4-ns fw4 dib pr3">
+            <a class="hover-white no-underline white-90" href="https://sugatagh.github.io/dsml/contact/" title="Contact page">
+              Contact
+            </a>
+          </li>
+          
+        </ul>
+      
+      
+<div class="ananke-socials">
+  
+    
+    <a href="https://www.linkedin.com/in/sugataghosh/" target="_blank" rel="noopener" class="linkedin ananke-social-link link-transition stackoverflow link dib z-999 pt3 pt0-l mr1" title="LinkedIn link" aria-label="follow on LinkedIn——Opens in a new window">
+      
+        <span class="icon"><svg style="enable-background:new 0 0 65 65;" version="1.1" viewBox="0 0 65 65"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <path d="M50.837,48.137V36.425c0-6.275-3.35-9.195-7.816-9.195  c-3.604,0-5.219,1.983-6.119,3.374V27.71h-6.79c0.09,1.917,0,20.427,0,20.427h6.79V36.729c0-0.609,0.044-1.219,0.224-1.655  c0.49-1.22,1.607-2.483,3.482-2.483c2.458,0,3.44,1.873,3.44,4.618v10.929H50.837z M22.959,24.922c2.367,0,3.842-1.57,3.842-3.531  c-0.044-2.003-1.475-3.528-3.797-3.528s-3.841,1.524-3.841,3.528c0,1.961,1.474,3.531,3.753,3.531H22.959z M34,64  C17.432,64,4,50.568,4,34C4,17.431,17.432,4,34,4s30,13.431,30,30C64,50.568,50.568,64,34,64z M26.354,48.137V27.71h-6.789v20.427  H26.354z" style="fill-rule:evenodd;clip-rule:evenodd;"/>
+</svg>
+</span>
+      
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;"/>
+</svg>
+</span></a>
+  
+    
+    <a href="https://twitter.com/sugatagh" target="_blank" rel="noopener" class="twitter ananke-social-link link-transition stackoverflow link dib z-999 pt3 pt0-l mr1" title="Twitter link" aria-label="follow on Twitter——Opens in a new window">
+      
+        <span class="icon"><svg style="enable-background:new 0 0 67 67;" version="1.1" viewBox="0 0 67 67"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M37.167,22.283c-2.619,0.953-4.274,3.411-4.086,6.101  l0.063,1.038l-1.048-0.127c-3.813-0.487-7.145-2.139-9.974-4.915l-1.383-1.377l-0.356,1.017c-0.754,2.267-0.272,4.661,1.299,6.271  c0.838,0.89,0.649,1.017-0.796,0.487c-0.503-0.169-0.943-0.296-0.985-0.233c-0.146,0.149,0.356,2.076,0.754,2.839  c0.545,1.06,1.655,2.097,2.871,2.712l1.027,0.487l-1.215,0.021c-1.173,0-1.215,0.021-1.089,0.467  c0.419,1.377,2.074,2.839,3.918,3.475l1.299,0.444l-1.131,0.678c-1.676,0.976-3.646,1.526-5.616,1.568  C19.775,43.256,19,43.341,19,43.405c0,0.211,2.557,1.397,4.044,1.864c4.463,1.377,9.765,0.783,13.746-1.568  c2.829-1.673,5.657-5,6.978-8.221c0.713-1.716,1.425-4.851,1.425-6.354c0-0.975,0.063-1.102,1.236-2.267  c0.692-0.678,1.341-1.419,1.467-1.631c0.21-0.403,0.188-0.403-0.88-0.043c-1.781,0.636-2.033,0.551-1.152-0.402  c0.649-0.678,1.425-1.907,1.425-2.267c0-0.063-0.314,0.042-0.671,0.233c-0.377,0.212-1.215,0.53-1.844,0.72l-1.131,0.361l-1.027-0.7  c-0.566-0.381-1.361-0.805-1.781-0.932C39.766,21.902,38.131,21.944,37.167,22.283z M33,64C16.432,64,3,50.569,3,34S16.432,4,33,4  s30,13.431,30,30S49.568,64,33,64z" style="fill-rule:evenodd;clip-rule:evenodd;"/></svg>
+</span>
+      
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;"/>
+</svg>
+</span></a>
+  
+    
+    <a href="https://github.com/sugatagh" target="_blank" rel="noopener" class="github ananke-social-link link-transition stackoverflow link dib z-999 pt3 pt0-l mr1" title="GitHub link" aria-label="follow on GitHub——Opens in a new window">
+      
+        <span class="icon"><svg style="enable-background:new 0 0 512 512;" version="1.1" viewBox="0 0 512 512"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+  <path d="M256,32C132.3,32,32,134.8,32,261.7c0,101.5,64.2,187.5,153.2,217.9c11.2,2.1,15.3-5,15.3-11.1   c0-5.5-0.2-19.9-0.3-39.1c-62.3,13.9-75.5-30.8-75.5-30.8c-10.2-26.5-24.9-33.6-24.9-33.6c-20.3-14.3,1.5-14,1.5-14   c22.5,1.6,34.3,23.7,34.3,23.7c20,35.1,52.4,25,65.2,19.1c2-14.8,7.8-25,14.2-30.7c-49.7-5.8-102-25.5-102-113.5   c0-25.1,8.7-45.6,23-61.6c-2.3-5.8-10-29.2,2.2-60.8c0,0,18.8-6.2,61.6,23.5c17.9-5.1,37-7.6,56.1-7.7c19,0.1,38.2,2.6,56.1,7.7   c42.8-29.7,61.5-23.5,61.5-23.5c12.2,31.6,4.5,55,2.2,60.8c14.3,16.1,23,36.6,23,61.6c0,88.2-52.4,107.6-102.3,113.3   c8,7.1,15.2,21.1,15.2,42.5c0,30.7-0.3,55.5-0.3,63c0,6.1,4,13.3,15.4,11C415.9,449.1,480,363.1,480,261.7   C480,134.8,379.7,32,256,32z"/>
+</svg>
+</span>
+      
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;"/>
+</svg>
+</span></a>
+  
+    
+    <a href="https://www.kaggle.com/sugataghosh" target="_blank" rel="noopener" class="Kaggle ananke-social-link link-transition stackoverflow link dib z-999 pt3 pt0-l mr1" title="Kaggle link" aria-label="follow on Kaggle——Opens in a new window">
+      
+        Kaggle
+      
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;"/>
+</svg>
+</span></a>
+  
+</div>
+
+    </div>
+  </div>
+</nav>
+
+      <div class="tc-l pv6 ph3 ph4-ns">
+        
+          <div class="f2 f1-l fw2 white-90 mb0 lh-title">Site Energy Usage Intensity Prediction</div>
+          
+            <div class="fw1 f5 f3-l white-80 measure-wide-l center lh-copy mt3 mb4">
+              Regression with Random Forest, XGBoost, and CatBoost
+            </div>
+          
+        
+      </div>
+    </div>
+  </header>
+
+
+
+    <main class="pb7" role="main">
+      
+  
+  <article class="flex-l flex-wrap justify-between mw8 center ph3">
+    <header class="mt4 w-100">
+      <aside class="instapaper_ignoref b helvetica tracked ttu">
+          
+        Projects
+      </aside>
+      
+
+
+
+
+
+
+
+
+
+
+  <div id="sharing" class="mt3 ananke-socials">
+    
+      
+      <a href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https://sugatagh.github.io/dsml/projects/site-energy-usage-intensity-prediction/&amp;title=Site%20Energy%20Usage%20Intensity%20Prediction" class="ananke-social-link linkedin no-underline" aria-label="share on LinkedIn">
+        
+        <span class="icon"> <svg style="enable-background:new 0 0 65 65;" version="1.1" viewBox="0 0 65 65"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <path d="M50.837,48.137V36.425c0-6.275-3.35-9.195-7.816-9.195  c-3.604,0-5.219,1.983-6.119,3.374V27.71h-6.79c0.09,1.917,0,20.427,0,20.427h6.79V36.729c0-0.609,0.044-1.219,0.224-1.655  c0.49-1.22,1.607-2.483,3.482-2.483c2.458,0,3.44,1.873,3.44,4.618v10.929H50.837z M22.959,24.922c2.367,0,3.842-1.57,3.842-3.531  c-0.044-2.003-1.475-3.528-3.797-3.528s-3.841,1.524-3.841,3.528c0,1.961,1.474,3.531,3.753,3.531H22.959z M34,64  C17.432,64,4,50.568,4,34C4,17.431,17.432,4,34,4s30,13.431,30,30C64,50.568,50.568,64,34,64z M26.354,48.137V27.71h-6.789v20.427  H26.354z" style="fill-rule:evenodd;clip-rule:evenodd;"/>
+</svg>
+</span>
+        
+      </a>
+    
+      
+      <a href="https://twitter.com/intent/tweet?url=https://sugatagh.github.io/dsml/projects/site-energy-usage-intensity-prediction/&amp;text=Site%20Energy%20Usage%20Intensity%20Prediction" class="ananke-social-link twitter no-underline" aria-label="share on Twitter">
+        
+        <span class="icon"> <svg style="enable-background:new 0 0 67 67;" version="1.1" viewBox="0 0 67 67"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M37.167,22.283c-2.619,0.953-4.274,3.411-4.086,6.101  l0.063,1.038l-1.048-0.127c-3.813-0.487-7.145-2.139-9.974-4.915l-1.383-1.377l-0.356,1.017c-0.754,2.267-0.272,4.661,1.299,6.271  c0.838,0.89,0.649,1.017-0.796,0.487c-0.503-0.169-0.943-0.296-0.985-0.233c-0.146,0.149,0.356,2.076,0.754,2.839  c0.545,1.06,1.655,2.097,2.871,2.712l1.027,0.487l-1.215,0.021c-1.173,0-1.215,0.021-1.089,0.467  c0.419,1.377,2.074,2.839,3.918,3.475l1.299,0.444l-1.131,0.678c-1.676,0.976-3.646,1.526-5.616,1.568  C19.775,43.256,19,43.341,19,43.405c0,0.211,2.557,1.397,4.044,1.864c4.463,1.377,9.765,0.783,13.746-1.568  c2.829-1.673,5.657-5,6.978-8.221c0.713-1.716,1.425-4.851,1.425-6.354c0-0.975,0.063-1.102,1.236-2.267  c0.692-0.678,1.341-1.419,1.467-1.631c0.21-0.403,0.188-0.403-0.88-0.043c-1.781,0.636-2.033,0.551-1.152-0.402  c0.649-0.678,1.425-1.907,1.425-2.267c0-0.063-0.314,0.042-0.671,0.233c-0.377,0.212-1.215,0.53-1.844,0.72l-1.131,0.361l-1.027-0.7  c-0.566-0.381-1.361-0.805-1.781-0.932C39.766,21.902,38.131,21.944,37.167,22.283z M33,64C16.432,64,3,50.569,3,34S16.432,4,33,4  s30,13.431,30,30S49.568,64,33,64z" style="fill-rule:evenodd;clip-rule:evenodd;"/></svg>
+</span>
+        
+      </a>
+    
+  </div>
+
+
+      <h1 class="f1 athelas mt3 mb1">Site Energy Usage Intensity Prediction</h1>
+      
+      
+      
+      <time class="f6 mv4 dib tracked" datetime="2022-04-08T00:00:00+05:30">April 8, 2022</time>
+      
+
+      
+      
+    </header>
+    <div class="nested-copy-line-height lh-copy serif f4 nested-links mid-gray pr4-l w-two-thirds-l"><p>Energy usage intensity (EUI) refers to the amount of energy used per square foot annually. It is calculated by dividing the total energy consumed by the building in a year by the total gross floor area. Like miles per gallon for cars, EUI is the prime indicator of the energy performance of a building. In this project, we aim to predict the continuous target variable <em>site EUI</em>, given the characteristics of the building and the weather data for its location.</p>
+<p><a href="https://github.com/sugatagh/Site-Energy-Usage-Intensity-Prediction">GitHub repository</a></p>
+<h3 id="-contents">○ Contents</h3>
+<ul>
+<li><a href="#-overview">Overview</a></li>
+<li><a href="#-introduction">Introduction</a></li>
+<li><a href="#-exploratory-data-analysis">Exploratory Data Analysis</a></li>
+<li><a href="#-data-preprocessing">Data Preprocessing</a></li>
+<li><a href="#-feature-engineering">Feature Engineering</a></li>
+<li><a href="#-baseline-modeling">Baseline Modeling</a></li>
+<li><a href="#-hyperparameter-tuning">Hyperparameter Tuning</a></li>
+<li><a href="#-prediction-and-evaluation">Prediction and Evaluation</a></li>
+<li><a href="#-acknowledgements">Acknowledgements</a></li>
+<li><a href="#-references">References</a></li>
+</ul>
+<h3 id="-overview">○ Overview</h3>
+<ul>
+<li><a href="https://en.wikipedia.org/wiki/Efficient_energy_use#Building_design">Energy usage intensity</a> (EUI) refers to the amount of energy used per square foot annually. It is calculated by dividing the total energy consumed by the building in a year by the total gross floor area. Like miles per gallon for cars, EUI is the prime indicator of the energy performance of a building.</li>
+<li>The EUI of a site or a building may depend on
+<ul>
+<li><em>building characteristics</em>: floor area, facility type etc.</li>
+<li><em>weather data for the location of the building</em>: annual average temperature, annual total precipitation etc.</li>
+</ul>
+</li>
+<li>In this project, we aim to predict the <a href="https://en.wikipedia.org/wiki/Continuous_or_discrete_variable#Continuous_variable">continuous variable</a> site EUI, given the characteristics of the building and the weather data for the location of the building.</li>
+<li>A detailed <a href="https://en.wikipedia.org/wiki/Exploratory_data_analysis">exploratory data analysis</a> on the dataset is carried out.</li>
+<li>The observations obtained from EDA are used in the <a href="https://en.wikipedia.org/wiki/Data_Preprocessing">data preprocessing</a> stages (consisting of <a href="https://en.wikipedia.org/wiki/Missing_data">missing data</a> <a href="https://en.wikipedia.org/wiki/Imputation_(statistics)">imputation</a> and <a href="https://en.wikipedia.org/wiki/Categorical_variable#Categorical_variables_and_regression">categorical data encoding</a>) and <a href="https://en.wikipedia.org/wiki/Feature_engineering">feature engineering</a> stages (consisting of <a href="https://en.wikipedia.org/wiki/Feature_engineering">feature extraction</a>, <a href="https://en.wikipedia.org/wiki/Data_transformation_(statistics)">data transformation</a>, and binarization).</li>
+<li>We employ the <a href="https://en.wikipedia.org/wiki/Random_forest">random forest</a>, <a href="https://en.wikipedia.org/wiki/XGBoost">XGBoost</a>, and <a href="https://en.wikipedia.org/wiki/CatBoost">CatBoost</a> regressors to predict site EUI.</li>
+<li>We apply <a href="https://en.wikipedia.org/wiki/Hyperparameter_optimization">hyperparameter tuning</a> to the random forest algorithm, which appears to perform best among the baseline candidates.</li>
+<li>We employ the <a href="https://en.wikipedia.org/wiki/Root-mean-square_deviation">root mean square error</a> (RMSE), <a href="https://en.wikipedia.org/wiki/Mean_absolute_error">mean absolute error</a> (MAE), and <a href="https://en.wikipedia.org/wiki/Coefficient_of_determination">coefficient of determination</a> <span class="has-mathjax">(\(R^2\))</span>
+ metrics to evaluate the models. Performance summary of the final model:</li>
+</ul>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/seui/seui-ht-optuna-rf-K.png"/>
+</figure>
+
+<h3 id="-introduction">○ Introduction</h3>
+<ul>
+<li><a href="#data">Data</a></li>
+<li><a href="#project-objective">Project Objective</a></li>
+<li><a href="#evaluation-metric">Evaluation Metric</a></li>
+</ul>
+<h4 id="data">Data</h4>
+<p><a href="https://www.kaggle.com/c/widsdatathon2022/data">The dataset</a> contains roughly <span class="has-mathjax">\(100\)</span>
+ thousand observations of building energy usage records collected over <span class="has-mathjax">\(7\)</span>
+ years, in several states within the United States. It consists of building characteristics (e.g. floor area, facility type etc.), weather data for the corresponding location of the building (e.g. annual average temperature, annual total precipitation etc.) as well as the energy usage for the building in the given year, measured as Site Energy Usage Intensity (Site EUI). Each row in the data corresponds to a single building observed in a given year.</p>
+<p>A snapshot of the <a href="https://en.wikipedia.org/wiki/Training,_validation,_and_test_data_sets#Training_data_set">training set</a>:</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/seui/seui-data-train-K.png"/>
+</figure>
+
+<p>A snapshot of the <a href="https://en.wikipedia.org/wiki/Training,_validation,_and_test_data_sets#Test_data_set">test set</a>:</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/seui/seui-data-test-K.png"/>
+</figure>
+
+<h4 id="project-objective">Project Objective</h4>
+<p>The objective of the project is to predict energy usage intensity of a building in a given year, based on building characteristics as well as weather data for the location of the building.</p>
+<h4 id="evaluation-metric">Evaluation Metric</h4>
+<p>The true values of the target variable, which is the Site EUI, is provided in the test dataset. We use the trained models to predict this variable for each row of the test dataset and evaluate the models in terms of the root mean square error. Apart from this metric, we also report mean absolute error (MAE) and coefficient of determination <span class="has-mathjax">(\(R^2\))</span>
+ for model evaluation.</p>
+<h3 id="-exploratory-data-analysis">○ Exploratory Data Analysis</h3>
+<ul>
+<li><a href="#understanding-features">Understanding Features</a></li>
+<li><a href="#dataset-synopsis">Dataset Synopsis</a></li>
+<li><a href="#univariate-analysis">Univariate Analysis</a></li>
+<li><a href="#multivariate-analysis">Multivariate Analysis</a></li>
+</ul>
+<h4 id="understanding-features">Understanding Features</h4>
+<ul>
+<li><em>year_factor</em>: anonymized year in which the weather and energy usage factors were observed</li>
+<li><em>state_factor</em>: anonymized state in which the building is located</li>
+<li><em>building_class</em>: building classification</li>
+<li><em>facility_type</em>: building usage type</li>
+<li><em>floor_area</em>: floor area (in square feet) of the building</li>
+<li><em>year_built</em>: year in which the building was constructed</li>
+<li><em>energy_star_rating</em>: the energy star rating of the building</li>
+<li><em>elevation</em>: elevation of the building location</li>
+<li><em>january_min_temp</em>: minimum temperature in January (in Fahrenheit) at the location of the building</li>
+<li><em>january_avg_temp</em>: average temperature in January (in Fahrenheit) at the location of the building</li>
+<li><em>january_max_temp</em>: maximum temperature in January (in Fahrenheit) at the location of the building</li>
+</ul>
+<p>(Similarly for all other months)</p>
+<ul>
+<li><em>cooling_degree_days</em>: cooling degree day for a given day is the number of degrees where the daily average temperature exceeds 65 degrees Fahrenheit. Each month is summed to produce an annual total at the location of the building.</li>
+<li><em>heating_degree_days</em>: heating degree day for a given day is the number of degrees where the daily average temperature   falls under 65 degrees Fahrenheit. Each month is summed to produce an annual total at the location of the building.</li>
+<li><em>precipitation_inches</em>: annual precipitation in inches at the location of the building</li>
+<li><em>snowfall_inches</em>: annual snowfall in inches at the location of the building</li>
+<li><em>snowdepth_inches</em>: annual snow depth in inches at the location of the building</li>
+<li><em>avg_temp</em>: average temperature over a year at the location of the building</li>
+<li><em>days_below_30F</em>: total number of days below <span class="has-mathjax">\(30\)</span>
+ degrees Fahrenheit at the location of the building</li>
+<li><em>days_below_20F</em>: total number of days below <span class="has-mathjax">\(20\)</span>
+ degrees Fahrenheit at the location of the building</li>
+<li><em>days_below_10F</em>: total number of days below <span class="has-mathjax">\(10\)</span>
+ degrees Fahrenheit at the location of the building</li>
+<li><em>days_below_0F</em>: total number of days below <span class="has-mathjax">\(0\)</span>
+ degrees Fahrenheit at the location of the building</li>
+<li><em>days_above_80F</em>: total number of days above <span class="has-mathjax">\(80\)</span>
+ degrees Fahrenheit at the location of the building</li>
+<li><em>days_above_90F</em>: total number of days above <span class="has-mathjax">\(90\)</span>
+ degrees Fahrenheit at the location of the building</li>
+<li><em>days_above_100F</em>: total number of days above <span class="has-mathjax">\(100\)</span>
+ degrees Fahrenheit at the location of the building</li>
+<li><em>days_above_110F</em>: total number of days above <span class="has-mathjax">\(110\)</span>
+ degrees Fahrenheit at the location of the building</li>
+<li><em>direction_max_wind_speed</em>: wind direction for maximum wind speed at the location of the building. Given in <span class="has-mathjax">\(360\)-degree</span>
+ compass point directions (e.g. <span class="has-mathjax">\(360\)</span>
+ = north, <span class="has-mathjax">\(180\)</span>
+ = south, etc.).</li>
+<li><em>direction_peak_wind_speed</em>: wind direction for peak wind gust speed at the location of the building. Given in 360-degree compass point directions (e.g. <span class="has-mathjax">\(360\)</span>
+ = north, <span class="has-mathjax">\(180\)</span>
+ = south, etc.).</li>
+<li><em>max_wind_speed</em>: maximum wind speed at the location of the building</li>
+<li><em>days_with_fog</em>: number of days with fog at the location of the building</li>
+<li><em>building_id</em>: building id</li>
+<li><em>site_eui</em> (target variable): Site Energy Usage Intensity is the amount of heat and electricity consumed by a building as reflected in utility bills</li>
+</ul>
+<h4 id="data-synopsis">Data Synopsis</h4>
+<p><em>Training data synopsis</em></p>
+<ul>
+<li>Number of observations: <span class="has-mathjax">\(85462\)</span>
+</li>
+<li>Number of columns: <span class="has-mathjax">\(64\)</span>
+</li>
+<li>Number of integer columns: <span class="has-mathjax">\(37\)</span>
+</li>
+<li>Number of float columns: <span class="has-mathjax">\(24\)</span>
+</li>
+<li>Number of object columns: <span class="has-mathjax">\(3\)</span>
+</li>
+<li>Number of duplicate observations: <span class="has-mathjax">\(0\)</span>
+</li>
+<li>Constant columns: None</li>
+<li>Number of columns with missing values: <span class="has-mathjax">\(6\)</span>
+</li>
+<li>Columns with missing values: <code>year_built</code>, <code>energy_star_rating</code>, <code>direction_max_wind_speed</code>, <code>direction_peak_wind_speed</code>, <code>max_wind_speed</code>, <code>days_with_fog</code></li>
+<li>Memory Usage: <span class="has-mathjax">\(37.57\)</span>
+ MB</li>
+</ul>
+<p><em>Test data synopsis</em></p>
+<ul>
+<li>Number of observations: <span class="has-mathjax">\(9705\)</span>
+</li>
+<li>Number of columns: <span class="has-mathjax">\(64\)</span>
+</li>
+<li>Number of integer columns: <span class="has-mathjax">\(37\)</span>
+</li>
+<li>Number of float columns: <span class="has-mathjax">\(24\)</span>
+</li>
+<li>Number of object columns: <span class="has-mathjax">\(3\)</span>
+</li>
+<li>Number of duplicate observations: <span class="has-mathjax">\(0\)</span>
+</li>
+<li>Constant columns: <code>year_factor</code>, <code>days_above_110F</code></li>
+<li>Number of columns with missing values: <span class="has-mathjax">\(6\)</span>
+</li>
+<li>Columns with missing values: <code>year_built</code>, <code>energy_star_rating</code>, <code>direction_max_wind_speed</code>, <code>direction_peak_wind_speed</code>, <code>max_wind_speed</code>, <code>days_with_fog</code></li>
+<li>Memory Usage: <span class="has-mathjax">\(4.74\)</span>
+ MB</li>
+</ul>
+<p>We observe that the training set contains information for six years (<code>year_factor</code> = <span class="has-mathjax">\(1\)</span>
+ to <code>year_factor</code> = <span class="has-mathjax">\(6\))</span>
+ and the test set contains information for the seventh year (<code>year_factor</code> = <span class="has-mathjax">\(7\)).</span>
+</p>
+<h4 id="univariate-analysis">Univariate Analysis</h4>
+<p>We begin with the target variable <code>site_eui</code>, which is a continuous variable indicating the amount of heat and electricity consumed by a building as reflected in utility bills.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/seui/seui-eda-seui.png"/>
+</figure>
+
+<p><em>Observations</em></p>
+<ul>
+<li>The distribution of <code>site_eui</code> is positively skewed</li>
+<li>On the logarithmic scale it approaches a bell-shaped distribution</li>
+</ul>
+<p>Next, we consider the predictor variables. First, we identify the <strong>almost constant columns</strong>.</p>
+<ul>
+<li>The feature <code>days_above_110F</code> is <em>almost constant</em> in the sense that it is <span class="has-mathjax">\(0\)</span>
+ for <span class="has-mathjax">\(99.91\%\)</span>
+ of the training observations and for <span class="has-mathjax">\(100\%\)</span>
+ of the test observations</li>
+<li>The feature <code>days_above_100F</code> takes the value <span class="has-mathjax">\(0\)</span>
+ for <span class="has-mathjax">\(94.63\%\)</span>
+ of the training data and for <span class="has-mathjax">\(89.41\%\)</span>
+ of the test data</li>
+</ul>
+<p>Now we detect the <strong>columns with unrealistic values as majority</strong>.</p>
+<ul>
+<li>The feature <code>direction_max_wind_speed</code> is <span class="has-mathjax">\(1.0\)</span>
+ for <span class="has-mathjax">\(79.95\%\)</span>
+ of the training observations</li>
+<li>The feature <code>direction_peak_wind_speed</code> is <span class="has-mathjax">\(1.0\)</span>
+ for <span class="has-mathjax">\(81.59\%\)</span>
+ of the training observations</li>
+<li>The feature <code>max_wind_speed</code> is <span class="has-mathjax">\(1.0\)</span>
+ for <span class="has-mathjax">\(79.95\%\)</span>
+ of the training observations</li>
+</ul>
+<p>In all the three columns for both training data and test data <span class="has-mathjax">\(1.0\)</span>
+ is an extremely isolated point.</p>
+<p>Also, we observe that there are <span class="has-mathjax">\(6\)</span>
+ observations in the training data and <span class="has-mathjax">\(1\)</span>
+ observation in the test data which were apparently built in the year <span class="has-mathjax">\(0\).</span>
+ These are probably incorrect because the year <span class="has-mathjax">\(0\)</span>
+ is an extremely rare point in the <code>year_built</code> column for both the training data and the test data. We keep a copy of the data with these unrealistic <span class="has-mathjax">\(0\)-values</span>
+ in the <code>year_built</code> column to <code>NaN</code>.</p>
+<p>Next, we present the <a href="https://en.wikipedia.org/wiki/Histogram">histograms</a> of the numerical features in the data except the almost constant column <code>days_above_110F</code>, the columns with unrealistic values as majority <code>direction_max_wind_speed</code>, <code>direction_peak_wind_speed</code>, <code>max_wind_speed</code>, and the columns <code>year_factor</code> and <code>building_id</code>.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/seui/seui-eda-univariate-distributions.png"/>
+</figure>
+
+<p><em>Observations</em></p>
+<ul>
+<li><code>floor_area</code> and <code>elevation</code> have positive skewness to an extreme degree</li>
+<li><code>energy_star_rating</code> is negatively skewed to a moderate degree</li>
+<li>The oldest building in the dataset was built in the year <span class="has-mathjax">\(1600\)</span>
+</li>
+<li>The latest building in the dataset was built in the year <span class="has-mathjax">\(2016\)</span>
+</li>
+<li>Most buildings in both the training data and the test data were built after the year <span class="has-mathjax">\(1900\)</span>
+</li>
+<li>A massive number of buildings were built during the second half of <span class="has-mathjax">\(1920\)'s</span>
+ and the beginning of <span class="has-mathjax">\(1960\)'s</span>
+</li>
+<li>The sudden drops in the count during the two world wars <span class="has-mathjax">\((1914-1918\)</span>
+ and <span class="has-mathjax">\(1939-1945)\)</span>
+ are clearly noticeable</li>
+</ul>
+<p>We apply the logarithmic scale on extremely skewed distributions.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/seui/seui-eda-univariate-distributions-log-scale.png"/>
+</figure>
+
+<p>Next, we compare the frequency of observations by year.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/seui/seui-eda-year-factor.png"/>
+</figure>
+
+<p>We follow this us with a frequency comparison by state.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/seui/seui-eda-state-factor.png"/>
+</figure>
+
+<p><em>Observations</em></p>
+<ul>
+<li>Majority of the training data comes from <code>State_6</code></li>
+<li>The test data has no observation from <code>State_6</code></li>
+</ul>
+<p>The <code>building_class</code> can be either <em>commercial</em> or <em>residential</em>. We compare the frequencies for these two categories.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/seui/seui-eda-building-class.png"/>
+</figure>
+
+<p><em>Observations</em></p>
+<ul>
+<li>The training data contains more <code>residential</code> buildings</li>
+<li>The test data contains more <code>commercial</code> buildings</li>
+</ul>
+<p>Next, we present a <a href="https://seaborn.pydata.org/generated/seaborn.relplot.html">relational plot</a> to show the frequency comparison of different types of facilities.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/seui/seui-eda-facility-type.png"/>
+</figure>
+
+<p>There are several object type variables, for which certain values appear only rarely in the dataset. For visualization purpose, we merge these rarely occurring values into the label <code>Others</code>, in a copy of the dataset.</p>
+<p>The following function takes a column <code>col</code> of a DataFrame <code>data</code>, detects its values with relative frequency less than a certain <code>cutoff</code> with the default value set at <span class="has-mathjax">\(0.01\),</span>
+ and replace those values by the label <code>Others</code>. The function is useful in incorporating the merging operation in the visualization of frequency comparison of object type variables that take a lot of values.</p>
+<pre tabindex="0"><code>def merge_val(data, col, cutoff = 0.01):
+    data_temp = data.copy(deep = True)
+    val_major_list = data[col].value_counts()[data[col].value_counts()/len(data) &gt;= cutoff].index.tolist()
+    val_minor_list = data[col].value_counts()[data[col].value_counts()/len(data) &lt; cutoff].index.tolist()
+    val_dict = {}
+    for val in val_major_list:
+        val_dict[val] = val
+    for val in val_minor_list:
+        val_dict[val] = &#39;Others&#39;
+    data_temp[col] = data_temp[col].map(val_dict)
+    return data_temp
+</code></pre><p>We visualize frequency comparison by the type of facility through donut plots.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/seui/seui-eda-facility-type-donut-plot.png"/>
+</figure>
+
+<p><em>Observations</em></p>
+<ul>
+<li>In the training data, more than <span class="has-mathjax">\(52\%\)</span>
+ of the buildings are <code>Multifamily_Uncategorized</code> and at a distant second, <span class="has-mathjax">\(16.5\%\)</span>
+ of the buildings are <code>Office_Uncategorized</code></li>
+<li>In the test data, the distribution is more evenly spread out with <code>Multifamily_Uncategorized</code> and <code>Office_Uncategorized</code> respectively taking up <span class="has-mathjax">\(22.7\%\)</span>
+ and <span class="has-mathjax">\(19.8\%\)</span>
+ of the observations</li>
+</ul>
+<h4 id="multivariate-analysis">Multivariate Analysis</h4>
+<p>First, we explore relationships among the predictor variables. In the univariate analysis, we had compared the frequency of observations by state and building class separately. Now we check the same comparison jointly. In particular, we examine it by state for each building class.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/seui/seui-eda-building-class-state.png"/>
+</figure>
+
+<p><em>Observations</em></p>
+<ul>
+<li>The data from <code>State_10</code> only contains commercial buildings</li>
+</ul>
+<p>The univariate analysis showed that <code>Multifamily_Uncategorized</code> and <code>Office_Uncategorized</code> make up majority of the buildings in both the training data and the test data.</p>
+<p>Clearly, <code>Multifamily_Uncategorized</code> buildings are mostly <code>residential</code> whereas the <code>Office_Uncategorized</code> buildings are mostly <code>commercial</code>. So we examine the facility types separately for residential and commercial buildings.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/seui/seui-eda-facility-type-residential.png"/>
+</figure>
+
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/seui/seui-eda-facility-type-commercial.png"/>
+</figure>
+
+<p>We observe that majority of the residual buildings fall into the <code>Multifamily_Uncategorized</code> facility type, while most of the commercial buildings has the <code>Office_Uncategorized</code> facility type.</p>
+<p>We focus on these two categories with the specific building class type that they dominate and perform a state-level frequency comparison.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/seui/seui-eda-state-factor-residential-multifamily.png"/>
+</figure>
+
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/seui/seui-eda-state-factor-commercial-office.png"/>
+</figure>
+
+<p><em>Observations</em></p>
+<ul>
+<li>Over <span class="has-mathjax">\(90\%\)</span>
+ of the residential buildings in the training data are <code>Multifamily_Uncategorized</code></li>
+<li>Over <span class="has-mathjax">\(90\%\)</span>
+ of the residential, uncategorized multifamily buildings in the <code>training data</code> come from <code>State_6</code></li>
+<li>Over <span class="has-mathjax">\(50\%\)</span>
+ of the residential buildings in the test data are <code>Multifamily_Uncategorized</code></li>
+<li>Over <span class="has-mathjax">\(50\%\)</span>
+ of the residential, uncategorized multifamily buildings in the test data come from <code>State_4</code></li>
+<li>Over one-third of the commercial buildings in both the training set and the test data are <code>Office_Uncategorized</code></li>
+<li>Almost half of the commercial, uncategorized office buildings in the training data come from <code>State_6</code></li>
+</ul>
+<p>Next, we compare the distributions of average temperature for different states in the combined data through <a href="https://en.wikipedia.org/wiki/Box_plot">boxplots</a>.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/seui/seui-eda-avg-temp-state-factor.png"/>
+</figure>
+
+<p><em>Observations</em></p>
+<ul>
+<li><code>State_1</code> has the highest average temperature and <code>State_4</code> has the lowest average temperature</li>
+<li><code>State_6</code>, <code>State_11</code>, <code>State_1</code> and <code>State_4</code> have greater dispersion than <code>State_2</code>, <code>State_8</code> and <code>State_10</code></li>
+</ul>
+<p>Now we examine the <a href="https://en.wikipedia.org/wiki/Correlation">correlation</a> structure among numerical features through a correlation <a href="https://en.wikipedia.org/wiki/Heat_map">heatmap</a>.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/seui/seui-eda-correlation-heatmap.png"/>
+</figure>
+
+<p>Next, we produce a list of pairs of features with correlation coefficient higher than <span class="has-mathjax">\(0.8\)</span>
+ or lower than <span class="has-mathjax">\(-0.8\).</span>
+</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/seui/seui-eda-correlation-pairs-K4.png"/>
+</figure>
+
+<p>We detect the variables that appear the most in this list of pairs of features with strong correlation.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/seui/seui-eda-correlation-pairs-count-K2.png"/>
+</figure>
+
+<p><em>Observations</em></p>
+<ul>
+<li>The heatmap suggests strong level of <a href="https://en.wikipedia.org/wiki/Multicollinearity">multicollinearity</a> among the numerical features</li>
+<li>There are <span class="has-mathjax">\(32\)</span>
+ pairs of feature with correlation coefficient over <span class="has-mathjax">\(0.8\)</span>
+ and <span class="has-mathjax">\(12\)</span>
+ pairs of feature with correlation coefficient below <span class="has-mathjax">\(-0.8\)</span>
+</li>
+<li>There are <span class="has-mathjax">\(7\)</span>
+ pairs of features with correlation coefficient over <span class="has-mathjax">\(0.9\)</span>
+</li>
+<li>The features <code>january_avg_temp</code>, <code>march_min_temp</code>, <code>january_min_temp</code>, <code>heating_degree_days</code>, <code>days_below_30F</code> and <code>cooling_degree_days</code> are involved in more than <span class="has-mathjax">\(5\)</span>
+ pairs of features with absolute value of correlation coefficient over <span class="has-mathjax">\(0.8\)</span>
+</li>
+</ul>
+<p>Next, we investigate the relationships of the target variable with the predictor variables. For categorical variables like <code>year_factor</code>, <code>state_factor</code>, and <code>building_class</code>, we present histograms of the target variable <code>site_eui</code> for each categories.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/seui/seui-eda-seui-year-state-building-class.png"/>
+</figure>
+
+<p>Next, we compare the overall distributions of <code>site_eui</code> for different facility type in the combined data through horizontal boxplots.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/seui/seui-eda-seui-facility-type.png"/>
+</figure>
+
+<p><em>Observations</em></p>
+<ul>
+<li><code>site_eui</code> for <code>Grocery_store_or_food_market</code>, <code>Data_Center</code>, <code>Laboratory</code>, <code>Health_Care_Inpatient</code>, <code>Health_Care_Uncategorized</code>, <code>Health_Care_Outpatient_Uncategorized</code>, <code>Food_Service_Restaurant_or_cafeteria</code>, <code>Public_Safety_Penitentiary</code> are relatively larger than the rest of the facility types</li>
+<li><code>site_eui</code> for <code>Data_Center</code>, <code>Laboratory</code>, <code>Service_Vehicle_service_repair_shop</code>, <code>Health_Care_Uncategorized</code>, <code>Health_Care_Outpatient_Uncategorized</code>, <code>Food_Service_Restaurant_or_cafeteria</code> have more dispersion than other facility types</li>
+</ul>
+<p>Next, we observe the overall relationship of the target variable with the numerical features through <a href="https://en.wikipedia.org/wiki/Scatter_plot">scatterplots</a>.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/seui/seui-eda-seui-numerical-features.png"/>
+</figure>
+
+<p><em>Observations</em></p>
+<ul>
+<li>Majority of the data points correspond to the lower values of <code>floor_areas</code>, <code>elevation</code>, <code>cooling_degree_days</code>, <code>snowfall_inches</code>, <code>snowdepth_inches</code>, <code>days_above_90F</code></li>
+<li>Majority of the data points correspond to the higher values of <code>year_built</code></li>
+<li>The weather related numerical columns do not appear to have any strong relationship with <code>site_eui</code></li>
+</ul>
+<p>We summarize the linear relationship between the target variable and the numerical features through corresponding correlation coefficient.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/seui/seui-eda-correlation-numerical-K.png"/>
+</figure>
+
+<p><em>Observations</em></p>
+<ul>
+<li>The target variable <code>site_eui</code> has moderately strong negative correlation with <code>energy_star_rating</code></li>
+<li>It has weak positive correlation with <code>snowfall_inches</code>, <code>days_below_30F</code>, <code>july_avg_temp</code>, <code>heating_degree_days</code>, <code>june_avg_temp</code>, <code>cooling_degree_days</code>, <code>days_below_20F</code>, <code>snowdepth_inches</code>, <code>august_avg_temp</code>, <code>july_min_temp</code>, <code>september_avg_temp</code>, <code>precipitation_inches</code>, <code>days_above_80F</code></li>
+<li>It has weak negative correlation with <code>january_min_temp</code>, <code>january_avg_temp</code>, <code>february_min_temp</code>, <code>february_avg_temp</code>, <code>march_min_temp</code>, <code>march_avg_temp</code>, <code>april_min_temp</code>, <code>november_min_temp</code></li>
+<li>It does not show any significant linear relationship with <code>days_below_10F</code>, <code>february_max_temp</code>, <code>april_avg_temp</code>, <code>october_min_temp</code>, <code>september_max_temp</code>, <code>july_max_temp</code>, <code>august_min_temp</code>, <code>may_avg_temp</code>, <code>january_max_temp</code>, <code>floor_area</code>, <code>december_max_temp</code>, <code>avg_temp</code>, <code>december_min_temp</code>, <code>november_avg_temp</code>, <code>days_below_0F</code>, <code>may_max_temp</code>, <code>days_with_fog</code>, <code>june_min_temp</code>, <code>december_avg_temp</code>, <code>september_min_temp</code>, <code>june_max_temp</code>, <code>october_max_temp</code>, <code>elevation</code>, <code>august_max_temp</code>, <code>march_max_temp</code>, <code>november_max_temp</code> and <code>october_avg_temp</code></li>
+</ul>
+<h3 id="-data-preprocessing">○ Data Preprocessing</h3>
+<ul>
+<li><a href="#missing-data-imputation">Missing Data Imputation</a></li>
+<li><a href="#categorical-data-encoding">Categorical Data Encoding</a></li>
+</ul>
+<h4 id="missing-data-imputation">Missing Data Imputation</h4>
+<p>In basic data exploration, we have seen that:</p>
+<ul>
+<li>The training data contains more than <span class="has-mathjax">\(50\%\)</span>
+ missing values for the features <code>days_with_fog</code>, <code>direction_peak_wind_speed</code>, <code>direction_max_wind_speed</code> and <code>max_wind_speed</code></li>
+<li>The test data contains more than <span class="has-mathjax">\(88\%\)</span>
+ missing values for the same features</li>
+</ul>
+<p>Hence we drop these features.</p>
+<ul>
+<li>The feature <code>energy_star_rating</code> has <span class="has-mathjax">\(35.25\%\)</span>
+ missing values in the training data and <span class="has-mathjax">\(23.22\%\)</span>
+ missing values in the test data</li>
+<li>The feature <code>year_built</code> has <span class="has-mathjax">\(2.42\%\)</span>
+ missing values in the training data and <span class="has-mathjax">\(0.94\%\)</span>
+ missing values in the test data</li>
+</ul>
+<p>We impute the missing values not only for <code>year_built</code>, which has a minimal amount of missing values, but also for <code>energy_star_rating</code>, considering the fact that it has the highest correlation (in absolute value) with the target variable.</p>
+<p>In the training set:</p>
+<ul>
+<li><code>energy_star_rating</code> is missing for <span class="has-mathjax">\(26709\)</span>
+ observations</li>
+<li><code>year_built</code> is missing for <span class="has-mathjax">\(1837\)</span>
+ observations</li>
+<li>Exactly one between these two features is missing for <span class="has-mathjax">\(26078\)</span>
+ observations</li>
+<li>Both features are missing for <span class="has-mathjax">\(1234\)</span>
+ observations</li>
+<li>In total, <span class="has-mathjax">\(27312\)</span>
+ observations contain missing data</li>
+</ul>
+<p>In the test set:</p>
+<ul>
+<li><code>energy_star_rating</code> is missing for <span class="has-mathjax">\(2254\)</span>
+ observations</li>
+<li><code>year_built</code> is missing for <span class="has-mathjax">\(92\)</span>
+ observations</li>
+<li>Exactly one between these two features is missing for <span class="has-mathjax">\(2262\)</span>
+ observations</li>
+<li>Both features are missing for <span class="has-mathjax">\(42\)</span>
+ observations</li>
+<li>In total, <span class="has-mathjax">\(2304\)</span>
+ observations contain missing data</li>
+</ul>
+<p>Both <code>energy_star_rating</code> and <code>year_built</code> are numerical features. We opt for <code>median imputation</code> to negate the effect of possible outliers. First, we implement the imputation on the training set. Then, we impute the missing values of <code>energy_star_rating</code> and <code>year_built</code> in the test data by the medians of the respective features in the training data (not the test data), following the suggestion of <a href="https://www.oreilly.com/pub/au/7106">Aurélien Géron</a> in his book <a href="https://www.oreilly.com/library/view/hands-on-machine-learning/9781491962282/">Hands-On Machine Learning with Scikit-Learn and TensorFlow</a> (page <span class="has-mathjax">\(60\),</span>
+ chapter <span class="has-mathjax">\(2\)):</span>
+</p>
+<blockquote>
+<p><em>&hellip;  you should compute the median value on the training set, and use it to fill the missing values in the training set, but also don&rsquo;t forget to save the median value that you have computed. You will need it later to replace missing values in the test set when you want to evaluate your system, and also once the system goes live to replace missing values in new data.</em></p>
+</blockquote>
+<h4 id="categorical-data-encoding">Categorical Data Encoding</h4>
+<p>We employ <a href="https://contrib.scikit-learn.org/category_encoders/targetencoder.html">target encoder</a> to numerically encode the categorical features <code>state_factor</code>, <code>building_class</code> and <code>facility_type</code>. In the present situation, the target variable (<code>site_eui</code>) is a continuous variable. According to <a href="https://contrib.scikit-learn.org/category_encoders/targetencoder.html">this</a> documentation on <em>target encoder</em>:</p>
+<blockquote>
+<p><em>For the case of continuous target: features are replaced with a blend of the expected value of the target given particular categorical value and the expected value of the target over all the training data.</em></p>
+</blockquote>
+<p>First, we encode the categorical columns in the training data. The following code snippet encodes a single column <code>col</code> of a training set <code>df_train</code> with target variable <code>target</code> into the column <code>col_encoded</code>.</p>
+<pre tabindex="0"><code>encoder = TargetEncoder()
+df_train[col_encoded] = encoder.fit_transform(df_train[col], df_train[target])
+</code></pre><p>The mapping of the original values and the corresponding encoded values for each categorical feature in the training data are recorded in form of dictionaries. Implementation for a single column:</p>
+<pre tabindex="0"><code>col_enc_dict = {}
+for i in range(len(df_train[col].unique())):
+    col_enc_dict[df_train[col].unique().tolist()[i]] = df_train[col_encoded].unique().tolist()[i]
+</code></pre><p>We encode the categorical columns in the test data, using dictionaries containing the exact encoding scheme (the map connecting original values and encoded values) of the same columns in the training data.</p>
+<pre tabindex="0"><code>df_test[col_encoded] = df_test[col].map(col_enc_dict)
+</code></pre><p>Subsequently, we drop the original categorical columns from the training set and the test set.</p>
+<h3 id="-feature-engineering">○ Feature Engineering</h3>
+<ul>
+<li><a href="#extraction-of-new-features">Extraction of new features</a></li>
+<li><a href="#exploratory-data-analysis-of-the-new-features">Exploratory data analysis of the new features</a></li>
+<li><a href="#transformation">Transformation</a></li>
+<li><a href="#binarization">Binarization</a></li>
+</ul>
+<h4 id="extraction-of-new-features">Extraction of new features</h4>
+<p>We compress the monthly weather statistics into seasonal weather statistics. This reduces the number of features greatly without losing significant information. First, we separate out the columns corresponding to monthly temperature statistics into four lists corresponding to four seasons.</p>
+<pre tabindex="0"><code>temp_all = [col for col in data_train.columns if &#34;temp&#34; in col]
+temp_winter = [col for col in temp_all if (&#39;january&#39; in col or &#39;february&#39; in col or &#39;december&#39; in col)]
+temp_spring = [col for col in temp_all if (&#39;march&#39; in col or &#39;april&#39; in col or &#39;may&#39; in col)]
+temp_summer = [col for col in temp_all if (&#39;june&#39; in col or &#39;july&#39; in col or &#39;august&#39; in col)]
+temp_autumn = [col for col in temp_all if (&#39;september&#39; in col or &#39;october&#39; in col or &#39;november&#39; in col)]
+</code></pre><p>Next, we extract the seasonal temperature statistics out of the monthly temperature statistics from the training DataFrame <code>data_train</code>. Also, we convert <code>cooling_degree_days</code> and <code>heating_degree_days</code> from yearly scale to monthly scale.</p>
+<pre tabindex="0"><code>data_train[&#39;min_temp_winter&#39;] = data_train[temp_winter].min(axis = 1)
+data_train[&#39;max_temp_winter&#39;] = data_train[temp_winter].max(axis = 1)
+data_train[&#39;avg_temp_winter&#39;] = data_train[temp_winter].mean(axis = 1)
+data_train[&#39;std_temp_winter&#39;] = data_train[temp_winter].std(axis = 1)
+data_train[&#39;skew_temp_winter&#39;] = data_train[temp_winter].skew(axis = 1)
+
+(similarly for temp_spring, temp_summer, and temp_autumn)
+
+data_train[&#39;cooling_degree_days_per_month&#39;] = data_train[&#39;cooling_degree_days&#39;] / 12
+data_train[&#39;heating_degree_days_per_month&#39;] = data_train[&#39;heating_degree_days&#39;] / 12
+</code></pre><p>We repeat the same feature extraction procedure for the test data. In total, we have generated <span class="has-mathjax">\(22\)</span>
+ new features from the pool of <span class="has-mathjax">\(39\)</span>
+ original weather related features. Finally, we drop the old weather related features from the training set and the test set.</p>
+<h4 id="exploratory-data-analysis-of-the-new-features">Exploratory data analysis of the new features</h4>
+<p><em>Understanding the new features</em></p>
+<p>We convert the month-based temperature related features to season-based features by partitioning the full year into four seasons: <strong>winter</strong> (December, January, February), <strong>spring</strong> (March, April, May), <strong>summer</strong> (June, July, August) and <strong>spring</strong> (September, October, November).</p>
+<ul>
+<li><em>min_temp_winter</em>: minimum temperature in winter (in Fahrenheit) at the location of the building</li>
+<li><em>max_temp_winter</em>: maximum temperature in winter (in Fahrenheit) at the location of the building</li>
+<li><em>avg_temp_winter</em>: average temperature in winter (in Fahrenheit) at the location of the building</li>
+<li><em>std_temp_winter</em>: standard deviation of temperature in winter (in Fahrenheit) at the location of the building</li>
+<li><em>skew_temp_winter</em>: skewness of temperature in winter (in Fahrenheit) at the location of the building</li>
+</ul>
+<p>(Similarly for spring, summer and autumn)</p>
+<ul>
+<li><em>cooling_degree_days_per_month</em>: average number of degrees where the daily average temperature exceeds <span class="has-mathjax">\(65\)</span>
+ degrees Fahrenheit in a month</li>
+<li><em>heating_degree_days_per_month</em>: average number of degrees where the daily average temperature falls under <span class="has-mathjax">\(65\)</span>
+ degrees Fahrenheit in a month</li>
+</ul>
+<p>We list the extracted features along with their corresponding datatype.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/seui/seui-feat-engg-feat-extract-datatype-K.png"/>
+</figure>
+
+<p>We present the distribution of the new features through histograms.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/seui/seui-feat-engg-feat-extract-histogram.png"/>
+</figure>
+
+<p>Next, we check the relationship of Site EUI with the new features through scatterplots.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/seui/seui-feat-engg-feat-extract-scatterplot.png"/>
+</figure>
+
+<h4 id="transformation">Transformation</h4>
+<p>We apply location change <span class="has-mathjax">\(x \mapsto x - min(x) + 1\)</span>
+ on the features <code>floor_area</code> and <code>elevation</code> to make their range start from <span class="has-mathjax">\(1\).</span>
+ The relocated variables fall inside the range <span class="has-mathjax">\([1, \infty)\).</span>
+ Implementation on a single column <code>col</code> of a training set <code>df_train</code> and a test set <code>df_test</code>:</p>
+<pre tabindex="0"><code>min_ = df_train[col].min()
+df_train[col] = df_train[col].apply(lambda x: x - min_ + 1)
+df_test[col] = df_test[col].apply(lambda x: x - min_ + 1)
+</code></pre><p>Now, we apply the <a href="https://en.wikipedia.org/wiki/Logarithm">log transformation</a> <span class="has-mathjax">\(y \mapsto \log{y}\).</span>
+ Implementation on a single column:</p>
+<pre tabindex="0"><code>df_train[col] = df_train[col].apply(np.log)
+df_test[col] = df_test[col].apply(np.log)
+</code></pre><p>The relocation preceding the log transformation ensures that there are no negative values to be fed to the <span class="has-mathjax">\(\log\)</span>
+ function. The addition of <span class="has-mathjax">\(1\)</span>
+ ensures that there are no values very close to <span class="has-mathjax">\(0\),</span>
+ which the log transformation maps to extreme negative values.</p>
+<p>Note that we use the same <span class="has-mathjax">\(\min(x)\)</span>
+ from the training data in the test data, to keep the transformation same for the two datasets.</p>
+<h4 id="binarization">Binarization</h4>
+<p>The univariate analysis showed that the features <code>days_above_100F</code> and <code>days_above_110F</code> are <span class="has-mathjax">\(0\)</span>
+ for most observations in both the training data and the test data. So we binarize the two features, keeping the zero values as <span class="has-mathjax">\(0\)</span>
+ and mapping the non-zero values to <span class="has-mathjax">\(1\).</span>
+ Implementation on a single column <code>col</code> of a training set <code>df_train</code> and a test set <code>df_test</code>:</p>
+<pre tabindex="0"><code>df_train[col] = np.where(df_train[col] == 0, 0, 1)
+df_test[col] = np.where(df_test[col] == 0, 0, 1)
+</code></pre><h3 id="-baseline-modeling">○ Baseline Modeling</h3>
+<ul>
+<li><a href="#random-forest">Random Forest</a></li>
+<li><a href="#xgboost">XGBoost</a></li>
+<li><a href="#catboost">CatBoost</a></li>
+<li><a href="#model-comparison">Model Comparison</a></li>
+</ul>
+<p>In this section, we use three algorithms, namely random forest, XGBoost, and CatBoost to the problem at hand and compare their baseline performances.</p>
+<p>We begin by typecasting the numerical features to <code>float64</code>. Then, we split the predictor variables and the target variable out of the datasets. Also, we drop the column <code>building_id</code> from both the training set and the test set as it does not contribute to the prediction of the target variable.</p>
+<h4 id="random-forest">Random Forest</h4>
+<pre tabindex="0"><code>rf = RandomForestRegressor(random_state = 0)
+</code></pre><p>The baseline performance of Random Forest algorithm is summarized below.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/seui/seui-baseline-random-forest-K.png"/>
+</figure>
+
+<h4 id="xgboost">XGBoost</h4>
+<pre tabindex="0"><code>xgb = XGBRegressor(random_state = 0)
+</code></pre><p>The baseline performance of XGBoost algorithm is summarized below.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/seui/seui-baseline-xgboost-K.png"/>
+</figure>
+
+<h4 id="catboost">CatBoost</h4>
+<pre tabindex="0"><code>catb = CatBoostRegressor(
+    iterations = 1000,
+    learning_rate = 0.02,
+    depth = 12,
+    eval_metric = &#39;RMSE&#39;,
+    random_state = 0,
+    bagging_temperature = 0.2,
+    od_type = &#39;Iter&#39;,
+    metric_period = 100,
+    od_wait = 100
+)
+</code></pre><p>The baseline performance of CatBoost algorithm is summarized below.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/seui/seui-baseline-catboost-K.png"/>
+</figure>
+
+<h4 id="model-comparison">Model Comparison</h4>
+<p>We compare the models based on <a href="https://en.wikipedia.org/wiki/Cross-validation_(statistics)">cross-validation</a> scores through categorical plots.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/seui/seui-baseline-model-comparison-cross-validation-K.png"/>
+</figure>
+
+<p><em>Observation</em>: Based on all three evaluation metrics, the cross-validation scores suggest that the random forest regressor is working the best, followed by the XGBoost regressor, and then the CatBoost regressor.</p>
+<h3 id="-hyperparameter-tuning">○ Hyperparameter Tuning</h3>
+<ul>
+<li><a href="#hyperparameters-and-optuna">Hyperparameters and Optuna</a></li>
+<li><a href="#objective-function">Objective Function</a></li>
+<li><a href="#tuning-function">Tuning Function</a></li>
+<li><a href="#tuner-search-and-model-fitting">Tuner Search and Model Fitting</a></li>
+</ul>
+<h4 id="hyperparameters-and-optuna">Hyperparameters and Optuna</h4>
+<p>We apply hyperparameter tuning on the random forest algorithm, which is performing best among the three baseline candidates. For this purpose, we use the <a href="https://optuna.org/">Optuna</a> framework.</p>
+<p>In particular, we optimize the following hyperparameters:</p>
+<ul>
+<li><code>n_estimators</code> (integer): The number of trees in the forest</li>
+<li><code>max_depth</code> (integer): The maximum depth of the tree</li>
+<li><code>min_samples_split</code> (integer): The minimum number of samples required to split an internal node</li>
+<li><code>max_features</code> (float): The proportion of features to consider when looking for the best split</li>
+</ul>
+<h4 id="objective-function">Objective Function</h4>
+<p>We define the objective function.</p>
+<pre tabindex="0"><code>def objective_rf(trial, data = X_train, target = y_train):
+    param = {
+        &#34;n_estimators&#34;: trial.suggest_int(&#34;n_estimators&#34;, 100, 500),
+        &#34;max_depth&#34;: trial.suggest_int(&#34;max_depth&#34;, 5, 20),
+        &#34;min_samples_split&#34;: trial.suggest_int(&#34;min_samples_split&#34;, 2, 10),
+        &#34;max_features&#34;: trial.suggest_float(&#34;max_features&#34;, 0.01, 0.95)
+    }
+    model = RandomForestRegressor(**param)
+    kfolds = KFold(n_splits = 6, shuffle = True)
+    scores = cross_val_score(model, data, target, cv = kfolds, scoring = &#34;neg_root_mean_squared_error&#34;)
+    return -scores.mean()
+</code></pre><h4 id="tuning-function">Tuning Function</h4>
+<p>We build the tuning function.</p>
+<pre tabindex="0"><code>def tuner(objective, n = 10, direction = &#39;minimize&#39;):
+    sampler = optuna.samplers.TPESampler(seed = 0)
+    study = optuna.create_study(direction = direction, sampler = sampler)
+    study.optimize(objective, n_trials = n)
+    display(optuna.visualization.plot_optimization_history(study))
+    best_params = study.best_params
+    best_score = study.best_value
+
+    print(f&#34;Best RMSE score: {best_score}&#34;)
+    print(f&#34;Optimized parameters: {best_params}\n&#34;)
+    print(&#34;-------- Tuning complete --------&#34;)
+
+    return best_params, best_score
+</code></pre><h4 id="tuner-search-and-model-fitting">Tuner Search and Model Fitting</h4>
+<p>We tune the parameters using the tuner function.</p>
+<pre tabindex="0"><code>rf_param, rf_score = tuner(objective_rf, n = 10, direction = &#39;minimize&#39;)
+</code></pre><p>The cross-validation RMSE scores for each trial of the tuning process are plotted to visualize the optimization history.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/seui/seui-ht-optuna-plot-K2.png"/>
+</figure>
+
+<p>Best RMSE score: <span class="has-mathjax">\(40.76934266775879\)</span>
+</p>
+<p>Optimized hyperparameters:</p>
+<ul>
+<li><code>n_estimators</code>: <span class="has-mathjax">\(492\)</span>
+</li>
+<li><code>max_depth</code>: <span class="has-mathjax">\(17\)</span>
+</li>
+<li><code>min_samples_split</code>: <span class="has-mathjax">\(6\)</span>
+</li>
+<li><code>max_features</code>: <span class="has-mathjax">\(0.7436974257092681\)</span>
+</li>
+</ul>
+<p>We fit the tuned model on the entire training set.</p>
+<h3 id="-prediction-and-evaluation">○ Prediction and Evaluation</h3>
+<p>We use the fitted model to predict on the test set and visualize the error distribution.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/seui/seui-ht-error-distribution-K.png"/>
+</figure>
+
+<p>The performance of the Random Forest algorithm with optimized hyperparameters is summarized below.</p>
+<figure><img src="https://sugatagh.github.io/dsml/images/images-projects/seui/seui-ht-optuna-rf-K.png"/>
+</figure>
+
+<h3 id="-acknowledgements">○ Acknowledgements</h3>
+<ul>
+<li><a href="https://www.oreilly.com/library/view/hands-on-machine-learning/9781491962282/">Hands-On Machine Learning with Scikit-Learn and TensorFlow</a> by <a href="https://www.oreilly.com/pub/au/7106">Aurélien Géron</a></li>
+<li><a href="https://www.kaggle.com/c/widsdatathon2022/data">WiDS Datathon 2022 Dataset</a></li>
+</ul>
+<h3 id="-references">○ References</h3>
+<ul>
+<li><a href="https://en.wikipedia.org/wiki/Annotation">Annotation</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Box_plot">Box plot</a></li>
+<li><a href="https://en.wikipedia.org/wiki/CatBoost">CatBoost</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Categorical_variable#Categorical_variables_and_regression">Categorical data encoding</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Coefficient_of_determination">Coefficient of determination</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Continuous_or_discrete_variable#Continuous_variable">Continuous variable</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Correlation">Correlation</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Cross-validation_(statistics)">Cross-validation</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Data_Preprocessing">Data preprocessing</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Data_transformation_(statistics)">Data transformation</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Efficient_energy_use#Building_design">Energy usage intensity</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Exploratory_data_analysis">Exploratory data analysis</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Feature_engineering">Feature engineering</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Heat_map">Heat map</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Histogram">Histogram</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Hyperparameter_optimization">Hyperparameter optimization</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Imputation_(statistics)">Imputation</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Logarithm">Logarithm</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Mean_absolute_error">Mean absolute error</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Missing_data">Missing data</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Multicollinearity">Multicollinearity</a></li>
+<li><a href="https://optuna.org/">Optuna</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Random_forest">Random forest</a></li>
+<li><a href="https://seaborn.pydata.org/generated/seaborn.relplot.html">Relational plot</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Root-mean-square_deviation">Root mean square deviation</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Scatter_plot">Scatter plot</a></li>
+<li><a href="https://contrib.scikit-learn.org/category_encoders/targetencoder.html">Target encoder</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Training,_validation,_and_test_data_sets#Test_data_set">Test set</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Training,_validation,_and_test_data_sets#Training_data_set">Training set</a></li>
+<li><a href="https://en.wikipedia.org/wiki/XGBoost">XGBoost</a></li>
+</ul>
+<ul class="pa0">
+  
+</ul>
+<div class="mt6 instapaper_ignoref">
+      
+      
+      </div>
+    </div>
+
+    <aside class="w-30-l mt6-l">
+
+
+
+
+</aside>
+
+  </article>
+
+    </main>
+    <footer class="bg-black bottom-0 w-100 pa3" role="contentinfo">
+  <div class="flex justify-between">
+  <a class="f4 fw4 hover-white no-underline white-70 dn dib-ns pv2 ph3" href="https://sugatagh.github.io/dsml/" >
+    &copy;  Sugata Ghosh, PhD 2024 
+  </a>
+    <div>
+<div class="ananke-socials">
+  
+    
+    <a href="https://www.linkedin.com/in/sugataghosh/" target="_blank" rel="noopener" class="linkedin ananke-social-link link-transition stackoverflow link dib z-999 pt3 pt0-l mr1" title="LinkedIn link" aria-label="follow on LinkedIn——Opens in a new window">
+      
+        <span class="icon"><svg style="enable-background:new 0 0 65 65;" version="1.1" viewBox="0 0 65 65"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <path d="M50.837,48.137V36.425c0-6.275-3.35-9.195-7.816-9.195  c-3.604,0-5.219,1.983-6.119,3.374V27.71h-6.79c0.09,1.917,0,20.427,0,20.427h6.79V36.729c0-0.609,0.044-1.219,0.224-1.655  c0.49-1.22,1.607-2.483,3.482-2.483c2.458,0,3.44,1.873,3.44,4.618v10.929H50.837z M22.959,24.922c2.367,0,3.842-1.57,3.842-3.531  c-0.044-2.003-1.475-3.528-3.797-3.528s-3.841,1.524-3.841,3.528c0,1.961,1.474,3.531,3.753,3.531H22.959z M34,64  C17.432,64,4,50.568,4,34C4,17.431,17.432,4,34,4s30,13.431,30,30C64,50.568,50.568,64,34,64z M26.354,48.137V27.71h-6.789v20.427  H26.354z" style="fill-rule:evenodd;clip-rule:evenodd;"/>
+</svg>
+</span>
+      
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;"/>
+</svg>
+</span></a>
+  
+    
+    <a href="https://twitter.com/sugatagh" target="_blank" rel="noopener" class="twitter ananke-social-link link-transition stackoverflow link dib z-999 pt3 pt0-l mr1" title="Twitter link" aria-label="follow on Twitter——Opens in a new window">
+      
+        <span class="icon"><svg style="enable-background:new 0 0 67 67;" version="1.1" viewBox="0 0 67 67"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M37.167,22.283c-2.619,0.953-4.274,3.411-4.086,6.101  l0.063,1.038l-1.048-0.127c-3.813-0.487-7.145-2.139-9.974-4.915l-1.383-1.377l-0.356,1.017c-0.754,2.267-0.272,4.661,1.299,6.271  c0.838,0.89,0.649,1.017-0.796,0.487c-0.503-0.169-0.943-0.296-0.985-0.233c-0.146,0.149,0.356,2.076,0.754,2.839  c0.545,1.06,1.655,2.097,2.871,2.712l1.027,0.487l-1.215,0.021c-1.173,0-1.215,0.021-1.089,0.467  c0.419,1.377,2.074,2.839,3.918,3.475l1.299,0.444l-1.131,0.678c-1.676,0.976-3.646,1.526-5.616,1.568  C19.775,43.256,19,43.341,19,43.405c0,0.211,2.557,1.397,4.044,1.864c4.463,1.377,9.765,0.783,13.746-1.568  c2.829-1.673,5.657-5,6.978-8.221c0.713-1.716,1.425-4.851,1.425-6.354c0-0.975,0.063-1.102,1.236-2.267  c0.692-0.678,1.341-1.419,1.467-1.631c0.21-0.403,0.188-0.403-0.88-0.043c-1.781,0.636-2.033,0.551-1.152-0.402  c0.649-0.678,1.425-1.907,1.425-2.267c0-0.063-0.314,0.042-0.671,0.233c-0.377,0.212-1.215,0.53-1.844,0.72l-1.131,0.361l-1.027-0.7  c-0.566-0.381-1.361-0.805-1.781-0.932C39.766,21.902,38.131,21.944,37.167,22.283z M33,64C16.432,64,3,50.569,3,34S16.432,4,33,4  s30,13.431,30,30S49.568,64,33,64z" style="fill-rule:evenodd;clip-rule:evenodd;"/></svg>
+</span>
+      
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;"/>
+</svg>
+</span></a>
+  
+    
+    <a href="https://github.com/sugatagh" target="_blank" rel="noopener" class="github ananke-social-link link-transition stackoverflow link dib z-999 pt3 pt0-l mr1" title="GitHub link" aria-label="follow on GitHub——Opens in a new window">
+      
+        <span class="icon"><svg style="enable-background:new 0 0 512 512;" version="1.1" viewBox="0 0 512 512"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+  <path d="M256,32C132.3,32,32,134.8,32,261.7c0,101.5,64.2,187.5,153.2,217.9c11.2,2.1,15.3-5,15.3-11.1   c0-5.5-0.2-19.9-0.3-39.1c-62.3,13.9-75.5-30.8-75.5-30.8c-10.2-26.5-24.9-33.6-24.9-33.6c-20.3-14.3,1.5-14,1.5-14   c22.5,1.6,34.3,23.7,34.3,23.7c20,35.1,52.4,25,65.2,19.1c2-14.8,7.8-25,14.2-30.7c-49.7-5.8-102-25.5-102-113.5   c0-25.1,8.7-45.6,23-61.6c-2.3-5.8-10-29.2,2.2-60.8c0,0,18.8-6.2,61.6,23.5c17.9-5.1,37-7.6,56.1-7.7c19,0.1,38.2,2.6,56.1,7.7   c42.8-29.7,61.5-23.5,61.5-23.5c12.2,31.6,4.5,55,2.2,60.8c14.3,16.1,23,36.6,23,61.6c0,88.2-52.4,107.6-102.3,113.3   c8,7.1,15.2,21.1,15.2,42.5c0,30.7-0.3,55.5-0.3,63c0,6.1,4,13.3,15.4,11C415.9,449.1,480,363.1,480,261.7   C480,134.8,379.7,32,256,32z"/>
+</svg>
+</span>
+      
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;"/>
+</svg>
+</span></a>
+  
+    
+    <a href="https://www.kaggle.com/sugataghosh" target="_blank" rel="noopener" class="Kaggle ananke-social-link link-transition stackoverflow link dib z-999 pt3 pt0-l mr1" title="Kaggle link" aria-label="follow on Kaggle——Opens in a new window">
+      
+        Kaggle
+      
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;"/>
+</svg>
+</span></a>
+  
+</div>
+</div>
+  </div>
+</footer>
+
+  </body>
+</html>
